@@ -1,6 +1,6 @@
 - create rectangular bullets in the correct direction (clue http://stackoverflow.com/questions/36510795/rotating-a-rectangle-not-image-in-pygame) or maybe put an image instead?
 - create level environmment
 - improve enemy ai and looks
-- create animations when walking
+- implement spritesheet
 - organize code
 - create life bar for player and enemies (maybe let run and stamina eventually too)
