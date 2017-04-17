@@ -19,34 +19,58 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
+def terminate():
+    pygame.quit()
+    sys.exit()
+
 class Character(pygame.sprite.Sprite):
     def __init__(self, Name, image):
+        pygame.sprite.Sprite.__init__(self)
+
         self.Name = Name
         self.image = image
-        #self.image = pygame.transform.scale(self.image, (CELLSIZE+5, CELLSIZE+5))
+        self.rect = self.image.get_rect()
         randomstart = self.getRandomLocation()
         self.x = randomstart[0]
         self.y = randomstart[1]
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.walls = None
 
     def getRandomLocation(self):
         return [random.randint(0, CELLWIDTH - 1),random.randint(0, CELLHEIGHT - 1)]
 
-    def drawCharacter(self, DISPLAYSURF):
-        x = self.x * CELLSIZE
-        y = self.y * CELLSIZE
-        Rect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        #pygame.draw.rect(DISPLAYSURF, RED, Rect)
-        #descobrir como ajeitar esse treco feio aqui
-        DISPLAYSURF.blit(self.image, self.image.get_rect(center=(x+8, y+5)))
-
-    def updateposition(self, eventkey):
+    def updatePosition(self, eventkey):
+        aux = 0
         if (eventkey == K_LEFT or eventkey == K_a):
-            self.x -= 1
+            self.x -= CELLSIZE
+            self.rect.x = self.x
+            aux = 1
         elif (eventkey == K_RIGHT or eventkey == K_d):
-            self.x += 1
+            self.x += CELLSIZE
+            self.rect.x = self.x
+            aux = 2
         elif (eventkey == K_UP or eventkey == K_w):
-            self.y -= 1
+            self.y -= CELLSIZE
+            self.rect.y = self.y
+            aux = 3
         elif (eventkey == K_DOWN or eventkey == K_s):
-            self.y += 1
+            self.y += CELLSIZE
+            self.rect.y = self.y
+            aux = 4
         elif eventkey == K_ESCAPE:
             terminate()
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        if block_hit_list:
+            if aux == 1:
+                self.x += CELLSIZE
+                self.rect.x = self.x
+            elif aux == 2:
+                self.x -= CELLSIZE
+                self.rect.x = self.x
+            elif aux == 3:
+                self.y += CELLSIZE
+                self.rect.x = self.x
+            elif aux == 4:
+                self.y -= CELLSIZE
+                self.rect.x = self.x

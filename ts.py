@@ -20,6 +20,8 @@ DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
 class TitleScreen(object):
+    "Class that defines the main title screen"
+    
     def __init__(self):
         self.font = 'freesansbold.ttf'
         self.name = 'Mecanismos de Batalha'
