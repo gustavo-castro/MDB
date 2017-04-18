@@ -5,6 +5,7 @@ from pygame.locals import *
 import characters
 import ts
 import objects
+from utils import *
 
 FPS = 15
 WINDOWWIDTH = 640
@@ -55,36 +56,11 @@ def runGame():
     enemy_list = pygame.sprite.Group()
     bullet_list = pygame.sprite.Group()
 
-    for i in range(10):
-
-        enemy = objects.Enemy(RED)
-
-
-        enemy.rect.x = random.randrange(WINDOWWIDTH)
-        enemy.rect.y = random.randrange(350)
-
-        enemy_list.add(enemy)
-        all_sprites_list.add(enemy)
+    N = 10
+    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list)
 
     # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = pygame.sprite.Group()
-     
-    wall = objects.Wall(0, 0, 10, WINDOWHEIGHT)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
-     
-    wall = objects.Wall(10, 0, WINDOWWIDTH, 10)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
-     
-    wall = objects.Wall(10, WINDOWHEIGHT - 10, WINDOWWIDTH, 10)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
-
-    wall = objects.Wall(WINDOWWIDTH - 10, 10, 10, WINDOWHEIGHT)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
-    
+    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list)
     Marcus.walls = wall_list
 
     while True: # main game loop
@@ -94,37 +70,15 @@ def runGame():
             elif event.type == KEYDOWN:
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:
-                bullet = objects.Bullet(pygame.mouse.get_pos(), [Marcus.x, Marcus.y])
-
-                bullet.rect.x = Marcus.x
-                bullet.rect.y = Marcus.y
-
-                all_sprites_list.add(bullet)
-                bullet_list.add(bullet)
+                createbullet(Marcus, bullet_list, all_sprites_list)
         
-        for bullet in bullet_list:
-
-
-            enemy_hit_list = pygame.sprite.spritecollide(bullet, enemy_list, True)
-
-
-            for enemy in enemy_hit_list:
-                bullet_list.remove(bullet)
-                all_sprites_list.remove(bullet)
-
-
-            if bullet.rect.y < -10:
-                bullet_list.remove(bullet)
-                all_sprites_list.remove(bullet)
+        hitbullets(bullet_list, enemy_list, all_sprites_list)
 
         all_sprites_list.update()
         DISPLAYSURF.fill(WHITE)
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-
-
 
 if __name__ == '__main__':
     main()

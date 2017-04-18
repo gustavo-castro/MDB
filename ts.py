@@ -19,6 +19,10 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
+def terminate():
+    pygame.quit()
+    sys.exit()
+
 class TitleScreen(object):
     "Class that defines the main title screen"
     
