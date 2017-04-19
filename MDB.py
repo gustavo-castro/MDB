@@ -17,6 +17,7 @@ CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 
 #             R    G    B
+BACKGROUND= (247, 253, 189)
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
@@ -26,7 +27,7 @@ DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesDict
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
 
@@ -35,7 +36,8 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     BASICFONT = pygame.font.Font(FONT, 18)
     pygame.display.set_caption(NAME)
-    MarcusImage = pygame.image.load('boy.png')
+
+    ImagesDict = loadingimages('ss-mercenaries.png')
 
     newtitlescreen = ts.TitleScreen()
     newtitlescreen.showStartScreen(DISPLAYSURF, BASICFONT, FPSCLOCK)
@@ -49,7 +51,7 @@ def terminate():
 
 def runGame():
     # Initiate main character
-    Marcus = characters.Character('Marcus', MarcusImage)
+    Marcus = characters.Character('Marcus', ImagesDict)
 
     all_sprites_list = pygame.sprite.Group()
     all_sprites_list.add(Marcus)
@@ -75,7 +77,7 @@ def runGame():
         hitbullets(bullet_list, enemy_list, all_sprites_list)
 
         all_sprites_list.update()
-        DISPLAYSURF.fill(WHITE)
+        DISPLAYSURF.fill(BACKGROUND)
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)

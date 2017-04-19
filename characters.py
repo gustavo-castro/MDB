@@ -24,11 +24,12 @@ def terminate():
     sys.exit()
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, Name, image):
+    def __init__(self, Name, imagedict):
         pygame.sprite.Sprite.__init__(self)
 
         self.Name = Name
-        self.image = image
+        self.imagedict = imagedict
+        self.image = self.imagedict['down']
         self.rect = self.image.get_rect()
         randomstart = self.getRandomLocation()
         self.x = randomstart[0]
@@ -45,18 +46,22 @@ class Character(pygame.sprite.Sprite):
         if (eventkey == K_LEFT or eventkey == K_a):
             self.x -= CELLSIZE
             self.rect.x = self.x
+            self.image = self.imagedict['left']
             aux = 1
         elif (eventkey == K_RIGHT or eventkey == K_d):
             self.x += CELLSIZE
             self.rect.x = self.x
+            self.image = self.imagedict['right']
             aux = 2
         elif (eventkey == K_UP or eventkey == K_w):
             self.y -= CELLSIZE
             self.rect.y = self.y
+            self.image = self.imagedict['up']
             aux = 3
         elif (eventkey == K_DOWN or eventkey == K_s):
             self.y += CELLSIZE
             self.rect.y = self.y
+            self.image = self.imagedict['down']
             aux = 4
         elif eventkey == K_ESCAPE:
             terminate()

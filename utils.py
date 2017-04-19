@@ -1,5 +1,6 @@
 import pygame, random
 import objects
+import spritesheet
 
 RED       = (255,   0,   0)
 
@@ -62,3 +63,20 @@ def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list):
 
         enemy_list.add(enemy)
         all_sprites_list.add(enemy)
+
+def loadingimages(image):
+    ss = spritesheet.spritesheet(image)
+    # Sprite is 16x16 pixels at location 0,0 in the file...
+    #olhando pra cada direcao
+
+    down = ss.image_at((92, 184, 23, 32))
+
+    right = ss.image_at((90, 104, 23, 32))
+
+    left = ss.image_at((94, 264, 23, 32))
+
+    up = ss.image_at((92, 22, 23, 32))
+
+    ImagesDict = {'down' : down, 'up' : up, 'right' : right, 'left' : left}
+
+    return ImagesDict

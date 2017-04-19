@@ -12,7 +12,17 @@ c = pygame.time.Clock()
 
 ss = spritesheet.spritesheet('ss-mercenaries.png')
 # Sprite is 16x16 pixels at location 0,0 in the file...
-image = ss.image_at((0, 0, 16, 16))
+#olhando pra cada direcao
+baixo = ss.image_at((92, 184, 23, 32))
+
+direita = ss.image_at((90, 104, 23, 32))
+
+esquerda = ss.image_at((94, 264, 23, 32))
+
+cima = ss.image_at((92, 22, 23, 32))
+
+image = cima
+
 while True:
     screen.blit(image,(0,0))
     pygame.display.flip() # update the display
