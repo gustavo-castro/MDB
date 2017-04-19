@@ -32,30 +32,32 @@ def createbullet(Marcus, bullet_list, all_sprites_list):
 def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     """creates walls for the basic level """
     wall_list = pygame.sprite.Group()
+
+    wallsize = 5
      
-    wall = objects.Wall(0, 0, 10, WINDOWHEIGHT)
+    wall = objects.Wall(0, 0, wallsize, WINDOWHEIGHT)
     wall_list.add(wall)
     all_sprites_list.add(wall)
      
-    wall = objects.Wall(10, 0, WINDOWWIDTH, 10)
+    wall = objects.Wall(wallsize, 0, WINDOWWIDTH, wallsize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
      
-    wall = objects.Wall(10, WINDOWHEIGHT - 10, WINDOWWIDTH, 10)
+    wall = objects.Wall(wallsize, WINDOWHEIGHT - wallsize, WINDOWWIDTH, wallsize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
-    wall = objects.Wall(WINDOWWIDTH - 10, 10, 10, WINDOWHEIGHT)
+    wall = objects.Wall(WINDOWWIDTH - wallsize, wallsize, wallsize, WINDOWHEIGHT)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
     return wall_list
 
-def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list):
+def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesDict):
     """spawns N enemies"""
     for i in range(N):
 
-        enemy = objects.Enemy(RED)
+        enemy = objects.Enemy(ImagesDict)
 
 
         enemy.rect.x = random.randrange(WINDOWWIDTH)
@@ -64,19 +66,25 @@ def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list):
         enemy_list.add(enemy)
         all_sprites_list.add(enemy)
 
-def loadingimages(image):
+def loadingimages(image, who):
     ss = spritesheet.spritesheet(image)
     # Sprite is 16x16 pixels at location 0,0 in the file...
     #olhando pra cada direcao
-
-    down = ss.image_at((92, 184, 23, 32))
-
-    right = ss.image_at((90, 104, 23, 32))
-
-    left = ss.image_at((94, 264, 23, 32))
-
-    up = ss.image_at((92, 22, 23, 32))
-
-    ImagesDict = {'down' : down, 'up' : up, 'right' : right, 'left' : left}
+    if who == 'player':
+        down = ss.image_at((92, 184, 23, 32))
+        right = ss.image_at((90, 104, 23, 32))
+        left = ss.image_at((94, 264, 23, 32))
+        up = ss.image_at((92, 22, 23, 32))
+        dr = ss.image_at((90, 142, 23, 32))
+        de = ss.image_at((94, 222, 23, 32))
+        ur = ss.image_at((90, 62, 23, 32))
+        ue = ss.image_at((96, 304, 23, 32))
+        ImagesDict = {'down' : down, 'up' : up, 'right' : right, 'left' : left, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
+    elif who == 'enemy':
+        down = ss.image_at((338, 182, 27, 34))
+        right = ss.image_at((340, 104, 27, 34))
+        left = ss.image_at((336, 262, 27, 34))
+        up = ss.image_at((338, 22, 27, 34))
+        ImagesDict = {'down' : down, 'up' : up, 'right' : right, 'left' : left}
 
     return ImagesDict

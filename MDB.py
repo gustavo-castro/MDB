@@ -27,7 +27,7 @@ DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesDict
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesPlayer, ImagesEnemy
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
 
@@ -37,7 +37,8 @@ def main():
     BASICFONT = pygame.font.Font(FONT, 18)
     pygame.display.set_caption(NAME)
 
-    ImagesDict = loadingimages('ss-mercenaries.png')
+    ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
+    ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
 
     newtitlescreen = ts.TitleScreen()
     newtitlescreen.showStartScreen(DISPLAYSURF, BASICFONT, FPSCLOCK)
@@ -51,7 +52,7 @@ def terminate():
 
 def runGame():
     # Initiate main character
-    Marcus = characters.Character('Marcus', ImagesDict)
+    Marcus = characters.Character('Marcus', ImagesPlayer)
 
     all_sprites_list = pygame.sprite.Group()
     all_sprites_list.add(Marcus)
@@ -59,7 +60,7 @@ def runGame():
     bullet_list = pygame.sprite.Group()
 
     N = 10
-    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list)
+    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesEnemy)
 
     # Make the walls. (x_pos, y_pos, width, height)
     wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list)
@@ -73,6 +74,8 @@ def runGame():
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:
                 createbullet(Marcus, bullet_list, all_sprites_list)
+
+        Marcus.updatedirection()
         
         hitbullets(bullet_list, enemy_list, all_sprites_list)
 

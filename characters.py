@@ -1,5 +1,6 @@
 import random, pygame, sys
 from pygame.locals import *
+import math
 
 FPS = 15
 WINDOWWIDTH = 640
@@ -79,3 +80,55 @@ class Character(pygame.sprite.Sprite):
             elif aux == 4:
                 self.y -= CELLSIZE
                 self.rect.x = self.x
+
+    def findquadrant(self, angle):
+        pi = math.pi
+        #r
+        if angle > -pi/8 and angle <= pi/8:
+            return 1
+        #ur
+        elif angle > pi/8 and angle <= 3*pi/8:
+            return 2
+        #u
+        elif angle > 3*pi/8 and angle <= 5*pi/8:
+            return 3
+        #ue
+        elif angle > 5*pi/8 and angle <= 7*pi/8:
+            return 4
+        #dr
+        elif angle <= -pi/8 and angle > -3*pi/8:
+            return 5
+        #d
+        elif angle <= -3*pi/8 and angle > -5*pi/8:
+            return 6
+        #de
+        elif angle <= -5*pi/8 and angle > -7*pi/8:
+            return 7
+        #e
+        else:
+            return 8
+
+    def updatedirection(self):
+        mouse = pygame.mouse.get_pos()
+        x = mouse[0]
+        y = mouse[1]
+        distance = [x - self.x, y - self.y]
+        angle = -math.atan2(distance[1], distance[0])
+        auxangle = self.findquadrant(angle)
+        if auxangle == 1:
+            self.image = self.imagedict['right']
+        elif auxangle == 2:
+            self.image = self.imagedict['ur']
+        elif auxangle == 3:
+            self.image = self.imagedict['up']
+        elif auxangle == 4:
+            self.image = self.imagedict['ue']
+        elif auxangle == 5:
+            self.image = self.imagedict['dr']
+        elif auxangle == 6:
+            self.image = self.imagedict['down']
+        elif auxangle == 7:
+            self.image = self.imagedict['de']
+        elif auxangle == 8:
+            self.image = self.imagedict['left']
+
