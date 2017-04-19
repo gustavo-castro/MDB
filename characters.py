@@ -76,10 +76,10 @@ class Character(pygame.sprite.Sprite):
                 self.rect.x = self.x
             elif aux == 3:
                 self.y += CELLSIZE
-                self.rect.x = self.x
+                self.rect.y = self.y
             elif aux == 4:
                 self.y -= CELLSIZE
-                self.rect.x = self.x
+                self.rect.y = self.y
 
     def findquadrant(self, angle):
         pi = math.pi

@@ -33,7 +33,7 @@ def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     """creates walls for the basic level """
     wall_list = pygame.sprite.Group()
 
-    wallsize = 5
+    wallsize = 1
      
     wall = objects.Wall(0, 0, wallsize, WINDOWHEIGHT)
     wall_list.add(wall)
