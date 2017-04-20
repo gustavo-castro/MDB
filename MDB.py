@@ -52,9 +52,9 @@ def terminate():
 
 def runGame():
     # Initiate main character
-    Marcus = characters.Character('Marcus', ImagesPlayer)
-
     all_sprites_list = pygame.sprite.Group()
+    Marcus = characters.Character('Marcus', ImagesPlayer, all_sprites_list)
+
     all_sprites_list.add(Marcus)
     enemy_list = pygame.sprite.Group()
     bullet_list = pygame.sprite.Group()

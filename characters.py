@@ -1,6 +1,6 @@
-import random, pygame, sys
+import random, pygame, sys, math
 from pygame.locals import *
-import math
+import utils
 
 FPS = 15
 WINDOWWIDTH = 640
@@ -25,7 +25,7 @@ def terminate():
     sys.exit()
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, Name, imagedict):
+    def __init__(self, Name, imagedict, all_sprites_list):
         pygame.sprite.Sprite.__init__(self)
 
         self.Name = Name
@@ -38,6 +38,11 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
         self.walls = None
+        self.hp = 10
+        self.totalhp = 10
+        self.hpbar = utils.Livebar(self)
+        all_sprites_list.add(self.hpbar)
+
 
     def getRandomLocation(self):
         return [random.randint(0, CELLWIDTH - 1),random.randint(0, CELLHEIGHT - 1)]

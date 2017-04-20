@@ -4,6 +4,32 @@ import spritesheet
 
 RED       = (255,   0,   0)
 
+class Livebar(pygame.sprite.Sprite):
+    """shows a bar with the hitpoints of a Bird sprite"""
+    def __init__(self, boss):
+        pygame.sprite.Sprite.__init__(self)
+        self.boss = boss
+        self.image = pygame.Surface((self.boss.rect.width,7))
+        self.image.set_colorkey((0,0,0)) # black transparent
+        pygame.draw.rect(self.image, (0,255,0), (0,0,self.boss.rect.width,7),1)
+        self.rect = self.image.get_rect()
+        self.oldpercent = 0
+        #self.bossnumber = self.boss.number # the unique number (name) of my boss
+        
+    def update(self):
+        self.percent = self.boss.hp / self.boss.totalhp * 1.0
+        if self.percent != self.oldpercent:
+            pygame.draw.rect(self.image, (0,0,0), (1,1,self.boss.rect.width-2,5)) # fill black
+            pygame.draw.rect(self.image, (0,255,0), (1,1,   
+                int(self.boss.rect.width * self.percent),5),0) # fill green
+        self.oldpercent = self.percent
+        self.rect.centerx = self.boss.rect.centerx
+        self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
+        #check if boss is still alive
+        #if not Bird.birds[self.bossnumber]:
+        #    self.kill() # kill the hitbar
+
+
 def hitbullets(bullet_list, enemy_list, all_sprites_list):
     """checks when bullets hit the enemies"""
     for bullet in bullet_list:
