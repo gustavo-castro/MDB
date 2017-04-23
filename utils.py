@@ -30,18 +30,18 @@ class Livebar(pygame.sprite.Sprite):
         #    self.kill() # kill the hitbar
 
 
-def hitbullets(bullet_list, enemy_list, all_sprites_list):
+def hitbullets(bullet_list, enemy_list, wall_list, all_sprites_list):
     """checks when bullets hit the enemies"""
     for bullet in bullet_list:
 
         enemy_hit_list = pygame.sprite.spritecollide(bullet, enemy_list, True)
+        wall_hit_list = pygame.sprite.spritecollide(bullet, wall_list, False)
 
         for enemy in enemy_hit_list:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
-
-        if bullet.rect.y < -10:
+        for wall in wall_hit_list:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
@@ -60,7 +60,9 @@ def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     wall_list = pygame.sprite.Group()
 
     wallsize = 1
-     
+    barriersize = 5
+    
+    """outside walls"""
     wall = objects.Wall(0, 0, wallsize, WINDOWHEIGHT)
     wall_list.add(wall)
     all_sprites_list.add(wall)
@@ -74,6 +76,15 @@ def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     all_sprites_list.add(wall)
 
     wall = objects.Wall(WINDOWWIDTH - wallsize, wallsize, wallsize, WINDOWHEIGHT)
+    wall_list.add(wall)
+    all_sprites_list.add(wall)
+
+    """barriers in the middle of the level"""
+    wall = objects.Wall(40, 60, 20, barriersize)
+    wall_list.add(wall)
+    all_sprites_list.add(wall)
+
+    wall = objects.Wall(WINDOWWIDTH - 60, WINDOWHEIGHT - 60, 20, barriersize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 

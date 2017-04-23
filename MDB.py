@@ -77,7 +77,7 @@ def runGame():
 
         Marcus.updatedirection()
         
-        hitbullets(bullet_list, enemy_list, all_sprites_list)
+        hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
 
         all_sprites_list.update()
         DISPLAYSURF.fill(BACKGROUND)
