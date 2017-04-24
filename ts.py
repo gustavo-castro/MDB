@@ -26,9 +26,12 @@ def terminate():
 class TitleScreen(object):
     "Class that defines the main title screen"
     
-    def __init__(self):
+    def __init__(self, DISPLAYSURF, BASICFONT, FPSCLOCK):
         self.font = 'freesansbold.ttf'
         self.name = 'Mecanismos de Batalha'
+        self.screen = DISPLAYSURF
+        self.basicfont = BASICFONT
+        self.fps = FPSCLOCK
 
     def checkForKeyPress(self):
         if len(pygame.event.get(QUIT)) > 0:
@@ -41,30 +44,30 @@ class TitleScreen(object):
             terminate()
         return keyUpEvents[0].key
 
-    def drawPressKeyMsg(self,DISPLAYSURF, BASICFONT):
-        pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
+    def drawPressKeyMsg(self):
+        pressKeySurf = self.basicfont.render('Press a key to play.', True, DARKGRAY)
         pressKeyRect = pressKeySurf.get_rect()
         pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
-        DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
+        self.screen.blit(pressKeySurf, pressKeyRect)
 
-    def showStartScreen(self, DISPLAYSURF, BASICFONT, FPSCLOCK):
+    def showStartScreen(self):
         RED       = (255,   0,   0)
         titleFont = pygame.font.Font(self.font, 30)
         titleSurf1 = titleFont.render(self.name, True, RED, BLACK)
         titleRect1 = titleSurf1.get_rect()
 
         while True:
-            DISPLAYSURF.fill(BGCOLOR)
+            self.screen.fill(BGCOLOR)
             titleRect1.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
-            DISPLAYSURF.blit(titleSurf1, titleRect1)
+            self.screen.blit(titleSurf1, titleRect1)
 
-            self.drawPressKeyMsg(DISPLAYSURF, BASICFONT)
+            self.drawPressKeyMsg()
 
             if self.checkForKeyPress():
                 pygame.event.get() # clear event queue
                 return
             pygame.display.update()
-            FPSCLOCK.tick(FPS)
+            self.fps.tick(FPS)
 
     def showGameOverScreen(self):
         WHITE     = (255, 255, 255)
@@ -76,9 +79,9 @@ class TitleScreen(object):
         gameRect.midtop = (WINDOWWIDTH / 2, 10)
         overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
 
-        DISPLAYSURF.blit(gameSurf, gameRect)
-        DISPLAYSURF.blit(overSurf, overRect)
-        self.drawPressKeyMsg(DISPLAYSURF)
+        self.screen.blit(gameSurf, gameRect)
+        self.screen.blit(overSurf, overRect)
+        self.drawPressKeyMsg()
         pygame.display.update()
         pygame.time.wait(500)
         self.checkForKeyPress() # clear out any key presses in the event queue

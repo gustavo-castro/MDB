@@ -3,7 +3,8 @@ import objects
 import spritesheet
 import characters
 
-RED       = (255,   0,   0)
+Black = (0,0,0)
+Green = (0,255,0)
 
 class Livebar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
@@ -11,36 +12,35 @@ class Livebar(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.boss = boss
         self.image = pygame.Surface((self.boss.rect.width,7))
-        self.image.set_colorkey((0,0,0)) # black transparent
+        self.image.set_colorkey(Black) # black transparent
         pygame.draw.rect(self.image, (0,255,0), (0,0,self.boss.rect.width,7),1)
         self.rect = self.image.get_rect()
         self.oldpercent = 0
-        #self.bossnumber = self.boss.number # the unique number (name) of my boss
         
     def update(self):
-        self.percent = self.boss.hp / self.boss.totalhp * 1.0
+        self.percent = self.boss.hp / self.boss.totalhp
         if self.percent != self.oldpercent:
-            pygame.draw.rect(self.image, (0,0,0), (1,1,self.boss.rect.width-2,5)) # fill black
-            pygame.draw.rect(self.image, (0,255,0), (1,1,   
-                int(self.boss.rect.width * self.percent),5),0) # fill green
+            pygame.draw.rect(self.image, Black, (1,1,self.boss.rect.width-2,5)) # fill black
+            pygame.draw.rect(self.image, Green, (1,1,int(self.boss.rect.width * self.percent),5),0) # fill green
         self.oldpercent = self.percent
         self.rect.centerx = self.boss.rect.centerx
         self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
-        #check if boss is still alive
-        #if not Bird.birds[self.bossnumber]:
-        #    self.kill() # kill the hitbar
-
+        #kill boss if hp == 0
+        if self.percent == 0:
+            self.kill()
+            self.boss.killhim()
 
 def hitbullets(bullet_list, enemy_list, wall_list, all_sprites_list):
     """checks when bullets hit the enemies"""
     for bullet in bullet_list:
 
-        enemy_hit_list = pygame.sprite.spritecollide(bullet, enemy_list, True)
+        enemy_hit_list = pygame.sprite.spritecollide(bullet, enemy_list, False)
         wall_hit_list = pygame.sprite.spritecollide(bullet, wall_list, False)
 
         for enemy in enemy_hit_list:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
+            enemy.hp -= 1
 
         for wall in wall_hit_list:
             bullet_list.remove(bullet)
@@ -52,6 +52,7 @@ def hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list):
     for bullet in marcus_hit_list:
             bullet_enemy_list.remove(bullet)
             all_sprites_list.remove(bullet)
+            Marcus.hp -= 1
 
     for bullet in bullet_enemy_list:
 
@@ -121,7 +122,7 @@ def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, Im
     """spawns N enemies"""
     for i in range(N):
 
-        enemy = characters.Enemy(ImagesDict)
+        enemy = characters.Enemy(ImagesDict, all_sprites_list)
 
         enemy_list.add(enemy)
         all_sprites_list.add(enemy)

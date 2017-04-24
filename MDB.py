@@ -27,7 +27,7 @@ DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesPlayer, ImagesEnemy
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesPlayer, ImagesEnemy, newtitlescreen
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
 
@@ -40,8 +40,8 @@ def main():
     ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
     ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
 
-    newtitlescreen = ts.TitleScreen()
-    newtitlescreen.showStartScreen(DISPLAYSURF, BASICFONT, FPSCLOCK)
+    newtitlescreen = ts.TitleScreen(DISPLAYSURF, BASICFONT, FPSCLOCK)
+    newtitlescreen.showStartScreen()
     while True:
         runGame()
         newtitlescreen.showGameOverScreen()
@@ -53,7 +53,7 @@ def terminate():
 def runGame():
     # Initiate main character
     all_sprites_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list)
+    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, newtitlescreen)
 
     all_sprites_list.add(Marcus)
     enemy_list = pygame.sprite.Group()

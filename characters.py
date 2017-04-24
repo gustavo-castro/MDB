@@ -141,7 +141,7 @@ class Character(pygame.sprite.Sprite):
             self.image = self.imagedict['left']
 
 class Player(Character):
-    def __init__(self, Name, imagedict, all_sprites_list):
+    def __init__(self, Name, imagedict, all_sprites_list, ts):
         pygame.sprite.Sprite.__init__(self)
 
         self.Name = Name
@@ -154,13 +154,18 @@ class Player(Character):
         self.rect.x = self.x
         self.rect.y = self.y
         self.walls = None
-        self.hp = 10
-        self.totalhp = 10
+        self.hp = 10.
+        self.totalhp = 10.
         self.hpbar = utils.Livebar(self)
         all_sprites_list.add(self.hpbar)
+        self.ts = ts
+
+    def killhim(self):
+        self.ts.showGameOverScreen()
+
 
 class Enemy(Character):
-    def __init__(self, imagedict):
+    def __init__(self, imagedict, all_sprites_list):
         pygame.sprite.Sprite.__init__(self)
 
         self.imagedict = imagedict
@@ -171,3 +176,11 @@ class Enemy(Character):
         self.y = start[1]
         self.rect.x = self.x
         self.rect.y = self.y
+        self.walls = None
+        self.hp = 5.
+        self.totalhp = 5.
+        self.hpbar = utils.Livebar(self)
+        all_sprites_list.add(self.hpbar)
+
+    def killhim(self):
+        self.kill()
