@@ -1,6 +1,7 @@
 import pygame, random
 import objects
 import spritesheet
+import characters
 
 RED       = (255,   0,   0)
 
@@ -45,6 +46,21 @@ def hitbullets(bullet_list, enemy_list, wall_list, all_sprites_list):
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
+def hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list):
+    """checks when bullets hit the enemies"""
+    marcus_hit_list = pygame.sprite.spritecollide(Marcus, bullet_enemy_list, True)
+    for bullet in marcus_hit_list:
+            bullet_enemy_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+
+    for bullet in bullet_enemy_list:
+
+        wall_hit_list = pygame.sprite.spritecollide(bullet, Marcus.walls, False)
+
+        for wall in wall_hit_list:
+            bullet_enemy_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+
 def createbullet(Marcus, bullet_list, all_sprites_list):
     """creates bullets when mouse key is pressed"""
     bullet = objects.Bullet(pygame.mouse.get_pos(), [Marcus.x, Marcus.y])
@@ -54,6 +70,17 @@ def createbullet(Marcus, bullet_list, all_sprites_list):
 
     all_sprites_list.add(bullet)
     bullet_list.add(bullet)
+
+def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list):
+    """creates bullets for enemies"""
+    for enemy in enemy_list:
+        bullet = objects.Bullet([Marcus.x, Marcus.y], [enemy.x, enemy.y])
+
+        bullet.rect.x = enemy.x
+        bullet.rect.y = enemy.y
+
+        all_sprites_list.add(bullet)
+        bullet_enemy_list.add(bullet)
 
 def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     """creates walls for the basic level """
@@ -94,7 +121,7 @@ def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, Im
     """spawns N enemies"""
     for i in range(N):
 
-        enemy = objects.Enemy(ImagesDict)
+        enemy = characters.Enemy(ImagesDict)
 
 
         enemy.rect.x = random.randrange(WINDOWWIDTH)

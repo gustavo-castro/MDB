@@ -28,21 +28,11 @@ class Bullet(pygame.sprite.Sprite):
 
         self.rect.x -= bullet_vector[0]
         self.rect.y -= bullet_vector[1]
-
-class Enemy(pygame.sprite.Sprite):
-
-    def __init__(self, imagedict):
-
-        pygame.sprite.Sprite.__init__(self)
-
-        self.imagedict = imagedict
-        self.image = self.imagedict['down']
-        self.rect = self.image.get_rect()
-
+        
 class Wall(pygame.sprite.Sprite):
-    """ Wall the player can run into. """
+    """ Wall the player can run into"""
     def __init__(self, x, y, width, height):
-        """ Constructor for the wall that the player can run into. """
+        """ Constructor for the wall"""
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
  

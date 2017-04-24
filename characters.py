@@ -137,3 +137,32 @@ class Character(pygame.sprite.Sprite):
         elif auxangle == 8:
             self.image = self.imagedict['left']
 
+class Player(Character):
+    def __init__(self, Name, imagedict, all_sprites_list):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.Name = Name
+        self.imagedict = imagedict
+        self.image = self.imagedict['down']
+        self.rect = self.image.get_rect()
+        randomstart = self.getRandomLocation()
+        self.x = randomstart[0]
+        self.y = randomstart[1]
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.walls = None
+        self.hp = 10
+        self.totalhp = 10
+        self.hpbar = utils.Livebar(self)
+        all_sprites_list.add(self.hpbar)
+
+class Enemy(Character):
+    def __init__(self, imagedict):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.imagedict = imagedict
+        self.image = self.imagedict['down']
+        self.rect = self.image.get_rect()
+        self.x = self.rect.x
+        self.y = self.rect.y
+

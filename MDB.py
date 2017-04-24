@@ -53,13 +53,14 @@ def terminate():
 def runGame():
     # Initiate main character
     all_sprites_list = pygame.sprite.Group()
-    Marcus = characters.Character('Marcus', ImagesPlayer, all_sprites_list)
+    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list)
 
     all_sprites_list.add(Marcus)
     enemy_list = pygame.sprite.Group()
     bullet_list = pygame.sprite.Group()
+    bullet_enemy_list = pygame.sprite.Group()
 
-    N = 10
+    N = 1
     createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesEnemy)
 
     # Make the walls. (x_pos, y_pos, width, height)
@@ -77,6 +78,9 @@ def runGame():
 
         Marcus.updatedirection()
         
+        createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list)
+
+        hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
         hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
 
         all_sprites_list.update()
