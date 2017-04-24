@@ -63,10 +63,10 @@ def hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list):
 
 def createbullet(Marcus, bullet_list, all_sprites_list):
     """creates bullets when mouse key is pressed"""
-    bullet = objects.Bullet(pygame.mouse.get_pos(), [Marcus.x, Marcus.y])
+    bullet = objects.Bullet(pygame.mouse.get_pos(), [Marcus.rect.centerx, Marcus.rect.centery])
 
-    bullet.rect.x = Marcus.x
-    bullet.rect.y = Marcus.y
+    bullet.rect.x = Marcus.rect.centerx
+    bullet.rect.y = Marcus.rect.centery
 
     all_sprites_list.add(bullet)
     bullet_list.add(bullet)
@@ -74,10 +74,10 @@ def createbullet(Marcus, bullet_list, all_sprites_list):
 def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list):
     """creates bullets for enemies"""
     for enemy in enemy_list:
-        bullet = objects.Bullet([Marcus.x, Marcus.y], [enemy.x, enemy.y])
+        bullet = objects.Bullet([Marcus.rect.centerx, Marcus.rect.centery], [enemy.rect.centerx, enemy.rect.centery])
 
-        bullet.rect.x = enemy.x
-        bullet.rect.y = enemy.y
+        bullet.rect.x = enemy.rect.centerx
+        bullet.rect.y = enemy.rect.centery
 
         all_sprites_list.add(bullet)
         bullet_enemy_list.add(bullet)
@@ -122,10 +122,6 @@ def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, Im
     for i in range(N):
 
         enemy = characters.Enemy(ImagesDict)
-
-
-        enemy.rect.x = random.randrange(WINDOWWIDTH)
-        enemy.rect.y = random.randrange(WINDOWHEIGHT)
 
         enemy_list.add(enemy)
         all_sprites_list.add(enemy)

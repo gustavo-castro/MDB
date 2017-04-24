@@ -44,8 +44,11 @@ class Character(pygame.sprite.Sprite):
         all_sprites_list.add(self.hpbar)
 
 
-    def getRandomLocation(self):
-        return [random.randint(0, CELLWIDTH - 1),random.randint(0, CELLHEIGHT - 1)]
+    def spawnplayer(self):
+        return [random.randrange(WINDOWWIDTH),random.randint(0, WINDOWHEIGHT/2)]
+
+    def spawnenemy(self):
+        return [random.randrange(WINDOWWIDTH),random.randint(WINDOWHEIGHT/2, WINDOWHEIGHT)]
 
     def updatePosition(self, eventkey):
         aux = 0
@@ -145,9 +148,9 @@ class Player(Character):
         self.imagedict = imagedict
         self.image = self.imagedict['down']
         self.rect = self.image.get_rect()
-        randomstart = self.getRandomLocation()
-        self.x = randomstart[0]
-        self.y = randomstart[1]
+        start = self.spawnplayer()
+        self.x = start[0]
+        self.y = start[1]
         self.rect.x = self.x
         self.rect.y = self.y
         self.walls = None
@@ -163,6 +166,8 @@ class Enemy(Character):
         self.imagedict = imagedict
         self.image = self.imagedict['down']
         self.rect = self.image.get_rect()
-        self.x = self.rect.x
-        self.y = self.rect.y
-
+        start = self.spawnenemy()
+        self.x = start[0]
+        self.y = start[1]
+        self.rect.x = self.x
+        self.rect.y = self.y
