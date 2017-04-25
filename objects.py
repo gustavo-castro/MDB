@@ -1,6 +1,8 @@
 import math, pygame
+
+#             R    G    B
 black     = (  0,   0,   0)
-blue      = (0, 0, 255)
+blue      = (  0,   0, 255)
 
 class Bullet(pygame.sprite.Sprite):
 

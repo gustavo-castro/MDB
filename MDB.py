@@ -27,7 +27,7 @@ DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, MarcusImage, ImagesPlayer, ImagesEnemy, newtitlescreen
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, ImagesPlayer, ImagesEnemy, newtitlescreen
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
 
@@ -40,20 +40,66 @@ def main():
     ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
     ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
 
-    newtitlescreen = ts.TitleScreen(DISPLAYSURF, BASICFONT, FPSCLOCK)
-    newtitlescreen.showStartScreen()
+    newtitlescreen = ts.TitleScreen(DISPLAYSURF, BASICFONT, FPSCLOCK, FPS, WINDOWWIDTH, WINDOWHEIGHT)
+    showStartScreen()
     while True:
-        runGame()
-        newtitlescreen.showGameOverScreen()
+        lost = runGame()
+        if lost:
+            showGameOverScreen()
+        else:
+            showWinnerScreen()
 
 def terminate():
     pygame.quit()
     sys.exit()
 
+def showStartScreen():
+    newtitlescreen.drawStartScreen()
+    pygame.display.update()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                pygame.event.get() #clear queue
+                running = False
+                break
+
+def showGameOverScreen():
+    newtitlescreen.drawGameOverScreen()
+    pygame.display.update()
+    pygame.time.wait(1000)
+    pygame.event.get()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                pygame.event.get() #clear queue
+                running = False
+                break
+
+def showWinnerScreen():
+    newtitlescreen.drawWinnerScreen()
+    pygame.display.update()
+    pygame.time.wait(1000)
+    pygame.event.get()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                pygame.event.get() #clear queue
+                running = False
+                break
+
 def runGame():
     # Initiate main character
     all_sprites_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, newtitlescreen)
+    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE)
 
     all_sprites_list.add(Marcus)
     enemy_list = pygame.sprite.Group()
@@ -61,15 +107,15 @@ def runGame():
     bullet_enemy_list = pygame.sprite.Group()
 
     N = 1
-    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesEnemy)
+    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesEnemy, CELLSIZE)
 
     # Make the walls. (x_pos, y_pos, width, height)
     wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list)
     Marcus.walls = wall_list
 
-    while True: # main game loop
+    while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
         for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT:
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 terminate()
             elif event.type == KEYDOWN:
                 Marcus.updatePosition(event.key)
@@ -88,6 +134,7 @@ def runGame():
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+    return Marcus.dead
 
 if __name__ == '__main__':
     main()

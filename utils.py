@@ -3,8 +3,9 @@ import objects
 import spritesheet
 import characters
 
-Black = (0,0,0)
-Green = (0,255,0)
+#             R    G    B
+Black     = (  0,   0,   0)
+Green     = (  0, 255,   0)
 
 class Livebar(pygame.sprite.Sprite):
     """shows a bar with the hitpoints of a Bird sprite"""
@@ -83,7 +84,7 @@ def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list):
         all_sprites_list.add(bullet)
         bullet_enemy_list.add(bullet)
 
-def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
+def createwalls(window_width, window_height, all_sprites_list):
     """creates walls for the basic level """
     wall_list = pygame.sprite.Group()
 
@@ -91,19 +92,19 @@ def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     barriersize = 5
     
     """outside walls"""
-    wall = objects.Wall(0, 0, wallsize, WINDOWHEIGHT)
+    wall = objects.Wall(0, 0, wallsize, window_height)
     wall_list.add(wall)
     all_sprites_list.add(wall)
      
-    wall = objects.Wall(wallsize, 0, WINDOWWIDTH, wallsize)
+    wall = objects.Wall(wallsize, 0, window_width, wallsize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
      
-    wall = objects.Wall(wallsize, WINDOWHEIGHT - wallsize, WINDOWWIDTH, wallsize)
+    wall = objects.Wall(wallsize, window_height - wallsize, window_width, wallsize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
-    wall = objects.Wall(WINDOWWIDTH - wallsize, wallsize, wallsize, WINDOWHEIGHT)
+    wall = objects.Wall(window_width - wallsize, wallsize, wallsize, window_height)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
@@ -112,17 +113,17 @@ def createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list):
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
-    wall = objects.Wall(WINDOWWIDTH - 60, WINDOWHEIGHT - 60, 20, barriersize)
+    wall = objects.Wall(window_width - 60, window_height - 60, 20, barriersize)
     wall_list.add(wall)
     all_sprites_list.add(wall)
 
     return wall_list
 
-def createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesDict):
+def createenemies(N, window_width, window_height, enemy_list, all_sprites_list, ImagesDict, cellsize):
     """spawns N enemies"""
     for i in range(N):
 
-        enemy = characters.Enemy(ImagesDict, all_sprites_list)
+        enemy = characters.Enemy(ImagesDict, all_sprites_list, window_width, window_height, cellsize)
 
         enemy_list.add(enemy)
         all_sprites_list.add(enemy)

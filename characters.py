@@ -1,92 +1,57 @@
-import random, pygame, sys, math
+import random, pygame, math
 from pygame.locals import *
 import utils
 
-FPS = 15
-WINDOWWIDTH = 640
-WINDOWHEIGHT = 480
-CELLSIZE = 20
-assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
-assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
-CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
-
-#             R    G    B
-WHITE     = (255, 255, 255)
-BLACK     = (  0,   0,   0)
-RED       = (255,   0,   0)
-GREEN     = (  0, 255,   0)
-DARKGREEN = (  0, 155,   0)
-DARKGRAY  = ( 40,  40,  40)
-BGCOLOR = BLACK
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
 class Character(pygame.sprite.Sprite):
-    def __init__(self, Name, imagedict, all_sprites_list):
+    def __init__(self, name, imagedict, all_sprites_list, hp, cellsize):
         pygame.sprite.Sprite.__init__(self)
 
-        self.Name = Name
+        self.name = name
         self.imagedict = imagedict
         self.image = self.imagedict['down']
         self.rect = self.image.get_rect()
-        randomstart = self.getRandomLocation()
-        self.x = randomstart[0]
-        self.y = randomstart[1]
-        self.rect.x = self.x
-        self.rect.y = self.y
         self.walls = None
-        self.hp = 10
-        self.totalhp = 10
+        self.hp = hp
+        self.totalhp = hp
         self.hpbar = utils.Livebar(self)
         all_sprites_list.add(self.hpbar)
-
-
-    def spawnplayer(self):
-        return [random.randrange(WINDOWWIDTH),random.randint(0, WINDOWHEIGHT/2)]
-
-    def spawnenemy(self):
-        return [random.randrange(WINDOWWIDTH),random.randint(WINDOWHEIGHT/2, WINDOWHEIGHT)]
+        self.cellsize = cellsize
 
     def updatePosition(self, eventkey):
         aux = 0
         if (eventkey == K_LEFT or eventkey == K_a):
-            self.x -= CELLSIZE
+            self.x -= self.cellsize
             self.rect.x = self.x
             self.image = self.imagedict['left']
             aux = 1
         elif (eventkey == K_RIGHT or eventkey == K_d):
-            self.x += CELLSIZE
+            self.x += self.cellsize
             self.rect.x = self.x
             self.image = self.imagedict['right']
             aux = 2
         elif (eventkey == K_UP or eventkey == K_w):
-            self.y -= CELLSIZE
+            self.y -= self.cellsize
             self.rect.y = self.y
             self.image = self.imagedict['up']
             aux = 3
         elif (eventkey == K_DOWN or eventkey == K_s):
-            self.y += CELLSIZE
+            self.y += self.cellsize
             self.rect.y = self.y
             self.image = self.imagedict['down']
             aux = 4
-        elif eventkey == K_ESCAPE:
-            terminate()
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             if aux == 1:
-                self.x += CELLSIZE
+                self.x += self.cellsize
                 self.rect.x = self.x
             elif aux == 2:
-                self.x -= CELLSIZE
+                self.x -= self.cellsize
                 self.rect.x = self.x
             elif aux == 3:
-                self.y += CELLSIZE
+                self.y += self.cellsize
                 self.rect.y = self.y
             elif aux == 4:
-                self.y -= CELLSIZE
+                self.y -= self.cellsize
                 self.rect.y = self.y
 
     def findquadrant(self, angle):
@@ -141,46 +106,39 @@ class Character(pygame.sprite.Sprite):
             self.image = self.imagedict['left']
 
 class Player(Character):
-    def __init__(self, Name, imagedict, all_sprites_list, ts):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, name, imagedict, all_sprites_list, window_width, window_height, cellsize):
+        Character.__init__(self, name, imagedict, all_sprites_list, 10., cellsize)
 
-        self.Name = Name
-        self.imagedict = imagedict
-        self.image = self.imagedict['down']
-        self.rect = self.image.get_rect()
-        start = self.spawnplayer()
+        start = self.spawnplayer(window_width, window_height)
         self.x = start[0]
         self.y = start[1]
         self.rect.x = self.x
         self.rect.y = self.y
-        self.walls = None
-        self.hp = 10.
-        self.totalhp = 10.
-        self.hpbar = utils.Livebar(self)
-        all_sprites_list.add(self.hpbar)
-        self.ts = ts
+        self.dead = False
+
+    def spawnplayer(self, window_width, window_height):
+        return [random.randrange(window_width),random.randint(0, window_height/2)]
 
     def killhim(self):
-        self.ts.showGameOverScreen()
+        self.dead = True
+        self.kill()
 
 
 class Enemy(Character):
-    def __init__(self, imagedict, all_sprites_list):
-        pygame.sprite.Sprite.__init__(self)
+    count = 0
 
-        self.imagedict = imagedict
-        self.image = self.imagedict['down']
-        self.rect = self.image.get_rect()
-        start = self.spawnenemy()
+    def __init__(self, imagedict, all_sprites_list, window_width, window_height, cellsize):
+        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, all_sprites_list, 5., cellsize)
+        Enemy.count += 1
+
+        start = self.spawnenemy(window_width, window_height)
         self.x = start[0]
         self.y = start[1]
         self.rect.x = self.x
         self.rect.y = self.y
-        self.walls = None
-        self.hp = 5.
-        self.totalhp = 5.
-        self.hpbar = utils.Livebar(self)
-        all_sprites_list.add(self.hpbar)
+
+    def spawnenemy(self, window_width, window_height):
+        return [random.randrange(window_width),random.randint(window_height/2, window_height)]
 
     def killhim(self):
         self.kill()
