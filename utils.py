@@ -73,16 +73,17 @@ def createbullet(Marcus, bullet_list, all_sprites_list):
     all_sprites_list.add(bullet)
     bullet_list.add(bullet)
 
-def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list):
+def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list, cont):
     """creates bullets for enemies"""
-    for enemy in enemy_list:
-        bullet = objects.Bullet([Marcus.rect.centerx, Marcus.rect.centery], [enemy.rect.centerx, enemy.rect.centery])
+    if cont % 5 == 0:
+        for enemy in enemy_list:
+            bullet = objects.Bullet([Marcus.rect.centerx, Marcus.rect.centery], [enemy.rect.centerx, enemy.rect.centery])
 
-        bullet.rect.x = enemy.rect.centerx
-        bullet.rect.y = enemy.rect.centery
+            bullet.rect.x = enemy.rect.centerx
+            bullet.rect.y = enemy.rect.centery
 
-        all_sprites_list.add(bullet)
-        bullet_enemy_list.add(bullet)
+            all_sprites_list.add(bullet)
+            bullet_enemy_list.add(bullet)
 
 def createwalls(window_width, window_height, all_sprites_list):
     """creates walls for the basic level """

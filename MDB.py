@@ -97,6 +97,8 @@ def showWinnerScreen():
                 break
 
 def runGame():
+    contbullet = 1
+
     # Initiate main character
     all_sprites_list = pygame.sprite.Group()
     Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE)
@@ -124,7 +126,7 @@ def runGame():
 
         Marcus.updatedirection()
         
-        createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list)
+        createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list, contbullet)
 
         hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
         hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
@@ -134,6 +136,8 @@ def runGame():
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+        contbullet += 1
+        if contbullet == 5: contbullet = 0
     return Marcus.dead
 
 if __name__ == '__main__':

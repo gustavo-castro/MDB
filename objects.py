@@ -30,9 +30,9 @@ class Bullet(pygame.sprite.Sprite):
         direction = [distance[0] / norm, distance[1 ] / norm]
         bullet_vector = [direction[0] * speed, direction[1] * speed]
 
-        self.rect.x -= bullet_vector[0]
-        self.rect.y -= bullet_vector[1]
-        
+        self.rect.centerx -= int(round(bullet_vector[0]))
+        self.rect.centery -= int(round(bullet_vector[1]))
+
 class Wall(pygame.sprite.Sprite):
     """ Wall the player can run into"""
     def __init__(self, x, y, width, height):
