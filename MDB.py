@@ -128,10 +128,18 @@ def runGame():
         
         createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list, contbullet)
 
+        all_sprites_list.update()
+
+        """ 
+        for i in range(5):
+            bullet_list.update()
+            bullet_enemy_list.update()
+            hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
+            hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)"""
+
         hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
         hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
 
-        all_sprites_list.update()
         DISPLAYSURF.fill(BACKGROUND)
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
