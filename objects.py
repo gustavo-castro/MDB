@@ -21,7 +21,7 @@ class Bullet(pygame.sprite.Sprite):
         self.x = float(self.shooter_x)
         self.y = float(self.shooter_y)
 
-        self.speed = 20.
+        self.speed = 2.
 
         self.bullet_vector = self.findbv()
 

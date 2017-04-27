@@ -97,8 +97,6 @@ def showWinnerScreen():
                 break
 
 def runGame():
-    contbullet = 1
-
     # Initiate main character
     all_sprites_list = pygame.sprite.Group()
     Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE)
@@ -109,7 +107,7 @@ def runGame():
     bullet_enemy_list = pygame.sprite.Group()
 
     N = 1
-    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, enemy_list, all_sprites_list, ImagesEnemy, CELLSIZE)
+    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, ImagesEnemy, CELLSIZE)
 
     # Make the walls. (x_pos, y_pos, width, height)
     wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list)
@@ -125,27 +123,22 @@ def runGame():
                 createbullet(Marcus, bullet_list, all_sprites_list)
 
         Marcus.updatedirection()
-        
-        createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list, contbullet)
 
         all_sprites_list.update()
-
-        """ 
-        for i in range(5):
+        
+        for i in range(10):
             bullet_list.update()
             bullet_enemy_list.update()
             hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
-            hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)"""
+            hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
 
-        hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
-        hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
+        #hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
+        #hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
 
         DISPLAYSURF.fill(BACKGROUND)
         all_sprites_list.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        contbullet += 1
-        if contbullet == 5: contbullet = 0
     return Marcus.dead
 
 if __name__ == '__main__':

@@ -127,18 +127,30 @@ class Player(Character):
 class Enemy(Character):
     count = 0
 
-    def __init__(self, imagedict, all_sprites_list, window_width, window_height, cellsize):
+    def __init__(self, imagedict, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, window_width, window_height, cellsize):
         Character.__init__(self, "enemy" + str(Enemy.count), imagedict, all_sprites_list, 5., cellsize)
         Enemy.count += 1
 
-        start = self.spawnenemy(window_width, window_height)
+        start = self.spawnenemy(window_height, window_width)
         self.x = start[0]
         self.y = start[1]
         self.rect.x = self.x
         self.rect.y = self.y
+        self.contbullet = 5
+        self.auxbullet = 0
+        self.Player = Marcus
+        self.enemy_list = enemy_list
+        self.bullet_enemy_list = bullet_enemy_list
+        self.all_sprites_list = all_sprites_list
 
-    def spawnenemy(self, window_width, window_height):
+    def spawnenemy(self, window_height, window_width):
         return [random.randrange(window_width),random.randint(window_height/2, window_height)]
 
     def killhim(self):
         self.kill()
+
+    def update(self):
+        if self.auxbullet == self.contbullet:
+            utils.createenemybullet(self.Player, self.enemy_list, self.bullet_enemy_list, self.all_sprites_list)
+            self.auxbullet = 0
+        self.auxbullet += 1
