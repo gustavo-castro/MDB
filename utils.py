@@ -1,90 +1,9 @@
-import pygame, random
-import objects
+import pygame
 import spritesheet
+import objects
 import characters
 
-#             R    G    B
-Black     = (  0,   0,   0)
-Green     = (  0, 255,   0)
-
-class Livebar(pygame.sprite.Sprite):
-    """shows a bar with the hitpoints of a Bird sprite"""
-    def __init__(self, boss):
-        pygame.sprite.Sprite.__init__(self)
-        self.boss = boss
-        self.image = pygame.Surface((self.boss.rect.width,7))
-        self.image.set_colorkey(Black) # black transparent
-        pygame.draw.rect(self.image, (0,255,0), (0,0,self.boss.rect.width,7),1)
-        self.rect = self.image.get_rect()
-        self.oldpercent = 0
-        
-    def update(self):
-        self.percent = self.boss.hp / self.boss.totalhp
-        if self.percent != self.oldpercent:
-            pygame.draw.rect(self.image, Black, (1,1,self.boss.rect.width-2,5)) # fill black
-            pygame.draw.rect(self.image, Green, (1,1,int(self.boss.rect.width * self.percent),5),0) # fill green
-        self.oldpercent = self.percent
-        self.rect.centerx = self.boss.rect.centerx
-        self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
-        #kill boss if hp == 0
-        if self.percent == 0:
-            self.kill()
-            self.boss.killhim()
-
-def hitbullets(bullet_list, enemy_list, wall_list, all_sprites_list):
-    """checks when bullets hit the enemies"""
-    for bullet in bullet_list:
-
-        enemy_hit_list = pygame.sprite.spritecollide(bullet, enemy_list, False)
-        wall_hit_list = pygame.sprite.spritecollide(bullet, wall_list, False)
-
-        for enemy in enemy_hit_list:
-            bullet_list.remove(bullet)
-            all_sprites_list.remove(bullet)
-            enemy.hp -= 1
-
-        for wall in wall_hit_list:
-            bullet_list.remove(bullet)
-            all_sprites_list.remove(bullet)
-
-def hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list):
-    """checks when bullets hit the enemies"""
-    marcus_hit_list = pygame.sprite.spritecollide(Marcus, bullet_enemy_list, True)
-    for bullet in marcus_hit_list:
-            bullet_enemy_list.remove(bullet)
-            all_sprites_list.remove(bullet)
-            Marcus.hp -= 1
-
-    for bullet in bullet_enemy_list:
-
-        wall_hit_list = pygame.sprite.spritecollide(bullet, Marcus.walls, False)
-
-        for wall in wall_hit_list:
-            bullet_enemy_list.remove(bullet)
-            all_sprites_list.remove(bullet)
-
-def createbullet(Marcus, bullet_list, all_sprites_list):
-    """creates bullets when mouse key is pressed"""
-    bullet = objects.Bullet(pygame.mouse.get_pos(), [Marcus.rect.centerx, Marcus.rect.centery])
-
-    bullet.rect.x = Marcus.rect.centerx
-    bullet.rect.y = Marcus.rect.centery
-
-    all_sprites_list.add(bullet)
-    bullet_list.add(bullet)
-
-def createenemybullet(Marcus, enemy_list, bullet_enemy_list, all_sprites_list):
-    """creates bullets for enemies"""
-    for enemy in enemy_list:
-        bullet = objects.Bullet([Marcus.rect.centerx, Marcus.rect.centery], [enemy.rect.centerx, enemy.rect.centery])
-
-        bullet.rect.x = enemy.rect.centerx
-        bullet.rect.y = enemy.rect.centery
-
-        all_sprites_list.add(bullet)
-        bullet_enemy_list.add(bullet)
-
-def createwalls(window_width, window_height, all_sprites_list):
+def createwalls(window_width, window_height, rendergroup):
     """creates walls for the basic level """
     wall_list = pygame.sprite.Group()
 
@@ -93,40 +12,36 @@ def createwalls(window_width, window_height, all_sprites_list):
     
     """outside walls"""
     wall = objects.Wall(0, 0, wallsize, window_height)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
      
     wall = objects.Wall(wallsize, 0, window_width, wallsize)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
      
     wall = objects.Wall(wallsize, window_height - wallsize, window_width, wallsize)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
 
     wall = objects.Wall(window_width - wallsize, wallsize, wallsize, window_height)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
 
     """barriers in the middle of the level"""
     wall = objects.Wall(40, 60, 20, barriersize)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
 
     wall = objects.Wall(window_width - 60, window_height - 60, 20, barriersize)
-    wall_list.add(wall)
-    all_sprites_list.add(wall)
+    wall.add(wall_list, rendergroup)
 
     return wall_list
 
-def createenemies(N, window_width, window_height, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, ImagesDict, cellsize):
+def createenemies(N, ImagesDict, Marcus, window_width, window_height, cellsize, rendergroup):
     """spawns N enemies"""
+    enemy_list = pygame.sprite.Group()
+
     for i in range(N):
+        enemy = characters.Enemy(ImagesDict, Marcus, window_width, window_height, cellsize, rendergroup)
 
-        enemy = characters.Enemy(ImagesDict, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, window_width, window_height, cellsize)
-
-        enemy_list.add(enemy)
-        all_sprites_list.add(enemy)
+        enemy.add(enemy_list, rendergroup)
+    
+    return enemy_list
 
 def loadingimages(image, who):
     ss = spritesheet.spritesheet(image)

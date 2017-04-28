@@ -96,47 +96,64 @@ def showWinnerScreen():
                 running = False
                 break
 
+def showPauseScreen():
+    newtitlescreen.drawPauseScreen()
+    pygame.display.update()
+    pygame.time.wait(1000)
+    pygame.event.get()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                pygame.event.get() #clear queue
+                running = False
+                break
+
 def runGame():
+    # Group for drawing all sprites
+    rendergroup = pygame.sprite.RenderPlain()
     # Initiate main character
-    all_sprites_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, all_sprites_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE)
+    player_list = pygame.sprite.Group()
+    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus.add(player_list, rendergroup)
 
-    all_sprites_list.add(Marcus)
-    enemy_list = pygame.sprite.Group()
-    bullet_list = pygame.sprite.Group()
-    bullet_enemy_list = pygame.sprite.Group()
-
-    N = 1
-    createenemies(N, WINDOWWIDTH, WINDOWHEIGHT, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, ImagesEnemy, CELLSIZE)
+    friendly_bullet_list = pygame.sprite.Group()
+    enemy_bullet_list = pygame.sprite.Group()
+    
+    # Create enemies
+    N = 3
+    enemy_list = createenemies(N, ImagesEnemy, Marcus, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, all_sprites_list)
+    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
     Marcus.walls = wall_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
         for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+            if event.type == QUIT:
                 terminate()
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                showPauseScreen()
+            elif event.type == KEYDOWN and event.key == K_r:
+                Marcus.reload()
             elif event.type == KEYDOWN:
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:
-                createbullet(Marcus, bullet_list, all_sprites_list)
+                Marcus.shoot(friendly_bullet_list, rendergroup)
 
         Marcus.updatedirection()
 
-        all_sprites_list.update()
+        player_list.update()
+        enemy_list.update(enemy_bullet_list, rendergroup)
         
         for i in range(10):
-            bullet_list.update()
-            bullet_enemy_list.update()
-            hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
-            hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
-
-        #hitenemybullets(bullet_enemy_list, Marcus, all_sprites_list)
-        #hitbullets(bullet_list, enemy_list, Marcus.walls, all_sprites_list)
+            friendly_bullet_list.update(enemy_list, wall_list)
+            enemy_bullet_list.update(player_list, wall_list)
 
         DISPLAYSURF.fill(BACKGROUND)
-        all_sprites_list.draw(DISPLAYSURF)
+        rendergroup.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     return Marcus.dead

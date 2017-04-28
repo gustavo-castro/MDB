@@ -1,9 +1,8 @@
+- organize code
 - improve/create other levels?
 - improve enemy ai?
 - implement spritesheet animations for walking and shooting (for enemies too)
-- organize code
 - let everyone run and create stamina bars
 - create ammunition and reload
 - improve bullets (it skips walls)
-- create pause menu
 - create different modes (multiplayer, singleplayer)

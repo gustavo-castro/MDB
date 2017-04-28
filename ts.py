@@ -59,3 +59,10 @@ class TitleScreen(object):
         self.screen.blit(youSurf, youRect)
         self.screen.blit(wonSurf, wonRect)
         self.drawPressKeyMsg()
+
+    def drawPauseScreen(self):
+        escAgainSurf = self.basicfont.render('Press esc again to quit.', True, DARKGRAY)
+        escAgainRect = escAgainSurf.get_rect()
+        escAgainRect.center = (self.window_width/2, 50)
+        self.screen.blit(escAgainSurf, escAgainRect)
+        self.drawPressKeyMsg()

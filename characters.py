@@ -1,9 +1,10 @@
 import random, pygame, math
 from pygame.locals import *
-import utils
+import lifebar
+import objects
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, imagedict, all_sprites_list, hp, cellsize):
+    def __init__(self, name, imagedict, hp, window_width, window_height, cellsize, rendergroup):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
@@ -13,9 +14,11 @@ class Character(pygame.sprite.Sprite):
         self.walls = None
         self.hp = hp
         self.totalhp = hp
-        self.hpbar = utils.Livebar(self)
-        all_sprites_list.add(self.hpbar)
+        self.lifebar = lifebar.Lifebar(self)
+        rendergroup.add(self.lifebar)
         self.cellsize = cellsize
+        [self.x, self.y] = self.spawn(window_width, window_height)
+        self.rect.center = (self.x, self.y)
 
     def updatePosition(self, eventkey):
         aux = 0
@@ -82,9 +85,7 @@ class Character(pygame.sprite.Sprite):
             return 8
 
     def updatedirection(self):
-        mouse = pygame.mouse.get_pos()
-        x = mouse[0]
-        y = mouse[1]
+        [x, y] = pygame.mouse.get_pos()
         distance = [x - self.x, y - self.y]
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
@@ -105,52 +106,77 @@ class Character(pygame.sprite.Sprite):
         elif auxangle == 8:
             self.image = self.imagedict['left']
 
+    def spawn(self, window_width, window_height):
+        raise NotImplementedError
+
+    def update(self):
+        self.lifebar.update()
+
 class Player(Character):
-    def __init__(self, name, imagedict, all_sprites_list, window_width, window_height, cellsize):
-        Character.__init__(self, name, imagedict, all_sprites_list, 10., cellsize)
-
-        start = self.spawnplayer(window_width, window_height)
-        self.x = start[0]
-        self.y = start[1]
-        self.rect.x = self.x
-        self.rect.y = self.y
+    def __init__(self, name, imagedict, window_width, window_height, cellsize, rendergroup):
+        Character.__init__(self, name, imagedict, 10.,window_width, window_height, cellsize, rendergroup)
         self.dead = False
+        self.ammo = 10
+        self.reloadCountdown = 0
 
-    def spawnplayer(self, window_width, window_height):
-        return [random.randrange(window_width),random.randint(0, window_height/2)]
+    def spawn(self, window_width, window_height):
+        return [random.randrange(window_width),random.randint(0, window_height/2)]        
+
+    def shoot(self, friendly_bullet_list, rendergroup):
+        """shoots a bullet where the mouse is pointed if there is ammo"""
+        if self.ammo == 0 : return
+
+        bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [self.rect.centerx, self.rect.centery])
+
+        bullet.add(friendly_bullet_list, rendergroup)
+
+        self.ammo -= 1
 
     def killhim(self):
         self.dead = True
         self.kill()
 
+    def draw(self):
+        print("oxe")
+
+    def reload(self):
+        """sets the clock for reloading"""
+        self.reloadCountdown = 10
+
+    def update(self):
+        Character.update(self)
+        if self.reloadCountdown == 1:
+            self.reloadCountdown = 0
+            self.ammo = 10
+        elif self.reloadCountdown > 1:
+            self.reloadCountdown -= 1
+
 
 class Enemy(Character):
     count = 0
 
-    def __init__(self, imagedict, Marcus, enemy_list, bullet_enemy_list, all_sprites_list, window_width, window_height, cellsize):
-        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, all_sprites_list, 5., cellsize)
+    def __init__(self, imagedict, Marcus, window_width, window_height, cellsize, rendergroup):
+        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., window_width, window_height, cellsize, rendergroup)
         Enemy.count += 1
-
-        start = self.spawnenemy(window_height, window_width)
-        self.x = start[0]
-        self.y = start[1]
-        self.rect.x = self.x
-        self.rect.y = self.y
         self.contbullet = 5
         self.auxbullet = 0
-        self.Player = Marcus
-        self.enemy_list = enemy_list
-        self.bullet_enemy_list = bullet_enemy_list
-        self.all_sprites_list = all_sprites_list
+        self.player = Marcus
 
-    def spawnenemy(self, window_height, window_width):
+    def spawn(self, window_height, window_width):
         return [random.randrange(window_width),random.randint(window_height/2, window_height)]
+
+    def shoot(self, enemy_bullet_list, rendergroup):
+        """shoots a bullet at the player"""
+        bullet = objects.EnemyBullet([self.player.rect.centerx, self.player.rect.centery], [self.rect.centerx, self.rect.centery])
+
+        bullet.add(enemy_bullet_list, rendergroup)
 
     def killhim(self):
         self.kill()
 
-    def update(self):
+    def update(self, enemy_bullet_list, rendergroup):
+        Character.update(self)
         if self.auxbullet == self.contbullet:
-            utils.createenemybullet(self.Player, self.enemy_list, self.bullet_enemy_list, self.all_sprites_list)
+            self.shoot(enemy_bullet_list, rendergroup)
             self.auxbullet = 0
         self.auxbullet += 1
