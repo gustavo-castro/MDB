@@ -41,7 +41,7 @@ class Bullet(pygame.sprite.Sprite):
         wall_hit_list = pygame.sprite.spritecollide(self, wall_list, False)
 
         for wall in wall_hit_list:
-            self.kill()
+            if wall.istall: self.kill()
 
 class FriendlyBullet(Bullet):
     def update(self, enemy_list, wall_list):
@@ -67,16 +67,19 @@ class EnemyBullet(Bullet):
 
 class Wall(pygame.sprite.Sprite):
     """ Wall the player can run into"""
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, tallwall = True):
         """ Constructor for the wall"""
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
+
+        self.istall = tallwall
  
         # Make a blue wall, of the size specified in the parameters
         self.image = pygame.Surface([width, height])
-        self.image.fill(black)
+        self.image.fill(black) if self.istall else self.image.fill(blue)
  
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
+

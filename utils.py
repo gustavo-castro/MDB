@@ -24,13 +24,17 @@ def createwalls(window_width, window_height, rendergroup):
     wall.add(wall_list, rendergroup)
 
     """barriers in the middle of the level"""
-    wall = objects.Wall(40, 60, 20, barriersize)
+    wall = objects.Wall(40, 60, 50, barriersize)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(window_width - 60, window_height - 60, 20, barriersize)
+    wall = objects.Wall(window_width - 60, window_height - 60, 30, barriersize, tallwall = False)
+    wall.add(wall_list, rendergroup)
+
+    wall = objects.Wall(50, window_height - 70, 40, barriersize)
     wall.add(wall_list, rendergroup)
 
     return wall_list
+
 
 def createenemies(N, ImagesDict, Marcus, window_width, window_height, cellsize, rendergroup):
     """spawns N enemies"""

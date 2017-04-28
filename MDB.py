@@ -123,7 +123,7 @@ def runGame():
     enemy_bullet_list = pygame.sprite.Group()
     
     # Create enemies
-    N = 3
+    N = 2
     enemy_list = createenemies(N, ImagesEnemy, Marcus, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
