@@ -2,6 +2,7 @@ import random, pygame, math
 from pygame.locals import *
 import lifebar
 import objects
+import bulletsprite
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, name, imagedict, hp, window_width, window_height, cellsize, rendergroup):
@@ -116,7 +117,10 @@ class Player(Character):
     def __init__(self, name, imagedict, window_width, window_height, cellsize, rendergroup):
         Character.__init__(self, name, imagedict, 10.,window_width, window_height, cellsize, rendergroup)
         self.dead = False
-        self.ammo = 10
+        self.totalammo = 10.
+        self.ammo = 10.        
+        self.bulletsprite = bulletsprite.BulletSprite(self)
+        rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
     def spawn(self, window_width, window_height):
@@ -147,9 +151,10 @@ class Player(Character):
         Character.update(self)
         if self.reloadCountdown == 1:
             self.reloadCountdown = 0
-            self.ammo = 10
+            self.ammo = 10.
         elif self.reloadCountdown > 1:
             self.reloadCountdown -= 1
+        self.bulletsprite.update()
 
 
 class Enemy(Character):
