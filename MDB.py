@@ -3,6 +3,7 @@
 import random, pygame, sys
 from pygame.locals import *
 import characters
+import mcharacters
 import ts
 import objects
 from utils import *
@@ -25,6 +26,7 @@ GREEN     = (  0, 255,   0)
 DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
+runGame = 0
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, ImagesPlayer, ImagesEnemy, newtitlescreen
@@ -61,9 +63,15 @@ def showStartScreen():
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 terminate()
-            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+            elif event.type == KEYDOWN and event.key in {K_s : 0, K_b : 1}:
                 pygame.event.get() #clear queue
                 running = False
+                if event.key == K_s:
+                    global runGame
+                    runGame = runsingleplayer
+                elif event.key == K_b:
+                    global runGame
+                    runGame = runmultibattle
                 break
 
 def showGameOverScreen():
@@ -111,7 +119,7 @@ def showPauseScreen():
                 running = False
                 break
 
-def runGame():
+def runsingleplayer():
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
     # Initiate main character
@@ -157,6 +165,62 @@ def runGame():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     return Marcus.dead
+
+def runmultibattle():
+    #1v1 battle multiplayer mode
+    # Group for drawing all sprites
+    rendergroup = pygame.sprite.RenderPlain()
+    # Initiate player1
+    player_list = pygame.sprite.Group()
+    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus.add(player_list, rendergroup)
+
+    #initiating bullet sprite groups
+    friendly_bullet_list = pygame.sprite.Group()
+    enemy_bullet_list = pygame.sprite.Group()
+    
+    # Creating player2
+    enemy_list = pygame.sprite.Group()
+    Cole = mcharacters.Player('Cole', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Cole.add(enemy_list, rendergroup)
+
+    # Make the walls. (x_pos, y_pos, width, height)
+    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
+    Marcus.walls = wall_list
+    Cole.walls = wall_list
+
+    while (not Marcus.dead and not Cole.dead): # main game loop
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                showPauseScreen()
+            elif event.type == KEYDOWN and event.key == K_r:
+                Marcus.reload()
+            elif event.type == KEYDOWN and event.key == K_k:
+                Cole.reload()
+            elif event.type == KEYDOWN and event.key == K_l:
+                Cole.shoot(enemy_bullet_list, rendergroup)
+            elif event.type == KEYDOWN:
+                Marcus.updatePosition(event.key)
+                Cole.updatePosition(event.key)
+            elif event.type == MOUSEBUTTONDOWN:
+                Marcus.shoot(friendly_bullet_list, rendergroup)
+
+        Marcus.updatedirection()
+
+        player_list.update()
+        enemy_list.update()
+        
+        for i in range(10):
+            friendly_bullet_list.update(enemy_list, wall_list)
+            enemy_bullet_list.update(player_list, wall_list)
+
+        DISPLAYSURF.fill(BACKGROUND)
+        rendergroup.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+    return Marcus.dead or Cole.dead
 
 if __name__ == '__main__':
     main()

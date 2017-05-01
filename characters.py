@@ -23,22 +23,22 @@ class Character(pygame.sprite.Sprite):
 
     def updatePosition(self, eventkey):
         aux = 0
-        if (eventkey == K_LEFT or eventkey == K_a):
+        if (eventkey == K_a):
             self.x -= self.cellsize
             self.rect.x = self.x
             self.image = self.imagedict['left']
             aux = 1
-        elif (eventkey == K_RIGHT or eventkey == K_d):
+        elif (eventkey == K_d):
             self.x += self.cellsize
             self.rect.x = self.x
             self.image = self.imagedict['right']
             aux = 2
-        elif (eventkey == K_UP or eventkey == K_w):
+        elif (eventkey == K_w):
             self.y -= self.cellsize
             self.rect.y = self.y
             self.image = self.imagedict['up']
             aux = 3
-        elif (eventkey == K_DOWN or eventkey == K_s):
+        elif (eventkey == K_s):
             self.y += self.cellsize
             self.rect.y = self.y
             self.image = self.imagedict['down']
