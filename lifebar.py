@@ -26,4 +26,5 @@ class Lifebar(pygame.sprite.Sprite):
         #kill boss if hp == 0
         if self.percent == 0:
             self.kill()
+            self.boss.bulletsprite.kill()
             self.boss.killhim()

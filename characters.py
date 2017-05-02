@@ -160,21 +160,27 @@ class Player(Character):
 class Enemy(Character):
     count = 0
 
-    def __init__(self, imagedict, Marcus, window_width, window_height, cellsize, rendergroup):
+    def __init__(self, imagedict, player_list, window_width, window_height, cellsize, rendergroup):
         Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., window_width, window_height, cellsize, rendergroup)
         Enemy.count += 1
         self.contbullet = 5
         self.auxbullet = 0
-        self.player = Marcus
+        self.player_list = player_list
 
     def spawn(self, window_height, window_width):
         return [random.randint(27,window_width-27),random.randint(window_height/2+34, window_height-5*34)]
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
-        bullet = objects.EnemyBullet([self.player.rect.centerx, self.player.rect.centery], [self.rect.centerx, self.rect.centery])
-
-        bullet.add(enemy_bullet_list, rendergroup)
+        dist = float('inf')
+        if len(self.player_list.sprites()) > 0:
+            for player in self.player_list.sprites():
+                tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
+                if tempdist < dist:
+                    dist = tempdist
+                    closestplayer = player
+            bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
+            bullet.add(enemy_bullet_list, rendergroup)
 
     def killhim(self):
         self.kill()

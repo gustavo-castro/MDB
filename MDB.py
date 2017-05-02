@@ -63,7 +63,7 @@ def showStartScreen():
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 terminate()
-            elif event.type == KEYDOWN and event.key in {K_s : 0, K_b : 1}:
+            elif event.type == KEYDOWN and event.key in {K_s : 0, K_b : 1, K_c : 2}:
                 pygame.event.get() #clear queue
                 running = False
                 if event.key == K_s:
@@ -72,6 +72,9 @@ def showStartScreen():
                 elif event.key == K_b:
                     global runGame
                     runGame = runmultibattle
+                elif event.key == K_c:
+                    global runGame
+                    runGame = runcoop
                 break
 
 def showGameOverScreen():
@@ -221,6 +224,62 @@ def runmultibattle():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
     return Marcus.dead or Cole.dead
+
+def runcoop():
+    # Group for drawing all sprites
+    rendergroup = pygame.sprite.RenderPlain()
+    # Initiate main character
+    player_list = pygame.sprite.Group()
+    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus.add(player_list, rendergroup)
+
+    Cole = mcharacters.Player('Cole', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Cole.add(player_list, rendergroup)
+
+    friendly_bullet_list = pygame.sprite.Group()
+    enemy_bullet_list = pygame.sprite.Group()
+    
+    # Create enemies
+    N = 2
+    enemy_list = createenemies(N, ImagesEnemy, player_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+
+    # Make the walls. (x_pos, y_pos, width, height)
+    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
+    Marcus.walls = wall_list
+    Cole.walls = wall_list
+
+    while (not Marcus.dead or not Cole.dead) and len(enemy_list.sprites()) > 0: # main game loop
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                showPauseScreen()
+            elif event.type == KEYDOWN and event.key == K_r:
+                Marcus.reload()
+            elif event.type == KEYDOWN and event.key == K_k:
+                Cole.reload()
+            elif event.type == KEYDOWN and event.key == K_l:
+                Cole.shoot(friendly_bullet_list, rendergroup)
+            elif event.type == KEYDOWN:
+                Marcus.updatePosition(event.key)
+                Cole.updatePosition(event.key)
+            elif event.type == MOUSEBUTTONDOWN:
+                Marcus.shoot(friendly_bullet_list, rendergroup)
+
+        Marcus.updatedirection()
+
+        player_list.update()
+        enemy_list.update(enemy_bullet_list, rendergroup)
+        
+        for i in range(10):
+            friendly_bullet_list.update(enemy_list, wall_list)
+            enemy_bullet_list.update(player_list, wall_list)
+
+        DISPLAYSURF.fill(BACKGROUND)
+        rendergroup.draw(DISPLAYSURF)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+    return Marcus.dead and Cole.dead
 
 if __name__ == '__main__':
     main()

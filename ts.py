@@ -30,12 +30,16 @@ class TitleScreen(object):
     def drawPressChooseModeMsg(self):
         pressKeySurf1 = self.basicfont.render('Press the s key to play in single player mode.', True, DARKGRAY)
         pressKeyRect1 = pressKeySurf1.get_rect()
-        pressKeyRect1.topleft = (self.window_width - 400, self.window_height - 40)
+        pressKeyRect1.topleft = (self.window_width - 400, self.window_height - 60)
         self.screen.blit(pressKeySurf1, pressKeyRect1)
         pressKeySurf2 = self.basicfont.render('Press the b key to play in battle mode.', True, DARKGRAY)
         pressKeyRect2 = pressKeySurf2.get_rect()
-        pressKeyRect2.topleft = (self.window_width - 400, self.window_height - 20)
-        self.screen.blit(pressKeySurf2, pressKeyRect2)        
+        pressKeyRect2.topleft = (self.window_width - 400, self.window_height - 40)
+        self.screen.blit(pressKeySurf2, pressKeyRect2)
+        pressKeySurf3 = self.basicfont.render('Press the c key to play in coop mode.', True, DARKGRAY)
+        pressKeyRect3 = pressKeySurf3.get_rect()
+        pressKeyRect3.topleft = (self.window_width - 400, self.window_height - 20)
+        self.screen.blit(pressKeySurf3, pressKeyRect3)        
 
     def drawStartScreen(self):
         titleFont = pygame.font.Font(self.font, 30)

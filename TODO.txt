@@ -4,5 +4,6 @@
 - implement spritesheet animations for walking and shooting (for enemies too)
 - let everyone run and create stamina bars
 - create a bar in up in the screen with information such as, players name, how many bullets he has, life, etc
-- improve (battle) and create (coop) modes
+- improve battle mode
 - implement hiding and shooting behind low walls
+- created animated title screen and pause menu
