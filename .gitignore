@@ -95,7 +95,3 @@ ENV/
 
 # mkdocs documentation
 /site
-
-#ssh keys
-gitgug
-gitgug.pub
