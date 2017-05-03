@@ -14,7 +14,14 @@ ss = spritesheet.spritesheet('ss-mercenaries.png')
 # Sprite is 16x16 pixels at location 0,0 in the file...
 #olhando pra cada direcao
 baixo = ss.image_at((338, 182, 27, 34))
-down = ss.image_at((92, 184, 23, 32))
+
+dr = ss.image_at((340, 142, 27, 34))
+
+ur = ss.image_at((338, 60, 27, 34))
+
+de = ss.image_at((338, 222, 27, 34))
+
+ue = ss.image_at((338, 302, 27, 34))
 
 direita = ss.image_at((340, 104, 27, 34))
 
@@ -22,16 +29,8 @@ esquerda = ss.image_at((336, 262, 27, 34))
 
 cima = ss.image_at((338, 22, 27, 34))
 
-dr = ss.image_at((90, 142, 23, 32))
 
-de = ss.image_at((94, 222, 23, 32))
-
-ur = ss.image_at((90, 62, 23, 32))
-
-ue = ss.image_at((96, 304, 23, 32))
-
-
-image = ur
+image = ue
 
 while True:
     screen.blit(image,(0,0))

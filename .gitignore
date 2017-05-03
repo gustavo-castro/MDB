@@ -95,3 +95,6 @@ ENV/
 
 # mkdocs documentation
 /site
+
+# aux file for sprite images
+teste.py

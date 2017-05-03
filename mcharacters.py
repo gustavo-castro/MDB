@@ -11,7 +11,7 @@ class mCharacter(pygame.sprite.Sprite):
 
         self.name = name
         self.imagedict = imagedict
-        self.image = self.imagedict['down']
+        self.image = self.imagedict['d']
         self.rect = self.image.get_rect()
         self.walls = None
         self.hp = hp
@@ -27,22 +27,22 @@ class mCharacter(pygame.sprite.Sprite):
         if (eventkey == K_LEFT):
             self.x -= self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['left']
+            self.image = self.imagedict['l']
             self.direction = 1
         elif (eventkey == K_RIGHT):
             self.x += self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['right']
+            self.image = self.imagedict['r']
             self.direction = 2
         elif (eventkey == K_UP):
             self.y -= self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['up']
+            self.image = self.imagedict['u']
             self.direction = 3
         elif (eventkey == K_DOWN):
             self.y += self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['down']
+            self.image = self.imagedict['d']
             self.direction = 4
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
