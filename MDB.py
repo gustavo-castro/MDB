@@ -127,6 +127,7 @@ def runsingleplayer():
     rendergroup = pygame.sprite.RenderPlain()
     # Initiate main character
     player_list = pygame.sprite.Group()
+
     Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
     Marcus.add(player_list, rendergroup)
 
@@ -135,7 +136,7 @@ def runsingleplayer():
     
     # Create enemies
     N = 2
-    enemy_list = createenemies(N, ImagesEnemy, Marcus, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    enemy_list = createenemies(N, ImagesEnemy, player_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
     wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)

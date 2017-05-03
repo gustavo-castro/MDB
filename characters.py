@@ -173,14 +173,13 @@ class Enemy(Character):
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
         dist = float('inf')
-        if len(self.player_list.sprites()) > 0:
-            for player in self.player_list.sprites():
-                tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
-                if tempdist < dist:
-                    dist = tempdist
-                    closestplayer = player
-            bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
-            bullet.add(enemy_bullet_list, rendergroup)
+        for player in self.player_list.sprites():
+            tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
+            if tempdist < dist:
+                dist = tempdist
+                closestplayer = player
+        bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
+        bullet.add(enemy_bullet_list, rendergroup)
 
     def killhim(self):
         self.kill()

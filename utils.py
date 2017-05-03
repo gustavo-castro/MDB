@@ -36,12 +36,12 @@ def createwalls(window_width, window_height, rendergroup):
     return wall_list
 
 
-def createenemies(N, ImagesDict, Marcus, window_width, window_height, cellsize, rendergroup):
+def createenemies(N, ImagesDict, player_list, window_width, window_height, cellsize, rendergroup):
     """spawns N enemies"""
     enemy_list = pygame.sprite.Group()
 
     for i in range(N):
-        enemy = characters.Enemy(ImagesDict, Marcus, window_width, window_height, cellsize, rendergroup)
+        enemy = characters.Enemy(ImagesDict, player_list, window_width, window_height, cellsize, rendergroup)
 
         enemy.add(enemy_list, rendergroup)
     
