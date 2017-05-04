@@ -6,6 +6,7 @@ WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
 DARKGRAY  = ( 40,  40,  40)
+YELLOW    = (255, 255,   0)
 BGCOLOR = BLACK
 
 class TitleScreen(object):
@@ -27,29 +28,25 @@ class TitleScreen(object):
         pressKeyRect.topleft = (self.window_width - 200, self.window_height - 30)
         self.screen.blit(pressKeySurf, pressKeyRect)
 
-    def drawPressChooseModeMsg(self):
-        pressKeySurf1 = self.basicfont.render('Press the s key to play in single player mode.', True, DARKGRAY)
-        pressKeyRect1 = pressKeySurf1.get_rect()
-        pressKeyRect1.topleft = (self.window_width - 400, self.window_height - 60)
-        self.screen.blit(pressKeySurf1, pressKeyRect1)
-        pressKeySurf2 = self.basicfont.render('Press the b key to play in battle mode.', True, DARKGRAY)
-        pressKeyRect2 = pressKeySurf2.get_rect()
-        pressKeyRect2.topleft = (self.window_width - 400, self.window_height - 40)
-        self.screen.blit(pressKeySurf2, pressKeyRect2)
-        pressKeySurf3 = self.basicfont.render('Press the c key to play in coop mode.', True, DARKGRAY)
-        pressKeyRect3 = pressKeySurf3.get_rect()
-        pressKeyRect3.topleft = (self.window_width - 400, self.window_height - 20)
-        self.screen.blit(pressKeySurf3, pressKeyRect3)        
-
-    def drawStartScreen(self):
+    def drawStartScreen(self, which):
+        background = pygame.image.load('mainimage.png')
+        self.screen.blit(background, [0, 0])
         titleFont = pygame.font.Font(self.font, 30)
-        titleSurf1 = titleFont.render(self.name, True, RED, BLACK)
+        titleSurf1 = titleFont.render(self.name, True, DARKGRAY)
         titleRect1 = titleSurf1.get_rect()
-        self.screen.fill(BGCOLOR)
-        titleRect1.center = (self.window_width / 2, self.window_height / 2)
+        titleRect1.center = (self.window_width / 2, 100)
         self.screen.blit(titleSurf1, titleRect1)
-        #self.drawPressKeyMsg()
-        self.drawPressChooseModeMsg()
+        self.drawPressChooseModeScreen(which)
+
+    def drawPressChooseModeScreen(self, which):
+        whichstring = {0 : 'Single Player', 1 : 'Battle (two players)', 2 : 'Coop (two players)'}
+        aux = whichstring[which]
+        allgamemodes = {'Single Player' : 20, 'Battle (two players)' : 40, 'Coop (two players)' : 60}
+        for gamemode in allgamemodes:
+            pressKeySurf = self.basicfont.render(gamemode, True, RED) if aux == gamemode else self.basicfont.render(gamemode, True, YELLOW)
+            pressKeyRect = pressKeySurf.get_rect()
+            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            self.screen.blit(pressKeySurf, pressKeyRect)
 
     def drawGameOverScreen(self):
         gameOverFont = pygame.font.Font(self.font, 150)

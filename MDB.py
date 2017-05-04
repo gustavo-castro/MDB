@@ -56,25 +56,24 @@ def terminate():
     sys.exit()
 
 def showStartScreen():
-    newtitlescreen.drawStartScreen()
+    which = 0
+    directions = {K_s : 1, K_DOWN : 1, K_w : -1, K_UP : -1}
+    whichgamemode = {0 : runsingleplayer, 1 : runmultibattle, 2 : runcoop}
+    newtitlescreen.drawStartScreen(which)
     pygame.display.update()
     running = True
     while running: # menu key handler
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 terminate()
-            elif event.type == KEYDOWN and event.key in {K_s : 0, K_b : 1, K_c : 2}:
-                pygame.event.get() #clear queue
+            elif event.type == KEYDOWN and event.key in directions:
+                which = (which+directions[event.key])%3
+                newtitlescreen.drawPressChooseModeScreen(which)
+                pygame.display.update()
+            elif event.type == KEYDOWN and event.key == K_RETURN:
+                global runGame
+                runGame = whichgamemode[which]
                 running = False
-                if event.key == K_s:
-                    global runGame
-                    runGame = runsingleplayer
-                elif event.key == K_b:
-                    global runGame
-                    runGame = runmultibattle
-                elif event.key == K_c:
-                    global runGame
-                    runGame = runcoop
                 break
 
 def showGameOverScreen():
