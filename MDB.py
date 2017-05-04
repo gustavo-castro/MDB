@@ -121,6 +121,31 @@ def showPauseScreen():
                 running = False
                 break
 
+def showPauseScreen():
+    which = 0
+    directions = {K_s : 1, K_DOWN : 1, K_w : -1, K_UP : -1}
+    newtitlescreen.drawPauseScreen(which)
+    pygame.display.update()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN and event.key in directions:
+                which = (which+directions[event.key])%3
+                newtitlescreen.drawPauseScreen(which)
+                pygame.display.update()
+            elif event.type == KEYDOWN and event.key == K_RETURN:
+                global runGame
+                running = False
+                if which == 0:
+                    break
+                if which == 1:
+                    pass
+                if which == 2:
+                    terminate()
+        
+
 def runsingleplayer():
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()

@@ -7,7 +7,8 @@ BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
 DARKGRAY  = ( 40,  40,  40)
 YELLOW    = (255, 255,   0)
-BGCOLOR = BLACK
+BGCOLOR   = BLACK
+BLUE      = (  0,   0, 225)
 
 class TitleScreen(object):
     "Class that defines the main title screen"
@@ -78,3 +79,13 @@ class TitleScreen(object):
         escAgainRect.center = (self.window_width/2, 50)
         self.screen.blit(escAgainSurf, escAgainRect)
         self.drawPressKeyMsg()
+
+    def drawPauseScreen(self, which):
+        whichstring = {0 : 'Unpause', 1 : 'Change Mode', 2 : 'Quit'}
+        aux = whichstring[which]
+        allgamemodes = {'Unpause' : 20, 'Change Mode' : 40, 'Quit' : 60}
+        for gamemode in allgamemodes:
+            pressKeySurf = self.basicfont.render(gamemode, True, BLUE) if aux == gamemode else self.basicfont.render(gamemode, True, BLACK)
+            pressKeyRect = pressKeySurf.get_rect()
+            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            self.screen.blit(pressKeySurf, pressKeyRect)
