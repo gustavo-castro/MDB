@@ -24,7 +24,7 @@ class Lifebar(pygame.sprite.Sprite):
         self.rect.centerx = self.boss.rect.centerx
         self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
         #kill boss if hp == 0
-        if self.percent == 0:
+        if self.percent <= 0:
             self.kill()
             if hasattr(self.boss, 'bulletsprite'): self.boss.bulletsprite.kill()
             self.boss.killhim()
