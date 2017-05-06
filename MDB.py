@@ -38,6 +38,7 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     BASICFONT = pygame.font.Font(FONT, 18)
     pygame.display.set_caption(NAME)
+    pygame.key.set_repeat(100)
 
     ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
     ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
