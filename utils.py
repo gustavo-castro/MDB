@@ -52,33 +52,6 @@ def loadingimages(image, who):
     # Sprite is 16x16 pixels at location 0,0 in the file...
     #olhando pra cada direcao
     if who == 'player':
-        d = ss.image_at((92, 184, 23, 32))
-        r = ss.image_at((90, 104, 23, 32))
-        l = ss.image_at((94, 264, 23, 32))
-        u = ss.image_at((92, 22, 23, 32))
-        dr = ss.image_at((90, 142, 23, 32))
-        de = ss.image_at((94, 222, 23, 32))
-        ur = ss.image_at((90, 62, 23, 32))
-        ue = ss.image_at((96, 304, 23, 32))
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
-    elif who == 'enemy':
-        d = ss.image_at((338, 182, 27, 34))
-        r = ss.image_at((340, 104, 27, 34))
-        l = ss.image_at((336, 262, 27, 34))
-        u = ss.image_at((338, 22, 27, 34))
-        dr = ss.image_at((340, 142, 27, 34))
-        ur = ss.image_at((338, 60, 27, 34))
-        de = ss.image_at((338, 222, 27, 34))
-        ue = ss.image_at((338, 302, 27, 34))
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
-
-    return ImagesDict
-
-def loadingimages(image, who):
-    ss = spritesheet.spritesheet(image)
-    # Sprite is 16x16 pixels at location 0,0 in the file...
-    #olhando pra cada direcao
-    if who == 'player':
         d = [ss.image_at((12 + 40*i, 182, 23, 32)) for i in range(6)]
         r = [ss.image_at((10 + 40*i, 104, 23, 32)) for i in range(6)]
         l = [ss.image_at((14 + 40*i, 264, 23, 32)) for i in range(6)]
@@ -86,7 +59,8 @@ def loadingimages(image, who):
         dr = [ss.image_at((10 + 40*i, 142, 23, 32)) for i in range(6)]
         de = [ss.image_at((14 + 40*i, 222, 23, 32)) for i in range(6)]
         ur = [ss.image_at((10 + 40*i, 62, 23, 32)) for i in range(6)]
-        ue = [ss.image_at((10 + 40*i, 304, 23, 32)) for i in range(6)]
+        ue = [ss.image_at((6, 304, 23, 32)), ss.image_at((54, 304, 23, 32)),
+        ss.image_at((94, 304, 23, 32)), ss.image_at((138, 304, 23, 32)), ss.image_at((176, 304, 23, 32)), ss.image_at((206, 304, 23, 32))]
         ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
     elif who == 'enemy':
         d = [ss.image_at((258 + 40*i, 182, 27, 34)) for i in range(6)]

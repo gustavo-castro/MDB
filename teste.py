@@ -29,10 +29,7 @@ esquerda = ss.image_at((336, 262, 27, 34))
 
 cima = ss.image_at((338, 22, 27, 34))
 
-aux = ss.image_at((12, 184, 23, 32))
-
-
-image = aux
+image = cima
 
 while True:
     screen.blit(image,(0,0))

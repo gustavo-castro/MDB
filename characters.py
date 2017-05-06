@@ -9,6 +9,8 @@ class Character(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
+        self.feetleft = True
+        self.feettonum = {True : 2, False : 4}
         self.imagedict = imagedict
         self.image = self.imagedict['d'][2]
         self.rect = self.image.get_rect()
@@ -27,22 +29,26 @@ class Character(pygame.sprite.Sprite):
         if (eventkey == K_a):
             self.x -= self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['l'][2]
+            self.feetleft = not self.feetleft
+            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
             aux = 1
         elif (eventkey == K_d):
             self.x += self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['r'][2]
+            self.feetleft = not self.feetleft
+            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
             aux = 2
         elif (eventkey == K_w):
             self.y -= self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['u'][2]
+            self.feetleft = not self.feetleft
+            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
             aux = 3
         elif (eventkey == K_s):
             self.y += self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['d'][2]
+            self.feetleft = not self.feetleft
+            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
             aux = 4
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
@@ -92,21 +98,21 @@ class Character(pygame.sprite.Sprite):
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
         if auxangle == 1:
-            self.image = self.imagedict['r'][2]
+            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
         elif auxangle == 2:
-            self.image = self.imagedict['ur'][2]
+            self.image = self.imagedict['ur'][self.feettonum[self.feetleft]]
         elif auxangle == 3:
-            self.image = self.imagedict['u'][2]
+            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
         elif auxangle == 4:
-            self.image = self.imagedict['ue'][2]
+            self.image = self.imagedict['ue'][self.feettonum[self.feetleft]]
         elif auxangle == 5:
-            self.image = self.imagedict['dr'][2]
+            self.image = self.imagedict['dr'][self.feettonum[self.feetleft]]
         elif auxangle == 6:
-            self.image = self.imagedict['d'][2]
+            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
         elif auxangle == 7:
-            self.image = self.imagedict['de'][2]
+            self.image = self.imagedict['de'][self.feettonum[self.feetleft]]
         elif auxangle == 8:
-            self.image = self.imagedict['l'][2]
+            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
 
     def spawn(self, window_width, window_height):
         raise NotImplementedError
@@ -228,18 +234,18 @@ class Enemy(Character):
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
         if auxangle == 1:
-            self.image = self.imagedict['r'][2]
+            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
         elif auxangle == 2:
-            self.image = self.imagedict['ur'][2]
+            self.image = self.imagedict['ur'][self.feettonum[self.feetleft]]
         elif auxangle == 3:
-            self.image = self.imagedict['u'][2]
+            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
         elif auxangle == 4:
-            self.image = self.imagedict['ue'][2]
+            self.image = self.imagedict['ue'][self.feettonum[self.feetleft]]
         elif auxangle == 5:
-            self.image = self.imagedict['dr'][2]
+            self.image = self.imagedict['dr'][self.feettonum[self.feetleft]]
         elif auxangle == 6:
-            self.image = self.imagedict['d'][2]
+            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
         elif auxangle == 7:
-            self.image = self.imagedict['de'][2]
+            self.image = self.imagedict['de'][self.feettonum[self.feetleft]]
         elif auxangle == 8:
-            self.image = self.imagedict['l'][2]
+            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
