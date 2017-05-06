@@ -10,7 +10,7 @@ class Character(pygame.sprite.Sprite):
 
         self.name = name
         self.imagedict = imagedict
-        self.image = self.imagedict['d']
+        self.image = self.imagedict['d'][2]
         self.rect = self.image.get_rect()
         self.walls = None
         self.hp = hp
@@ -20,28 +20,29 @@ class Character(pygame.sprite.Sprite):
         self.cellsize = cellsize
         [self.x, self.y] = self.spawn(window_width, window_height)
         self.rect.center = (self.x, self.y)
+        self.crouching = False
 
     def updatePosition(self, eventkey):
         aux = 0
         if (eventkey == K_a):
             self.x -= self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['l']
+            self.image = self.imagedict['l'][2]
             aux = 1
         elif (eventkey == K_d):
             self.x += self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['r']
+            self.image = self.imagedict['r'][2]
             aux = 2
         elif (eventkey == K_w):
             self.y -= self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['u']
+            self.image = self.imagedict['u'][2]
             aux = 3
         elif (eventkey == K_s):
             self.y += self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['d']
+            self.image = self.imagedict['d'][2]
             aux = 4
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
@@ -91,21 +92,21 @@ class Character(pygame.sprite.Sprite):
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
         if auxangle == 1:
-            self.image = self.imagedict['r']
+            self.image = self.imagedict['r'][2]
         elif auxangle == 2:
-            self.image = self.imagedict['ur']
+            self.image = self.imagedict['ur'][2]
         elif auxangle == 3:
-            self.image = self.imagedict['u']
+            self.image = self.imagedict['u'][2]
         elif auxangle == 4:
-            self.image = self.imagedict['ue']
+            self.image = self.imagedict['ue'][2]
         elif auxangle == 5:
-            self.image = self.imagedict['dr']
+            self.image = self.imagedict['dr'][2]
         elif auxangle == 6:
-            self.image = self.imagedict['d']
+            self.image = self.imagedict['d'][2]
         elif auxangle == 7:
-            self.image = self.imagedict['de']
+            self.image = self.imagedict['de'][2]
         elif auxangle == 8:
-            self.image = self.imagedict['l']
+            self.image = self.imagedict['l'][2]
 
     def spawn(self, window_width, window_height):
         raise NotImplementedError
@@ -146,6 +147,9 @@ class Player(Character):
     def reload(self):
         """sets the clock for reloading"""
         self.reloadCountdown = 10
+
+    def crouch(self):
+        self.crouching = not self.crouching
 
     def update(self):
         Character.update(self)
@@ -224,18 +228,18 @@ class Enemy(Character):
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
         if auxangle == 1:
-            self.image = self.imagedict['r']
+            self.image = self.imagedict['r'][2]
         elif auxangle == 2:
-            self.image = self.imagedict['ur']
+            self.image = self.imagedict['ur'][2]
         elif auxangle == 3:
-            self.image = self.imagedict['u']
+            self.image = self.imagedict['u'][2]
         elif auxangle == 4:
-            self.image = self.imagedict['ue']
+            self.image = self.imagedict['ue'][2]
         elif auxangle == 5:
-            self.image = self.imagedict['dr']
+            self.image = self.imagedict['dr'][2]
         elif auxangle == 6:
-            self.image = self.imagedict['d']
+            self.image = self.imagedict['d'][2]
         elif auxangle == 7:
-            self.image = self.imagedict['de']
+            self.image = self.imagedict['de'][2]
         elif auxangle == 8:
-            self.image = self.imagedict['l']
+            self.image = self.imagedict['l'][2]
