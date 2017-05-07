@@ -8,7 +8,6 @@ def createwalls(window_width, window_height, rendergroup):
     wall_list = pygame.sprite.Group()
 
     wallsize = 1
-    barriersize = 5
     
     """outside walls"""
     wall = objects.Wall(0, 0, wallsize, window_height)
@@ -24,10 +23,11 @@ def createwalls(window_width, window_height, rendergroup):
     wall.add(wall_list, rendergroup)
 
     """barriers in the middle of the level"""
+    barriersize = 15
     wall = objects.Wall(40, 60, 50, barriersize)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(window_width - 60, window_height - 60, 30, barriersize, tallwall = False)
+    wall = objects.Wall(window_width - 60, window_height - 60, barriersize/3, 30, tallwall = False)
     wall.add(wall_list, rendergroup)
 
     wall = objects.Wall(50, window_height - 70, 40, barriersize)

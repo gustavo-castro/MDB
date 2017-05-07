@@ -22,7 +22,7 @@ class Character(pygame.sprite.Sprite):
         self.cellsize = cellsize
         [self.x, self.y] = self.spawn(window_width, window_height)
         self.rect.center = (self.x, self.y)
-        self.crouching = False
+        self.cover = False
 
     def updatePosition(self, eventkey):
         aux = 0
@@ -31,39 +31,47 @@ class Character(pygame.sprite.Sprite):
             self.rect.x = self.x
             self.feetleft = not self.feetleft
             self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
+            self.cover = False
             aux = 1
         elif (eventkey == K_d):
             self.x += self.cellsize
             self.rect.x = self.x
             self.feetleft = not self.feetleft
             self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
+            self.cover = False
             aux = 2
         elif (eventkey == K_w):
             self.y -= self.cellsize
             self.rect.y = self.y
             self.feetleft = not self.feetleft
             self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
+            self.cover = False
             aux = 3
         elif (eventkey == K_s):
             self.y += self.cellsize
             self.rect.y = self.y
             self.feetleft = not self.feetleft
             self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
+            self.cover = False
             aux = 4
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             if aux == 1:
                 self.x += self.cellsize
                 self.rect.x = self.x
+                self.cover = True
             elif aux == 2:
                 self.x -= self.cellsize
                 self.rect.x = self.x
+                self.cover = True
             elif aux == 3:
                 self.y += self.cellsize
                 self.rect.y = self.y
+                self.cover = True
             elif aux == 4:
                 self.y -= self.cellsize
                 self.rect.y = self.y
+                self.cover = True
 
     def findquadrant(self, angle):
         pi = math.pi
@@ -154,9 +162,6 @@ class Player(Character):
         """sets the clock for reloading"""
         self.reloadCountdown = 10
 
-    def crouch(self):
-        self.crouching = not self.crouching
-
     def update(self):
         Character.update(self)
         if self.reloadCountdown == 1:
@@ -183,14 +188,15 @@ class Enemy(Character):
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
         dist = float('inf')
-        for player in self.player_list.sprites():
-            tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
-            if tempdist < dist:
-                dist = tempdist
-                closestplayer = player
-        self.updatedirection(closestplayer)
-        bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
-        bullet.add(enemy_bullet_list, rendergroup)
+        if self.player_list:
+            for player in self.player_list.sprites():
+                tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
+                if tempdist < dist:
+                    dist = tempdist
+                    closestplayer = player
+            self.updatedirection(closestplayer)
+            bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
+            bullet.add(enemy_bullet_list, rendergroup)
 
     def killhim(self):
         self.kill()

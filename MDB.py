@@ -175,8 +175,6 @@ def runsingleplayer():
                 showPauseScreen()
             elif event.type == KEYDOWN and event.key == K_r:
                 Marcus.reload()
-            elif event.type == KEYDOWN and event.key == K_c:
-                Marcus.crouch()
             elif event.type == KEYDOWN:
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:

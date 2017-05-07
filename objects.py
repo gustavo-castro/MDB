@@ -24,6 +24,8 @@ class Bullet(pygame.sprite.Sprite):
 
         self.bullet_vector = self.findbv()
 
+        self.high = False
+
 
     def findbv(self):
         distance = [self.target[0] - self.rect.centerx , self.target[1] - self.rect.centery]
@@ -42,6 +44,7 @@ class Bullet(pygame.sprite.Sprite):
 
         for wall in wall_hit_list:
             if wall.istall: self.kill()
+            else: self.high = True
 
 class FriendlyBullet(Bullet):
     def update(self, enemy_list, wall_list):
@@ -51,8 +54,9 @@ class FriendlyBullet(Bullet):
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
 
         for enemy in enemy_hit_list:
-            self.kill()
-            enemy.hp -= 1
+            if (not self.high) or (not enemy.cover):
+                self.kill()
+                enemy.hp -= 1
 
 class EnemyBullet(Bullet):
     def update(self, player_list, wall_list):
@@ -62,8 +66,9 @@ class EnemyBullet(Bullet):
         player_hit_list = pygame.sprite.spritecollide(self, player_list, False)
 
         for player in player_hit_list:
-            self.kill()
-            player.hp -= 1
+            if (not self.high) or (not player.cover):
+                self.kill()
+                player.hp -= 1
 
 class Wall(pygame.sprite.Sprite):
     """ Wall the player can run into"""
