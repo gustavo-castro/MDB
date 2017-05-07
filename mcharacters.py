@@ -10,8 +10,10 @@ class mCharacter(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
+        self.feetleft = True
+        self.feettonum = {True : 2, False : 4}
         self.imagedict = imagedict
-        self.image = self.imagedict['d']
+        self.image = self.imagedict['d'][2]
         self.rect = self.image.get_rect()
         self.walls = None
         self.hp = hp
@@ -22,42 +24,51 @@ class mCharacter(pygame.sprite.Sprite):
         [self.x, self.y] = self.spawn(window_width, window_height)
         self.rect.center = (self.x, self.y)
         self.direction = 4
+        self.cover = False
 
     def updatePosition(self, eventkey):
         if (eventkey == K_LEFT):
             self.x -= self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['l']
+            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
             self.direction = 1
+            self.cover = False
         elif (eventkey == K_RIGHT):
             self.x += self.cellsize
             self.rect.x = self.x
-            self.image = self.imagedict['r']
+            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
             self.direction = 2
+            self.cover = False
         elif (eventkey == K_UP):
             self.y -= self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['u']
+            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
             self.direction = 3
+            self.cover = False
         elif (eventkey == K_DOWN):
             self.y += self.cellsize
             self.rect.y = self.y
-            self.image = self.imagedict['d']
+            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
             self.direction = 4
+            self.cover = False
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             if self.direction == 1:
                 self.x += self.cellsize
                 self.rect.x = self.x
+                self.cover = True
             elif self.direction == 2:
                 self.x -= self.cellsize
                 self.rect.x = self.x
+                self.cover = True
             elif self.direction == 3:
                 self.y += self.cellsize
                 self.rect.y = self.y
+                self.cover = True
             elif self.direction == 4:
                 self.y -= self.cellsize
                 self.rect.y = self.y
+                self.cover = True
 
     def spawn(self, window_width, window_height):
         raise NotImplementedError

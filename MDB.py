@@ -47,9 +47,9 @@ def main():
     showStartScreen()
     while True:
         lost = runGame()
-        if lost:
+        if lost == 1:
             showGameOverScreen()
-        else:
+        elif lost == 0:
             showWinnerScreen()
 
 def terminate():
@@ -107,20 +107,25 @@ def showWinnerScreen():
                 running = False
                 break
 
-def showPauseScreen():
-    newtitlescreen.drawPauseScreen()
+def showChangeMode():
+    which = 0
+    directions = {K_s : 1, K_DOWN : 1, K_w : -1, K_UP : -1}
+    whichgamemode = {0 : runsingleplayer, 1 : runmultibattle, 2 : runcoop}
+    newtitlescreen.drawStartScreen(which)
     pygame.display.update()
-    pygame.time.wait(1000)
-    pygame.event.get()
     running = True
     while running: # menu key handler
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 terminate()
-            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
-                pygame.event.get() #clear queue
+            elif event.type == KEYDOWN and event.key in directions:
+                which = (which+directions[event.key])%3
+                newtitlescreen.drawPressChooseModeScreen(which)
+                pygame.display.update()
+            elif event.type == KEYDOWN and event.key == K_RETURN:
+                newmode = whichgamemode[which]
                 running = False
-                break
+                return newmode
 
 def showPauseScreen():
     which = 0
@@ -137,16 +142,15 @@ def showPauseScreen():
                 newtitlescreen.drawPauseScreen(which)
                 pygame.display.update()
             elif event.type == KEYDOWN and event.key == K_RETURN:
-                global runGame
                 running = False
                 if which == 0:
-                    break
+                    return 'no changes'
                 if which == 1:
-                    pass
+                    newmode = showChangeMode()
+                    return newmode
                 if which == 2:
                     terminate()
         
-
 def runsingleplayer():
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
@@ -172,7 +176,11 @@ def runsingleplayer():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                showPauseScreen()
+                newmode = showPauseScreen()
+                if newmode != 'no changes':
+                    global runGame
+                    runGame = newmode
+                    return 2
             elif event.type == KEYDOWN and event.key == K_r:
                 Marcus.reload()
             elif event.type == KEYDOWN:
@@ -223,7 +231,11 @@ def runmultibattle():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                showPauseScreen()
+                newmode = showPauseScreen()
+                if newmode != 'no changes':
+                    global runGame
+                    runGame = newmode
+                    return 2
             elif event.type == KEYDOWN and event.key == K_r:
                 Marcus.reload()
             elif event.type == KEYDOWN and event.key == K_k:
@@ -279,7 +291,11 @@ def runcoop():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                showPauseScreen()
+                newmode = showPauseScreen()
+                if newmode != 'no changes':
+                    global runGame
+                    runGame = newmode
+                    return 2
             elif event.type == KEYDOWN and event.key == K_r:
                 Marcus.reload()
             elif event.type == KEYDOWN and event.key == K_k:

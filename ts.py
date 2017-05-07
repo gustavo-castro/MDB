@@ -73,17 +73,20 @@ class TitleScreen(object):
         self.screen.blit(wonSurf, wonRect)
         self.drawPressKeyMsg()
 
-    def drawPauseScreen(self):
-        escAgainSurf = self.basicfont.render('Press esc again to quit.', True, DARKGRAY)
-        escAgainRect = escAgainSurf.get_rect()
-        escAgainRect.center = (self.window_width/2, 50)
-        self.screen.blit(escAgainSurf, escAgainRect)
-        self.drawPressKeyMsg()
-
     def drawPauseScreen(self, which):
         whichstring = {0 : 'Unpause', 1 : 'Change Mode', 2 : 'Quit'}
         aux = whichstring[which]
         allgamemodes = {'Unpause' : 20, 'Change Mode' : 40, 'Quit' : 60}
+        for gamemode in allgamemodes:
+            pressKeySurf = self.basicfont.render(gamemode, True, BLUE) if aux == gamemode else self.basicfont.render(gamemode, True, BLACK)
+            pressKeyRect = pressKeySurf.get_rect()
+            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            self.screen.blit(pressKeySurf, pressKeyRect)
+
+    def drawChooseModePause(self, which):
+        whichstring = {0 : 'Single Player', 1 : 'Battle (two players)', 2 : 'Coop (two players)'}
+        aux = whichstring[which]
+        allgamemodes = {'Single Player' : 20, 'Battle (two players)' : 40, 'Coop (two players)' : 60}
         for gamemode in allgamemodes:
             pressKeySurf = self.basicfont.render(gamemode, True, BLUE) if aux == gamemode else self.basicfont.render(gamemode, True, BLACK)
             pressKeyRect = pressKeySurf.get_rect()
