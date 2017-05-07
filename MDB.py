@@ -172,6 +172,12 @@ def runsingleplayer():
     Marcus.walls = wall_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
+        if Marcus.shot == 4:
+            Marcus.image = Marcus.imageshoot
+            Marcus.shot = 0
+        elif Marcus.shot > 0:
+            Marcus.shot += 1
+
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
                 terminate()
@@ -187,6 +193,7 @@ def runsingleplayer():
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
+                #rendergroup.draw(DISPLAYSURF)
 
         Marcus.updatedirection()
 

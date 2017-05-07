@@ -12,7 +12,10 @@ class Character(pygame.sprite.Sprite):
         self.feetleft = True
         self.feettonum = {True : 2, False : 4}
         self.imagedict = imagedict
-        self.image = self.imagedict['d'][2]
+        self.currentdirection = 'd'
+        self.image = self.imagedict[self.currentdirection][2]
+        self.imageshoot = self.image
+        self.shot = 0
         self.rect = self.image.get_rect()
         self.walls = None
         self.hp = hp
@@ -23,6 +26,7 @@ class Character(pygame.sprite.Sprite):
         [self.x, self.y] = self.spawn(window_width, window_height)
         self.rect.center = (self.x, self.y)
         self.cover = False
+        self.auxangle = 6
 
     def updatePosition(self, eventkey):
         aux = 0
@@ -30,28 +34,28 @@ class Character(pygame.sprite.Sprite):
             self.x -= self.cellsize
             self.rect.x = self.x
             self.feetleft = not self.feetleft
-            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 1
         elif (eventkey == K_d):
             self.x += self.cellsize
             self.rect.x = self.x
             self.feetleft = not self.feetleft
-            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 2
         elif (eventkey == K_w):
             self.y -= self.cellsize
             self.rect.y = self.y
             self.feetleft = not self.feetleft
-            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 3
         elif (eventkey == K_s):
             self.y += self.cellsize
             self.rect.y = self.y
             self.feetleft = not self.feetleft
-            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 4
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
@@ -105,22 +109,33 @@ class Character(pygame.sprite.Sprite):
         distance = [x - self.x, y - self.y]
         angle = -math.atan2(distance[1], distance[0])
         auxangle = self.findquadrant(angle)
-        if auxangle == 1:
-            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
-        elif auxangle == 2:
-            self.image = self.imagedict['ur'][self.feettonum[self.feetleft]]
-        elif auxangle == 3:
-            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
-        elif auxangle == 4:
-            self.image = self.imagedict['ue'][self.feettonum[self.feetleft]]
-        elif auxangle == 5:
-            self.image = self.imagedict['dr'][self.feettonum[self.feetleft]]
-        elif auxangle == 6:
-            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
-        elif auxangle == 7:
-            self.image = self.imagedict['de'][self.feettonum[self.feetleft]]
-        elif auxangle == 8:
-            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
+        if auxangle == self.auxangle: return
+        else:
+            self.auxangle = auxangle
+            if auxangle == 1:
+                self.currentdirection = 'r'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 2:
+                self.currentdirection = 'ur'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 3:
+                self.currentdirection = 'u'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 4:
+                self.currentdirection = 'ue'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 5:
+                self.currentdirection = 'dr'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 6:
+                self.currentdirection = 'd'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 7:
+                self.currentdirection = 'de'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            elif auxangle == 8:
+                self.currentdirection = 'l'
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
 
     def spawn(self, window_width, window_height):
         raise NotImplementedError
@@ -148,6 +163,9 @@ class Player(Character):
         bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [self.rect.centerx, self.rect.centery])
 
         bullet.add(friendly_bullet_list, rendergroup)
+        self.lastimage = self.image
+        self.image = self.imagedict[self.currentdirection][5]
+        self.shot = 1
 
         self.ammo -= 1
 
