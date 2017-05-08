@@ -154,7 +154,7 @@ class Player(Character):
         self.reloadCountdown = 0
 
     def spawn(self, window_width, window_height):
-        return [random.randint(23,window_width-23),random.randint(32, window_height/2 - 32)]        
+        return [random.randint(23,window_width-23),random.randint(32, window_height/2 - 32)]
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
@@ -200,8 +200,8 @@ class Enemy(Character):
         self.auxbullet = 0
         self.player_list = player_list
 
-    def spawn(self, window_height, window_width):
-        return [random.randint(27,window_width-27),random.randint(window_height/2+34, window_height-5*34)]
+    def spawn(self, window_width, window_height):
+        return [random.randint(27,window_width-27),random.randint(window_height/2+34, window_height-34)]
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
