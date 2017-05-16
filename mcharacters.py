@@ -6,7 +6,7 @@ import bulletsprite
 
 class mCharacter(pygame.sprite.Sprite):
     """Character implementation using only the keyboard as input (instead of keyboard and mouse), will be used for multiplayer purposes"""
-    def __init__(self, name, imagedict, hp, window_width, window_height, cellsize, rendergroup):
+    def __init__(self, name, imagedict, hp, screen, rendergroup):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
@@ -20,8 +20,9 @@ class mCharacter(pygame.sprite.Sprite):
         self.totalhp = hp
         self.lifebar = lifebar.Lifebar(self)
         rendergroup.add(self.lifebar)
-        self.cellsize = cellsize
-        [self.x, self.y] = self.spawn(window_width, window_height)
+        self.cellsize = screen.cellsize
+        self.screen = screen
+        [self.x, self.y] = self.spawn()
         self.rect.center = (self.x, self.y)
         self.direction = 4
         self.cover = False
@@ -70,15 +71,15 @@ class mCharacter(pygame.sprite.Sprite):
                 self.rect.y = self.y
                 self.cover = True
 
-    def spawn(self, window_width, window_height):
+    def spawn(self):
         raise NotImplementedError
 
     def update(self):
         self.lifebar.update()
 
 class Player(mCharacter):
-    def __init__(self, name, imagedict, window_width, window_height, cellsize, rendergroup):
-        mCharacter.__init__(self, name, imagedict, 10.,window_width, window_height, cellsize, rendergroup)
+    def __init__(self, name, imagedict, screen, rendergroup):
+        mCharacter.__init__(self, name, imagedict, 10., screen, rendergroup)
         self.dead = False
         self.totalammo = 10.
         self.ammo = 10.        
@@ -86,8 +87,8 @@ class Player(mCharacter):
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
-    def spawn(self, window_width, window_height):
-        return [random.randint(23,window_width-23),random.randint(32, window_height/2 - 32)]        
+    def spawn(self):
+        return [random.randint(23, self.screen.width-23),random.randint(32,  self.screen.height/2 - 32)]        
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet aiming the direction he is looking if there is ammo"""

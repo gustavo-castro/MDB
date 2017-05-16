@@ -29,7 +29,7 @@ BGCOLOR = BLACK
 runGame = 0
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, ImagesPlayer, ImagesEnemy, newtitlescreen
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, SCREEN, ImagesPlayer, ImagesEnemy, newtitlescreen
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
 
@@ -43,7 +43,9 @@ def main():
     ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
     ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
 
-    newtitlescreen = ts.TitleScreen(DISPLAYSURF, BASICFONT, FPSCLOCK, FPS, WINDOWWIDTH, WINDOWHEIGHT)
+    SCREEN = Screen(WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, FPS, DISPLAYSURF)
+
+    newtitlescreen = ts.TitleScreen(BASICFONT, FPSCLOCK, SCREEN)
     showStartScreen()
     while True:
         lost = runGame()
@@ -157,7 +159,7 @@ def runsingleplayer():
     # Initiate main character
     player_list = pygame.sprite.Group()
 
-    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
     Marcus.add(player_list, rendergroup)
 
     friendly_bullet_list = pygame.sprite.Group()
@@ -165,10 +167,10 @@ def runsingleplayer():
     
     # Create enemies
     N = 2
-    enemy_list = createenemies(N, ImagesEnemy, player_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
+    wall_list = createwalls(SCREEN, rendergroup)
     Marcus.walls = wall_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
@@ -193,7 +195,6 @@ def runsingleplayer():
                 Marcus.updatePosition(event.key)
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
-                #rendergroup.draw(DISPLAYSURF)
 
         Marcus.updatedirection()
 
@@ -216,7 +217,7 @@ def runmultibattle():
     rendergroup = pygame.sprite.RenderPlain()
     # Initiate player1
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
     Marcus.add(player_list, rendergroup)
 
     #initiating bullet sprite groups
@@ -225,11 +226,11 @@ def runmultibattle():
     
     # Creating player2
     enemy_list = pygame.sprite.Group()
-    Cole = mcharacters.Player('Cole', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup)
     Cole.add(enemy_list, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
+    wall_list = createwalls(SCREEN, rendergroup)
     Marcus.walls = wall_list
     Cole.walls = wall_list
 
@@ -275,10 +276,10 @@ def runcoop():
     rendergroup = pygame.sprite.RenderPlain()
     # Initiate main character
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
     Marcus.add(player_list, rendergroup)
 
-    Cole = mcharacters.Player('Cole', ImagesPlayer, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup)
     Cole.add(player_list, rendergroup)
 
     friendly_bullet_list = pygame.sprite.Group()
@@ -286,10 +287,10 @@ def runcoop():
     
     # Create enemies
     N = 2
-    enemy_list = createenemies(N, ImagesEnemy, player_list, WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, rendergroup)
+    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup)
 
     # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(WINDOWWIDTH, WINDOWHEIGHT, rendergroup)
+    wall_list = createwalls(SCREEN, rendergroup)
     Marcus.walls = wall_list
     Cole.walls = wall_list
 

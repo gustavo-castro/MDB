@@ -5,7 +5,7 @@ import objects
 import bulletsprite
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, name, imagedict, hp, window_width, window_height, cellsize, rendergroup):
+    def __init__(self, name, imagedict, hp, screen, rendergroup):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
@@ -22,8 +22,9 @@ class Character(pygame.sprite.Sprite):
         self.totalhp = hp
         self.lifebar = lifebar.Lifebar(self)
         rendergroup.add(self.lifebar)
-        self.cellsize = cellsize
-        [self.x, self.y] = self.spawn(window_width, window_height)
+        self.cellsize = screen.cellsize
+        self.screen = screen
+        [self.x, self.y] = self.spawn()
         self.rect.center = (self.x, self.y)
         self.cover = False
         self.auxangle = 6
@@ -137,15 +138,15 @@ class Character(pygame.sprite.Sprite):
                 self.currentdirection = 'l'
                 self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
 
-    def spawn(self, window_width, window_height):
+    def spawn(self):
         raise NotImplementedError
 
     def update(self):
         self.lifebar.update()
 
 class Player(Character):
-    def __init__(self, name, imagedict, window_width, window_height, cellsize, rendergroup):
-        Character.__init__(self, name, imagedict, 10.,window_width, window_height, cellsize, rendergroup)
+    def __init__(self, name, imagedict, screen, rendergroup):
+        Character.__init__(self, name, imagedict, 10., screen, rendergroup)
         self.dead = False
         self.totalammo = 10.
         self.ammo = 10.        
@@ -153,8 +154,8 @@ class Player(Character):
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
-    def spawn(self, window_width, window_height):
-        return [random.randint(23,window_width-23),random.randint(32, window_height/2 - 32)]
+    def spawn(self):
+        return [random.randint(23, self.screen.width-23),random.randint(32, self.screen.height/2 - 32)]
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
@@ -193,15 +194,15 @@ class Player(Character):
 class Enemy(Character):
     count = 0
 
-    def __init__(self, imagedict, player_list, window_width, window_height, cellsize, rendergroup):
-        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., window_width, window_height, cellsize, rendergroup)
+    def __init__(self, imagedict, player_list, screen, rendergroup):
+        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., screen, rendergroup)
         Enemy.count += 1
         self.contbullet = 5
         self.auxbullet = 0
         self.player_list = player_list
 
-    def spawn(self, window_width, window_height):
-        return [random.randint(27,window_width-27),random.randint(window_height/2+34, window_height-34)]
+    def spawn(self):
+        return [random.randint(27, self.screen.width-27),random.randint(self.screen.height/2+34, self.screen.height-34)]
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""

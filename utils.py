@@ -3,23 +3,31 @@ import spritesheet
 import objects
 import characters
 
-def createwalls(window_width, window_height, rendergroup):
+class Screen(object):
+    def __init__(self, window_width, window_height, cellsize, fps, display):
+        self.width = window_width
+        self.height = window_height
+        self.cellsize = cellsize
+        self.fps = fps
+        self.display = display
+
+def createwalls(screen, rendergroup):
     """creates walls for the basic level """
     wall_list = pygame.sprite.Group()
 
     wallsize = 1
     
     """outside walls"""
-    wall = objects.Wall(0, 0, wallsize, window_height)
+    wall = objects.Wall(0, 0, wallsize, screen.height)
     wall.add(wall_list, rendergroup)
      
-    wall = objects.Wall(wallsize, 0, window_width, wallsize)
+    wall = objects.Wall(wallsize, 0, screen.width, wallsize)
     wall.add(wall_list, rendergroup)
      
-    wall = objects.Wall(wallsize, window_height - wallsize, window_width, wallsize)
+    wall = objects.Wall(wallsize, screen.height - wallsize, screen.width, wallsize)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(window_width - wallsize, wallsize, wallsize, window_height)
+    wall = objects.Wall(screen.width - wallsize, wallsize, wallsize, screen.height)
     wall.add(wall_list, rendergroup)
 
     """barriers in the middle of the level"""
@@ -27,21 +35,21 @@ def createwalls(window_width, window_height, rendergroup):
     wall = objects.Wall(40, 60, 50, barriersize)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(window_width - 60, window_height - 60, barriersize/3, 30, tallwall = False)
+    wall = objects.Wall(screen.width - 60, screen.height - 60, barriersize/3, 30, tallwall = False)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(50, window_height - 70, 40, barriersize)
+    wall = objects.Wall(50, screen.height - 70, 40, barriersize)
     wall.add(wall_list, rendergroup)
 
     return wall_list
 
 
-def createenemies(N, ImagesDict, player_list, window_width, window_height, cellsize, rendergroup):
+def createenemies(N, ImagesDict, player_list, screen, rendergroup):
     """spawns N enemies"""
     enemy_list = pygame.sprite.Group()
 
     for i in range(N):
-        enemy = characters.Enemy(ImagesDict, player_list, window_width, window_height, cellsize, rendergroup)
+        enemy = characters.Enemy(ImagesDict, player_list, screen, rendergroup)
 
         enemy.add(enemy_list, rendergroup)
     
