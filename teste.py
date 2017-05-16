@@ -27,7 +27,7 @@ direita = ss.image_at((340, 104, 27, 34))
 
 esquerda = ss.image_at((336, 262, 27, 34))
 
-cima = ss.image_at((338, 22, 27, 34))
+cima = ss.image_at((92, 182, 23, 25))
 
 image = cima
 

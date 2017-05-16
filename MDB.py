@@ -196,7 +196,8 @@ def runsingleplayer():
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        Marcus.updatedirection()
+        if not Marcus.cover:
+            Marcus.updatedirection()
 
         player_list.update()
         enemy_list.update(enemy_bullet_list, rendergroup)
@@ -256,7 +257,8 @@ def runmultibattle():
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        Marcus.updatedirection()
+        if not Marcus.cover:
+            Marcus.updatedirection()
 
         player_list.update()
         enemy_list.update()
@@ -316,7 +318,8 @@ def runcoop():
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        Marcus.updatedirection()
+        if not Marcus.cover:
+            Marcus.updatedirection()
 
         player_list.update()
         enemy_list.update(enemy_bullet_list, rendergroup)

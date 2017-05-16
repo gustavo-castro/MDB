@@ -69,7 +69,11 @@ def loadingimages(image, who):
         ur = [ss.image_at((10 + 40*i, 62, 23, 32)) for i in range(6)]
         ue = [ss.image_at((6, 304, 23, 32)), ss.image_at((54, 304, 23, 32)),
         ss.image_at((94, 304, 23, 32)), ss.image_at((138, 304, 23, 32)), ss.image_at((176, 304, 23, 32)), ss.image_at((206, 304, 23, 32))]
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
+        cd = ss.image_at((92, 182, 23, 25))
+        cr = ss.image_at((90, 104, 23, 25))
+        cl = ss.image_at((94, 264, 23, 25))
+        cu = ss.image_at((92, 22, 23, 25))
+        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue, 'cd' : cd, 'cr' : cr, 'cu' : cu, 'cl' : cl}
     elif who == 'enemy':
         d = [ss.image_at((258 + 40*i, 182, 27, 34)) for i in range(6)]
         r = [ss.image_at((260 + 40*i, 104, 27, 34)) for i in range(6)]

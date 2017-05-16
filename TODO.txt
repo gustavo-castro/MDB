@@ -1,9 +1,9 @@
 - organize code
 - improve/create other levels?
 - improve enemy ai?
-- implement spritesheet animations for walking and shooting (for enemies too)
+- implement (and improve) spritesheet animations for walking and shooting (for enemies too)
 - let everyone run and create stamina bars
 - create a bar in up in the screen with information such as, players name, how many bullets he has, life, etc
-- improve battle mode
-- implement hiding and shooting behind low walls
-- created animated title screen and pause menu
+- create a proper winning screen for battle mode
+- improve player image when in cover
+- fix cellsize bug (objects in the game are not associated with the cellsize)

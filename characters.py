@@ -65,18 +65,22 @@ class Character(pygame.sprite.Sprite):
                 self.x += self.cellsize
                 self.rect.x = self.x
                 self.cover = True
+                self.image = self.imagedict['cr']
             elif aux == 2:
                 self.x -= self.cellsize
                 self.rect.x = self.x
                 self.cover = True
+                self.image = self.imagedict['cl']
             elif aux == 3:
                 self.y += self.cellsize
                 self.rect.y = self.y
                 self.cover = True
+                self.image = self.imagedict['cd']
             elif aux == 4:
                 self.y -= self.cellsize
                 self.rect.y = self.y
                 self.cover = True
+                self.image = self.imagedict['cu']
 
     def findquadrant(self, angle):
         pi = math.pi
