@@ -22,6 +22,7 @@ class mCharacter(pygame.sprite.Sprite):
         rendergroup.add(self.lifebar)
         self.cellsize = screen.cellsize
         self.walksize = self.cellsize*4
+        self.walksize = 11
         self.screen = screen
         [self.x, self.y] = self.spawn()
         self.rect.x = self.x
@@ -91,7 +92,7 @@ class Player(mCharacter):
 
     def spawn(self):
         return [random.randrange(self.cellsize, self.screen.width, 5), random.randrange(self.cellsize, self.screen.height, 5)]
-          
+
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet aiming the direction he is looking if there is ammo"""

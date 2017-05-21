@@ -6,4 +6,4 @@
 - create a bar in up in the screen with information such as, players name, how many bullets he has, life, etc
 - create a proper winning screen for battle mode
 - improve player image when in cover
-- fix cellsize bug (objects in the game are not associated with the cellsize)
+- change walksize to a more reasonable one (have to update player's images sizes) and do the same for the walksize in y-axis

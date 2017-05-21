@@ -24,6 +24,7 @@ class Character(pygame.sprite.Sprite):
         rendergroup.add(self.lifebar)
         self.cellsize = screen.cellsize
         self.walksize = self.cellsize*4
+        self.walksize = 11
         self.screen = screen
         [self.x, self.y] = self.spawn()
         self.rect.x = self.x
@@ -161,8 +162,7 @@ class Player(Character):
         self.reloadCountdown = 0
 
     def spawn(self):
-        #return [5,5]
-        return [random.randrange(self.cellsize, self.screen.width, self.cellsize), random.randrange(self.cellsize, self.screen.height, self.cellsize)]
+        return [random.randrange(self.cellsize, self.screen.width, self.walksize), random.randrange(self.cellsize, self.screen.height, self.walksize)]
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
