@@ -11,7 +11,7 @@ from utils import *
 FPS = 15
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
-CELLSIZE = 20
+CELLSIZE = 5
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
 CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
@@ -40,8 +40,8 @@ def main():
     pygame.display.set_caption(NAME)
     pygame.key.set_repeat(100)
 
-    ImagesPlayer = loadingimages('ss-mercenaries.png', 'player')
-    ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy')
+    ImagesPlayer = loadingimages('ss-mercenaries.png', 'player', CELLSIZE)
+    ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy', CELLSIZE)
 
     SCREEN = Screen(WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, FPS, DISPLAYSURF)
 

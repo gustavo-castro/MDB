@@ -21,33 +21,35 @@ class mCharacter(pygame.sprite.Sprite):
         self.lifebar = lifebar.Lifebar(self)
         rendergroup.add(self.lifebar)
         self.cellsize = screen.cellsize
+        self.walksize = self.cellsize*4
         self.screen = screen
         [self.x, self.y] = self.spawn()
-        self.rect.center = (self.x, self.y)
+        self.rect.x = self.x
+        self.rect.y = self.y
         self.direction = 4
         self.cover = False
 
     def updatePosition(self, eventkey):
         if (eventkey == K_LEFT):
-            self.x -= self.cellsize
+            self.x -= self.walksize
             self.rect.x = self.x
             self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
             self.direction = 1
             self.cover = False
         elif (eventkey == K_RIGHT):
-            self.x += self.cellsize
+            self.x += self.walksize
             self.rect.x = self.x
             self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
             self.direction = 2
             self.cover = False
         elif (eventkey == K_UP):
-            self.y -= self.cellsize
+            self.y -= self.walksize
             self.rect.y = self.y
             self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
             self.direction = 3
             self.cover = False
         elif (eventkey == K_DOWN):
-            self.y += self.cellsize
+            self.y += self.walksize
             self.rect.y = self.y
             self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
             self.direction = 4
@@ -55,19 +57,19 @@ class mCharacter(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             if self.direction == 1:
-                self.x += self.cellsize
+                self.x += self.walksize
                 self.rect.x = self.x
                 self.cover = True
             elif self.direction == 2:
-                self.x -= self.cellsize
+                self.x -= self.walksize
                 self.rect.x = self.x
                 self.cover = True
             elif self.direction == 3:
-                self.y += self.cellsize
+                self.y += self.walksize
                 self.rect.y = self.y
                 self.cover = True
             elif self.direction == 4:
-                self.y -= self.cellsize
+                self.y -= self.walksize
                 self.rect.y = self.y
                 self.cover = True
 
@@ -88,7 +90,8 @@ class Player(mCharacter):
         self.reloadCountdown = 0
 
     def spawn(self):
-        return [random.randint(23, self.screen.width-23),random.randint(32,  self.screen.height/2 - 32)]        
+        return [random.randrange(self.cellsize, self.screen.width, 5), random.randrange(self.cellsize, self.screen.height, 5)]
+          
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet aiming the direction he is looking if there is ammo"""
