@@ -35,10 +35,10 @@ def createwalls(screen, rendergroup):
     wall = objects.Wall(40, 60, 50, barriersize)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(screen.width - 60, screen.height - 60, barriersize/3, 30, tallwall = False)
+    wall = objects.Wall(screen.width - 60, screen.height - 60, barriersize/3, 20, tallwall = False)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(50, screen.height - 70, 40, barriersize)
+    wall = objects.Wall(50, screen.height - 80, 40, barriersize)
     wall.add(wall_list, rendergroup)
 
     return wall_list
@@ -60,19 +60,19 @@ def loadingimages(image, who, cellsize):
     # Sprite is 16x16 pixels at location 0,0 in the file...
     #olhando pra cada direcao
     if who == 'player':
-        d = [ss.image_at((12 + 40*i, 182, cellsize*5, cellsize*7)) for i in range(6)]
-        r = [ss.image_at((10 + 40*i, 104, cellsize*5, cellsize*7)) for i in range(6)]
-        l = [ss.image_at((14 + 40*i, 264, cellsize*5, cellsize*7)) for i in range(6)]
-        u = [ss.image_at((12 + 40*i, 22, cellsize*5, cellsize*7)) for i in range(6)]
-        dr = [ss.image_at((10 + 40*i, 142, cellsize*5, cellsize*7)) for i in range(6)]
-        de = [ss.image_at((14 + 40*i, 222, cellsize*5, cellsize*7)) for i in range(6)]
-        ur = [ss.image_at((10 + 40*i, 62, cellsize*5, cellsize*7)) for i in range(6)]
-        ue = [ss.image_at((6, 304, cellsize*5, cellsize*7)), ss.image_at((54, 304, cellsize*5, cellsize*7)),
-        ss.image_at((94, 304, cellsize*5, cellsize*7)), ss.image_at((138, 304, cellsize*5, cellsize*7)), ss.image_at((176, 304, cellsize*5, cellsize*7)), ss.image_at((206, 304, cellsize*5, cellsize*7))]
-        cd = ss.image_at((92, 182, cellsize*5, cellsize*5))
-        cr = ss.image_at((90, 104, cellsize*5, cellsize*5))
-        cl = ss.image_at((94, 264, cellsize*5, cellsize*5))
-        cu = ss.image_at((92, 22, cellsize*5, cellsize*5))
+        d = [ss.image_at((8 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]
+        r = [ss.image_at((6 + 40*i, 104, cellsize*6, cellsize*7)) for i in range(6)]
+        l = [ss.image_at((10 + 40*i, 264, cellsize*6, cellsize*7)) for i in range(6)]
+        u = [ss.image_at((8 + 40*i, 22, cellsize*6, cellsize*7)) for i in range(6)]
+        dr = [ss.image_at((6 + 40*i, 142, cellsize*6, cellsize*7)) for i in range(6)]
+        de = [ss.image_at((10 + 40*i, 222, cellsize*6, cellsize*7)) for i in range(6)]
+        ur = [ss.image_at((8 + 40*i, 62, cellsize*6, cellsize*7)) for i in range(6)]
+        ue = [ss.image_at((2, 304, cellsize*6, cellsize*7)), ss.image_at((60, 304, cellsize*6, cellsize*7)),
+        ss.image_at((90, 304, cellsize*6, cellsize*7)), ss.image_at((134, 304, cellsize*6, cellsize*7)), ss.image_at((172, 304, cellsize*6, cellsize*7)), ss.image_at((202, 304, cellsize*6, cellsize*7))]
+        cd = ss.image_at((88, 182, cellsize*6, cellsize*6))
+        cr = ss.image_at((86, 104, cellsize*6, cellsize*6))
+        cl = ss.image_at((90, 264, cellsize*6, cellsize*6))
+        cu = ss.image_at((88, 22, cellsize*6, cellsize*6))
         ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue, 'cd' : cd, 'cr' : cr, 'cu' : cu, 'cl' : cl}
     elif who == 'enemy':
         d = [ss.image_at((258 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]

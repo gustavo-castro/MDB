@@ -26,10 +26,10 @@ ue = ss.image_at((258, 302, 27, 34))
 direita = ss.image_at((340, 104, 27, 34))
 
 esquerda = ss.image_at((336, 262, 27, 34))
+cellsize = 5
+cd = ss.image_at((92, 182, cellsize*6, cellsize*6))
 
-cima = ss.image_at((92, 182, 23, 25))
-
-image = cima
+image = cd
 
 while True:
     screen.blit(image,(0,0))

@@ -23,8 +23,8 @@ class Character(pygame.sprite.Sprite):
         self.lifebar = lifebar.Lifebar(self)
         rendergroup.add(self.lifebar)
         self.cellsize = screen.cellsize
-        self.walksize = self.cellsize*4
-        self.walksize = 11
+        self.walksize_x = self.cellsize*4
+        self.walksize_y = self.cellsize*4
         self.screen = screen
         [self.x, self.y] = self.spawn()
         self.rect.x = self.x
@@ -35,28 +35,28 @@ class Character(pygame.sprite.Sprite):
     def updatePosition(self, eventkey):
         aux = 0
         if (eventkey == K_a):
-            self.x -= self.walksize
+            self.x -= self.walksize_x
             self.rect.x = self.x
             self.feetleft = not self.feetleft
             self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 1
         elif (eventkey == K_d):
-            self.x += self.walksize
+            self.x += self.walksize_x
             self.rect.x = self.x
             self.feetleft = not self.feetleft
             self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 2
         elif (eventkey == K_w):
-            self.y -= self.walksize
+            self.y -= self.walksize_y
             self.rect.y = self.y
             self.feetleft = not self.feetleft
             self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
             aux = 3
         elif (eventkey == K_s):
-            self.y += self.walksize
+            self.y += self.walksize_y
             self.rect.y = self.y
             self.feetleft = not self.feetleft
             self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
@@ -65,22 +65,22 @@ class Character(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             if aux == 1:
-                self.x += self.walksize
+                self.x += self.walksize_x
                 self.rect.x = self.x
                 self.cover = True
                 self.image = self.imagedict['cr']
             elif aux == 2:
-                self.x -= self.walksize
+                self.x -= self.walksize_x
                 self.rect.x = self.x
                 self.cover = True
                 self.image = self.imagedict['cl']
             elif aux == 3:
-                self.y += self.walksize
+                self.y += self.walksize_y
                 self.rect.y = self.y
                 self.cover = True
                 self.image = self.imagedict['cd']
             elif aux == 4:
-                self.y -= self.walksize
+                self.y -= self.walksize_y
                 self.rect.y = self.y
                 self.cover = True
                 self.image = self.imagedict['cu']
@@ -162,7 +162,7 @@ class Player(Character):
         self.reloadCountdown = 0
 
     def spawn(self):
-        return [random.randrange(self.cellsize, self.screen.width, self.walksize), random.randrange(self.cellsize, self.screen.height, self.walksize)]
+        return [random.randrange(self.cellsize, self.screen.width, self.walksize_x), random.randrange(self.cellsize, self.screen.height, self.walksize_y)]
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
@@ -209,7 +209,7 @@ class Enemy(Character):
         self.player_list = player_list
 
     def spawn(self):
-        return [random.randrange(self.cellsize, self.screen.width, self.cellsize) - self.cellsize*6, random.randrange(self.screen.height/2, self.screen.height, self.cellsize) - self.cellsize*7]
+        return [random.randrange(self.cellsize, self.screen.width, self.walksize_x) - self.cellsize*6, random.randrange(self.screen.height/2, self.screen.height, self.walksize_y) - self.cellsize*7]
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
