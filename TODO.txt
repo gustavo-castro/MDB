@@ -4,6 +4,5 @@
 - improve spritesheet animations for walking and shooting (for enemies too)
 - let everyone run and create stamina bars
 - create a hud in the bottom (or top?) of the screen with information such as, players name, how many bullets he has, life, etc
-- create a proper winning screen for battle mode
 - improve player image when in cover
 - redimension main character 25*30 image to 30*30 image and improve wall placements accordingly to walksize

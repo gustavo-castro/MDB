@@ -162,7 +162,7 @@ class Player(Character):
         self.reloadCountdown = 0
 
     def spawn(self):
-        return [random.randrange(self.cellsize, self.screen.width, self.walksize_x), random.randrange(self.cellsize, self.screen.height, self.walksize_y)]
+        return [random.randrange(self.cellsize, self.screen.width-self.cellsize, self.walksize_x), random.randrange(self.cellsize, self.screen.height/2, self.walksize_y)]
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""

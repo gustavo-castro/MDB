@@ -73,6 +73,18 @@ class TitleScreen(object):
         self.display.blit(wonSurf, wonRect)
         self.drawPressKeyMsg()
 
+    def drawBatlleWinnerScreen(self, Player):
+        youWonFont = pygame.font.Font(self.font, 150)
+        youSurf = youWonFont.render('Player '+str(Player), True, WHITE)
+        wonSurf = youWonFont.render('Won', True, WHITE)
+        youRect = youSurf.get_rect()
+        wonRect = wonSurf.get_rect()
+        youRect.midtop = (self.window_width / 2, 10)
+        wonRect.midtop = (self.window_width / 2, youRect.height + 10 + 25)
+        self.display.blit(youSurf, youRect)
+        self.display.blit(wonSurf, wonRect)
+        self.drawPressKeyMsg()
+
     def drawPauseScreen(self, which):
         whichstring = {0 : 'Unpause', 1 : 'Change Mode', 2 : 'Quit'}
         aux = whichstring[which]

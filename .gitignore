@@ -98,3 +98,6 @@ ENV/
 
 # aux file for sprite images
 teste.py
+
+#editor files
+.vscode/

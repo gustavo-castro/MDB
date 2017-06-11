@@ -49,10 +49,13 @@ def main():
     showStartScreen()
     while True:
         lost = runGame()
-        if lost == 1:
-            showGameOverScreen()
-        elif lost == 0:
-            showWinnerScreen()
+        if runGame == runmultibattle:
+            showPlayerWonScreen(lost)
+        else:
+            if lost == 1:
+                showGameOverScreen()
+            elif lost == 0:
+                showWinnerScreen()
 
 def terminate():
     pygame.quit()
@@ -96,6 +99,21 @@ def showGameOverScreen():
 
 def showWinnerScreen():
     newtitlescreen.drawWinnerScreen()
+    pygame.display.update()
+    pygame.time.wait(1000)
+    pygame.event.get()
+    running = True
+    while running: # menu key handler
+        for event in pygame.event.get(): # event handling loop
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                terminate()
+            elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                pygame.event.get() #clear queue
+                running = False
+                break
+
+def showPlayerWonScreen(Player):
+    newtitlescreen.drawBatlleWinnerScreen(Player)
     pygame.display.update()
     pygame.time.wait(1000)
     pygame.event.get()
@@ -271,7 +289,7 @@ def runmultibattle():
         rendergroup.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-    return Marcus.dead or Cole.dead
+    return 2 if Marcus.dead else 1
 
 def runcoop():
     # Group for drawing all sprites
