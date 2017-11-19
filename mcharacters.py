@@ -3,10 +3,11 @@ from pygame.locals import *
 import lifebar
 import objects
 import bulletsprite
+import utils
 
 class mCharacter(pygame.sprite.Sprite):
     """Character implementation using only the keyboard as input (instead of keyboard and mouse), will be used for multiplayer purposes"""
-    def __init__(self, name, imagedict, hp, screen, rendergroup):
+    def __init__(self, name, imagedict, hp, screen, rendergroup, walls):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
@@ -15,7 +16,7 @@ class mCharacter(pygame.sprite.Sprite):
         self.imagedict = imagedict
         self.image = self.imagedict['d'][2]
         self.rect = self.image.get_rect()
-        self.walls = None
+        self.walls = walls
         self.hp = hp
         self.totalhp = hp
         self.lifebar = lifebar.Lifebar(self)
@@ -81,8 +82,8 @@ class mCharacter(pygame.sprite.Sprite):
         self.lifebar.update()
 
 class Player(mCharacter):
-    def __init__(self, name, imagedict, screen, rendergroup):
-        mCharacter.__init__(self, name, imagedict, 10., screen, rendergroup)
+    def __init__(self, name, imagedict, screen, rendergroup, walls):
+        mCharacter.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
         self.dead = False
         self.totalammo = 10.
         self.ammo = 10.        
@@ -115,9 +116,6 @@ class Player(mCharacter):
     def killhim(self):
         self.dead = True
         self.kill()
-
-    def draw(self):
-        print("oxe")
 
     def reload(self):
         """sets the clock for reloading"""

@@ -30,7 +30,7 @@ class TitleScreen(object):
         self.display.blit(pressKeySurf, pressKeyRect)
 
     def drawStartScreen(self, which):
-        background = pygame.image.load('mainimage.png')
+        background = pygame.image.load('Images/mainimage.png')
         self.display.blit(background, [0, 0])
         titleFont = pygame.font.Font(self.font, 30)
         titleSurf1 = titleFont.render(self.name, True, DARKGRAY)
@@ -51,8 +51,8 @@ class TitleScreen(object):
 
     def drawGameOverScreen(self):
         gameOverFont = pygame.font.Font(self.font, 150)
-        gameSurf = gameOverFont.render('Game', True, WHITE)
-        overSurf = gameOverFont.render('Over', True, WHITE)
+        gameSurf = gameOverFont.render('Game', True, RED)
+        overSurf = gameOverFont.render('Over', True, RED)
         gameRect = gameSurf.get_rect()
         overRect = overSurf.get_rect()
         gameRect.midtop = (self.window_width / 2, 10)
@@ -63,8 +63,8 @@ class TitleScreen(object):
 
     def drawWinnerScreen(self):
         youWonFont = pygame.font.Font(self.font, 150)
-        youSurf = youWonFont.render('You', True, WHITE)
-        wonSurf = youWonFont.render('Won', True, WHITE)
+        youSurf = youWonFont.render('You', True, BLUE)
+        wonSurf = youWonFont.render('Won', True, BLUE)
         youRect = youSurf.get_rect()
         wonRect = wonSurf.get_rect()
         youRect.midtop = (self.window_width / 2, 10)
@@ -75,8 +75,8 @@ class TitleScreen(object):
 
     def drawBatlleWinnerScreen(self, Player):
         youWonFont = pygame.font.Font(self.font, 150)
-        youSurf = youWonFont.render('Player '+str(Player), True, WHITE)
-        wonSurf = youWonFont.render('Won', True, WHITE)
+        youSurf = youWonFont.render('Player '+str(Player), True, BLUE)
+        wonSurf = youWonFont.render('Won', True, BLUE)
         youRect = youSurf.get_rect()
         wonRect = wonSurf.get_rect()
         youRect.midtop = (self.window_width / 2, 10)

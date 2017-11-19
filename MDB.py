@@ -14,8 +14,8 @@ WINDOWHEIGHT = 480
 CELLSIZE = 5
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
-CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
+CELLWIDTH = WINDOWWIDTH / CELLSIZE
+CELLHEIGHT = WINDOWHEIGHT / CELLSIZE
 
 #             R    G    B
 BACKGROUND= (247, 253, 189)
@@ -40,8 +40,8 @@ def main():
     pygame.display.set_caption(NAME)
     pygame.key.set_repeat(100)
 
-    ImagesPlayer = loadingimages('ss-mercenaries.png', 'player', CELLSIZE)
-    ImagesEnemy = loadingimages('ss-mercenaries.png', 'enemy', CELLSIZE)
+    ImagesPlayer = loadingimages('Images/ss-mercenaries.png', 'player', CELLSIZE)
+    ImagesEnemy = loadingimages('Images/ss-mercenaries.png', 'enemy', CELLSIZE)
 
     SCREEN = Screen(WINDOWWIDTH, WINDOWHEIGHT, CELLSIZE, FPS, DISPLAYSURF)
 
@@ -174,10 +174,11 @@ def showPauseScreen():
 def runsingleplayer():
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
+    wall_list = createwalls(SCREEN, rendergroup)
     # Initiate main character
     player_list = pygame.sprite.Group()
 
-    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Marcus.add(player_list, rendergroup)
 
     friendly_bullet_list = pygame.sprite.Group()
@@ -185,11 +186,7 @@ def runsingleplayer():
     
     # Create enemies
     N = 2
-    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup)
-
-    # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(SCREEN, rendergroup)
-    Marcus.walls = wall_list
+    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup, wall_list)
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
         if Marcus.shot == 4:
@@ -234,9 +231,10 @@ def runmultibattle():
     #1v1 battle multiplayer mode
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
+    wall_list = createwalls(SCREEN, rendergroup)
     # Initiate player1
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Marcus.add(player_list, rendergroup)
 
     #initiating bullet sprite groups
@@ -245,13 +243,8 @@ def runmultibattle():
     
     # Creating player2
     enemy_list = pygame.sprite.Group()
-    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup)
+    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Cole.add(enemy_list, rendergroup)
-
-    # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(SCREEN, rendergroup)
-    Marcus.walls = wall_list
-    Cole.walls = wall_list
 
     while (not Marcus.dead and not Cole.dead): # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -294,12 +287,13 @@ def runmultibattle():
 def runcoop():
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
+    wall_list = createwalls(SCREEN, rendergroup)
     # Initiate main character
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Marcus.add(player_list, rendergroup)
 
-    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup)
+    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Cole.add(player_list, rendergroup)
 
     friendly_bullet_list = pygame.sprite.Group()
@@ -308,11 +302,6 @@ def runcoop():
     # Create enemies
     N = 2
     enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup)
-
-    # Make the walls. (x_pos, y_pos, width, height)
-    wall_list = createwalls(SCREEN, rendergroup)
-    Marcus.walls = wall_list
-    Cole.walls = wall_list
 
     while (not Marcus.dead or not Cole.dead) and len(enemy_list.sprites()) > 0: # main game loop
         for event in pygame.event.get(): # event handling loop

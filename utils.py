@@ -44,14 +44,17 @@ def createwalls(screen, rendergroup):
     return wall_list
 
 
-def createenemies(N, ImagesDict, player_list, screen, rendergroup):
+def createenemies(N, ImagesDict, player_list, screen, rendergroup, walls):
     """spawns N enemies"""
     enemy_list = pygame.sprite.Group()
+    enemy_counter = 0
 
-    for i in range(N):
-        enemy = characters.Enemy(ImagesDict, player_list, screen, rendergroup)
+    while enemy_counter < N:
+        enemy = characters.Enemy(ImagesDict, player_list, screen, rendergroup, walls)
 
-        enemy.add(enemy_list, rendergroup)
+        if not pygame.sprite.spritecollide(enemy, enemy_list, False): #only add enemies if there's no collision with other enemies
+            enemy.add(enemy_list, rendergroup)
+            enemy_counter += 1
     
     return enemy_list
 
@@ -65,24 +68,24 @@ def loadingimages(image, who, cellsize):
         l = [ss.image_at((10 + 40*i, 264, cellsize*6, cellsize*7)) for i in range(6)]
         u = [ss.image_at((8 + 40*i, 22, cellsize*6, cellsize*7)) for i in range(6)]
         dr = [ss.image_at((6 + 40*i, 142, cellsize*6, cellsize*7)) for i in range(6)]
-        de = [ss.image_at((10 + 40*i, 222, cellsize*6, cellsize*7)) for i in range(6)]
+        dl = [ss.image_at((10 + 40*i, 222, cellsize*6, cellsize*7)) for i in range(6)]
         ur = [ss.image_at((8 + 40*i, 62, cellsize*6, cellsize*7)) for i in range(6)]
-        ue = [ss.image_at((2, 304, cellsize*6, cellsize*7)), ss.image_at((60, 304, cellsize*6, cellsize*7)),
+        ul = [ss.image_at((2, 304, cellsize*6, cellsize*7)), ss.image_at((60, 304, cellsize*6, cellsize*7)),
         ss.image_at((90, 304, cellsize*6, cellsize*7)), ss.image_at((134, 304, cellsize*6, cellsize*7)), ss.image_at((172, 304, cellsize*6, cellsize*7)), ss.image_at((202, 304, cellsize*6, cellsize*7))]
         cd = ss.image_at((88, 182, cellsize*6, cellsize*6))
         cr = ss.image_at((86, 104, cellsize*6, cellsize*6))
         cl = ss.image_at((90, 264, cellsize*6, cellsize*6))
         cu = ss.image_at((88, 22, cellsize*6, cellsize*6))
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue, 'cd' : cd, 'cr' : cr, 'cu' : cu, 'cl' : cl}
+        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'dl' : dl, 'ur' : ur, 'ul' : ul, 'cd' : cd, 'cr' : cr, 'cu' : cu, 'cl' : cl}
     elif who == 'enemy':
         d = [ss.image_at((258 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]
         r = [ss.image_at((260 + 40*i, 104, cellsize*6, cellsize*7)) for i in range(6)]
         l = [ss.image_at((256 + 40*i, 262, cellsize*6, cellsize*7)) for i in range(6)]
         u = [ss.image_at((258 + 40*i, 22, cellsize*6, cellsize*7)) for i in range(6)]
         dr = [ss.image_at((260 + 40*i, 142, cellsize*6, cellsize*7)) for i in range(6)]
-        de = [ss.image_at((258 + 40*i, 222, cellsize*6, cellsize*7)) for i in range(6)]
+        dl = [ss.image_at((258 + 40*i, 222, cellsize*6, cellsize*7)) for i in range(6)]
         ur = [ss.image_at((258 + 40*i, 60, cellsize*6, cellsize*7)) for i in range(6)]
-        ue = [ss.image_at((258 + 40*i, 302, cellsize*6, cellsize*7)) for i in range(6)]
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'de' : de, 'ur' : ur, 'ue' : ue}
+        ul = [ss.image_at((258 + 40*i, 302, cellsize*6, cellsize*7)) for i in range(6)]
+        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'dl' : dl, 'ur' : ur, 'ul' : ul}
 
     return ImagesDict

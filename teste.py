@@ -10,7 +10,7 @@ size=(w,h)
 screen = pygame.display.set_mode(size) 
 c = pygame.time.Clock()
 
-ss = spritesheet.spritesheet('ss-mercenaries.png')
+ss = spritesheet.spritesheet('Images/ss-mercenaries.png')
 # Sprite is 16x16 pixels at location 0,0 in the file...
 #olhando pra cada direcao
 baixo = ss.image_at((338, 182, 27, 34))
