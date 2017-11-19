@@ -48,14 +48,15 @@ def main():
     newtitlescreen = ts.TitleScreen(BASICFONT, FPSCLOCK, SCREEN)
     showStartScreen()
     while True:
-        lost = runGame()
-        if runGame == runmultibattle:
-            showPlayerWonScreen(lost)
-        else:
-            if lost == 1:
-                showGameOverScreen()
-            elif lost == 0:
-                showWinnerScreen()
+        finished = runGame()
+        if finished < 2:
+            if runGame == runmultibattle:
+                showPlayerWonScreen(finished)
+            else:
+                if finished == 1:
+                    showGameOverScreen()
+                elif finished == 0:
+                    showWinnerScreen()
 
 def terminate():
     pygame.quit()
@@ -112,8 +113,8 @@ def showWinnerScreen():
                 running = False
                 break
 
-def showPlayerWonScreen(Player):
-    newtitlescreen.drawBatlleWinnerScreen(Player)
+def showPlayerWonScreen(result):
+    newtitlescreen.drawBatlleWinnerScreen(result+1)
     pygame.display.update()
     pygame.time.wait(1000)
     pygame.event.get()
@@ -225,7 +226,7 @@ def runsingleplayer():
         rendergroup.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-    return Marcus.dead
+    return int(Marcus.dead)
 
 def runmultibattle():
     #1v1 battle multiplayer mode
@@ -243,7 +244,7 @@ def runmultibattle():
     
     # Creating player2
     enemy_list = pygame.sprite.Group()
-    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
+    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Cole.add(enemy_list, rendergroup)
 
     while (not Marcus.dead and not Cole.dead): # main game loop
@@ -282,7 +283,7 @@ def runmultibattle():
         rendergroup.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-    return 2 if Marcus.dead else 1
+    return int(Marcus.dead)
 
 def runcoop():
     # Group for drawing all sprites
@@ -301,7 +302,7 @@ def runcoop():
     
     # Create enemies
     N = 2
-    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup)
+    enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup, wall_list)
 
     while (not Marcus.dead or not Cole.dead) and len(enemy_list.sprites()) > 0: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -339,7 +340,7 @@ def runcoop():
         rendergroup.draw(DISPLAYSURF)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-    return Marcus.dead and Cole.dead
+    return int(Marcus.dead and Cole.dead)
 
 if __name__ == '__main__':
     main()

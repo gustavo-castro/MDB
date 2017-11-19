@@ -173,6 +173,103 @@ class Player(Character):
             self.reloadCountdown -= 1
         self.bulletsprite.update()
 
+class Player2(Character):
+    def __init__(self, name, imagedict, screen, rendergroup, walls):
+        Character.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
+        self.dead = False
+        self.totalammo = 10.
+        self.ammo = 10.        
+        self.bulletsprite = bulletsprite.BulletSprite(self)
+        rendergroup.add(self.bulletsprite)
+        self.reloadCountdown = 0
+        self.direction = 4
+
+    def updatePosition(self, eventkey):
+        if (eventkey == K_LEFT):
+            self.x -= self.walksize_x
+            self.rect.x = self.x
+            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
+            self.direction = 1
+            self.cover = False
+        elif (eventkey == K_RIGHT):
+            self.x += self.walksize_x
+            self.rect.x = self.x
+            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
+            self.direction = 2
+            self.cover = False
+        elif (eventkey == K_UP):
+            self.y -= self.walksize_y
+            self.rect.y = self.y
+            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
+            self.direction = 3
+            self.cover = False
+        elif (eventkey == K_DOWN):
+            self.y += self.walksize_y
+            self.rect.y = self.y
+            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
+            self.direction = 4
+            self.cover = False
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        if block_hit_list:
+            if self.direction == 1:
+                self.x += self.walksize_x
+                self.rect.x = self.x
+                self.cover = True
+            elif self.direction == 2:
+                self.x -= self.walksize_x
+                self.rect.x = self.x
+                self.cover = True
+            elif self.direction == 3:
+                self.y += self.walksize_y
+                self.rect.y = self.y
+                self.cover = True
+            elif self.direction == 4:
+                self.y -= self.walksize_y
+                self.rect.y = self.y
+                self.cover = True
+
+    def spawn(self):
+        new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
+        random.randrange(self.cellsize, self.screen.height/2, self.walksize_y)]
+        [self.x, self.y] = new_spawn
+        self.rect.x, self.rect.y = self.x, self.y
+        while self.checkwallcollision():
+            self.spawn()
+
+    def shoot(self, friendly_bullet_list, rendergroup):
+        """shoots a bullet aiming the direction he is looking if there is ammo"""
+        if self.ammo == 0 : return
+
+        if self.direction == 1:
+            bullet = objects.FriendlyBullet([self.rect.centerx - 1, self.rect.centery], [self.rect.centerx, self.rect.centery])
+        elif self.direction == 2:
+            bullet = objects.FriendlyBullet([self.rect.centerx + 1, self.rect.centery], [self.rect.centerx, self.rect.centery])
+        elif self.direction == 3:
+            bullet = objects.FriendlyBullet([self.rect.centerx, self.rect.centery - 1], [self.rect.centerx, self.rect.centery])
+        elif self.direction == 4:
+            bullet = objects.FriendlyBullet([self.rect.centerx, self.rect.centery + 1], [self.rect.centerx, self.rect.centery])
+
+        bullet.add(friendly_bullet_list, rendergroup)
+
+        self.ammo -= 1
+
+    def killhim(self):
+        self.dead = True
+        self.kill()
+
+    def reload(self):
+        """sets the clock for reloading"""
+        self.reloadCountdown = 10
+
+    def update(self):
+        Character.update(self)
+        if self.reloadCountdown == 1:
+            self.reloadCountdown = 0
+            self.ammo = 10.
+        elif self.reloadCountdown > 1:
+            self.reloadCountdown -= 1
+        self.bulletsprite.update()
+
 
 class Enemy(Character):
     count = 0
