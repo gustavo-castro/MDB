@@ -3,7 +3,6 @@
 import random, pygame, sys
 from pygame.locals import *
 import characters
-import mcharacters
 import ts
 import objects
 from utils import *
@@ -189,6 +188,8 @@ def runsingleplayer():
     N = 2
     enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup, wall_list)
 
+    Marcus.other_characters = enemy_list
+
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
         if Marcus.shot == 4:
             Marcus.image = Marcus.imageshoot
@@ -245,7 +246,12 @@ def runmultibattle():
     # Creating player2
     enemy_list = pygame.sprite.Group()
     Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
+    while pygame.sprite.spritecollide(Cole, [Marcus], False): #checking both do not collide when they're spawned
+        Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Cole.add(enemy_list, rendergroup)
+
+    Marcus.other_characters = enemy_list
+    Cole.other_characters = player_list
 
     while (not Marcus.dead and not Cole.dead): # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -294,7 +300,9 @@ def runcoop():
     Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Marcus.add(player_list, rendergroup)
 
-    Cole = mcharacters.Player('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
+    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
+    while pygame.sprite.spritecollide(Cole, [Marcus], False): #checking both do not collide
+        Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup, wall_list)
     Cole.add(player_list, rendergroup)
 
     friendly_bullet_list = pygame.sprite.Group()
@@ -303,6 +311,9 @@ def runcoop():
     # Create enemies
     N = 2
     enemy_list = createenemies(N, ImagesEnemy, player_list, SCREEN, rendergroup, wall_list)
+
+    Marcus.other_characters = enemy_list
+    Cole.other_characters = enemy_list
 
     while (not Marcus.dead or not Cole.dead) and len(enemy_list.sprites()) > 0: # main game loop
         for event in pygame.event.get(): # event handling loop

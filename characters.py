@@ -34,6 +34,12 @@ class Character(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         return block_hit_list
 
+    def checkcharactercollision(self):
+        block_hit_list = []
+        if hasattr(self, "other_characters"):
+            block_hit_list = pygame.sprite.spritecollide(self, self.other_characters, False)
+        return block_hit_list
+
     def fixPosition(self, hit_list, walking_direction):
         if hit_list:
             if walking_direction == 1:
@@ -89,7 +95,7 @@ class Character(pygame.sprite.Sprite):
             walking_direction = 4
         else:
             return
-        self.fixPosition(self.checkwallcollision(), walking_direction)
+        self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), walking_direction)
 
     def findquadrant(self, angle):
         #this function finds in which region of the level the character is, rudl are equivalent to right, up, down and left
@@ -209,24 +215,9 @@ class Player2(Character):
             self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
             self.direction = 4
             self.cover = False
-        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
-        if block_hit_list:
-            if self.direction == 1:
-                self.x += self.walksize_x
-                self.rect.x = self.x
-                self.cover = True
-            elif self.direction == 2:
-                self.x -= self.walksize_x
-                self.rect.x = self.x
-                self.cover = True
-            elif self.direction == 3:
-                self.y += self.walksize_y
-                self.rect.y = self.y
-                self.cover = True
-            elif self.direction == 4:
-                self.y -= self.walksize_y
-                self.rect.y = self.y
-                self.cover = True
+        else:
+            return
+        self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), self.direction)
 
     def spawn(self):
         new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
