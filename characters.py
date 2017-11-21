@@ -42,57 +42,63 @@ class Character(pygame.sprite.Sprite):
 
     def fixPosition(self, hit_list, walking_direction):
         if hit_list:
+            self.cover = True
             if walking_direction == 1:
-                self.x += self.walksize_x
+                closest_one = hit_list[0].rect.right
+            elif walking_direction == 2:
+                closest_one = hit_list[0].rect.left
+                closest_width = hit_list[0].rect.width
+            elif walking_direction == 3:
+                closest_one = hit_list[0].rect.bottom
+            elif walking_direction == 4:
+                closest_one = hit_list[0].rect.top              
+            for hitted in hit_list:
+                if walking_direction == 1 and hitted.rect.right > closest_one:
+                    closest_one = hitted.rect.right
+                elif walking_direction == 2 and hitted.rect.left < closest_one:
+                    closest_one = hitted.rect.left
+                elif walking_direction == 3 and hitted.rect.bottom > closest_one:
+                    closest_one = hitted.rect.bottom
+                elif walking_direction == 4 and hitted.rect.top < closest_one:
+                    closest_one = hitted.rect.top
+            if walking_direction == 1:
+                self.x = closest_one
                 self.rect.x = self.x
-                self.cover = True
                 self.image = self.imagedict['cr']
             elif walking_direction == 2:
-                self.x -= self.walksize_x
+                self.x = closest_one - self.rect.width
                 self.rect.x = self.x
-                self.cover = True
                 self.image = self.imagedict['cl']
             elif walking_direction == 3:
-                self.y += self.walksize_y
+                self.y = closest_one
                 self.rect.y = self.y
-                self.cover = True
                 self.image = self.imagedict['cd']
             elif walking_direction == 4:
-                self.y -= self.walksize_y
+                self.y = closest_one - self.rect.height
                 self.rect.y = self.y
-                self.cover = True
                 self.image = self.imagedict['cu']
 
-
     def updatePosition(self, eventkey):
-        if (eventkey == K_a):
-            self.x -= self.walksize_x
-            self.rect.x = self.x
+        if eventkey in [K_a, K_d, K_w, K_s]:
             self.feetleft = not self.feetleft
             self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
             self.cover = False
-            walking_direction = 1
-        elif (eventkey == K_d):
-            self.x += self.walksize_x
-            self.rect.x = self.x
-            self.feetleft = not self.feetleft
-            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
-            self.cover = False
-            walking_direction = 2
-        elif (eventkey == K_w):
-            self.y -= self.walksize_y
-            self.rect.y = self.y
-            self.feetleft = not self.feetleft
-            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
-            self.cover = False
-            walking_direction = 3
-        elif (eventkey == K_s):
-            self.y += self.walksize_y
-            self.rect.y = self.y
-            self.feetleft = not self.feetleft
-            self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
-            self.cover = False
-            walking_direction = 4
+            if eventkey == K_a:
+                self.x -= self.walksize_x
+                self.rect.x = self.x
+                walking_direction = 1
+            elif eventkey == K_d:
+                self.x += self.walksize_x
+                self.rect.x = self.x
+                walking_direction = 2
+            elif eventkey == K_w:
+                self.y -= self.walksize_y
+                self.rect.y = self.y
+                walking_direction = 3
+            elif eventkey == K_s:
+                self.y += self.walksize_y
+                self.rect.y = self.y
+                walking_direction = 4
         else:
             return
         self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), walking_direction)

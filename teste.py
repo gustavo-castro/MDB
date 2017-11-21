@@ -27,9 +27,12 @@ direita = ss.image_at((340, 104, 27, 34))
 
 esquerda = ss.image_at((336, 262, 27, 34))
 cellsize = 5
-cd = ss.image_at((92, 182, cellsize*6, cellsize*6))
+cd = ss.image_at((90, 184, cellsize*5, cellsize*4))
+cr = ss.image_at((90, 104, cellsize*5, cellsize*5))
+cl = ss.image_at((90, 264, cellsize*5, cellsize*5))
+cu = ss.image_at((91, 22, cellsize*5, cellsize*4))
 
-image = cd
+image = cl
 
 while True:
     screen.blit(image,(0,0))
