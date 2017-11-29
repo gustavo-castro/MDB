@@ -191,9 +191,8 @@ def runsingleplayer():
     Marcus.other_characters = enemy_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
-        if Marcus.shot == 4:
-            Marcus.image = Marcus.imageshoot
-            Marcus.shot = 0
+        if Marcus.shot > 4:
+            Marcus.stopshoot()
         elif Marcus.shot > 0:
             Marcus.shot += 1
 
@@ -213,7 +212,7 @@ def runsingleplayer():
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        if not Marcus.cover:
+        if not Marcus.cover and not Marcus.shot:
             Marcus.updatedirection()
 
         player_list.update()

@@ -15,7 +15,6 @@ class Character(pygame.sprite.Sprite):
         self.imagedict = imagedict
         self.currentdirection = 'd'
         self.image = self.imagedict[self.currentdirection][2]
-        self.imageshoot = self.image
         self.shot = 0
         self.rect = self.image.get_rect()
         self.walls = walls
@@ -63,7 +62,8 @@ class Character(pygame.sprite.Sprite):
             previouswidth, previousheight = self.image.get_rect().width, self.image.get_rect().height
             if walking_direction == 1:
                 self.x = closest_one
-                self.image = self.imagedict['cr']
+                self.coverdirection = "cr"
+                self.image = self.imagedict[self.coverdirection][0]
                 self.rect = self.image.get_rect()
                 if self.cover:
                     if self.blocked_direction == 3:
@@ -73,7 +73,8 @@ class Character(pygame.sprite.Sprite):
                 [self.rect.x, self.rect.y] = [self.x, self.y]
             elif walking_direction == 2:
                 self.x = closest_one
-                self.image = self.imagedict['cl']
+                self.coverdirection = "cl"
+                self.image = self.imagedict[self.coverdirection][0]
                 self.rect = self.image.get_rect()
                 self.x -= self.rect.width
                 if self.cover:
@@ -84,7 +85,8 @@ class Character(pygame.sprite.Sprite):
                 [self.rect.x, self.rect.y] = [self.x, self.y]
             elif walking_direction == 3:
                 self.y = closest_one
-                self.image = self.imagedict['cd']
+                self.coverdirection = "cd"
+                self.image = self.imagedict[self.coverdirection][0]
                 if self.cover:
                     if self.blocked_direction == 1:
                         self.x -= self.rect.width - previouswidth
@@ -94,7 +96,8 @@ class Character(pygame.sprite.Sprite):
                 [self.rect.x, self.rect.y] = [self.x, self.y]
             elif walking_direction == 4:
                 self.y = closest_one
-                self.image = self.imagedict['cu']
+                self.coverdirection = "cu"
+                self.image = self.imagedict[self.coverdirection][0]
                 self.rect = self.image.get_rect()
                 self.y -= self.rect.height
                 if self.cover:
@@ -106,7 +109,7 @@ class Character(pygame.sprite.Sprite):
             self.cover = True
             self.blocked_direction = walking_direction
         else:
-            if self.cover:
+            if self.cover or (self.shot and self.wasincover):
                 if self.blocked_direction in [1,2]:
                     if walking_direction in [3,4]:
                         return
@@ -122,6 +125,15 @@ class Character(pygame.sprite.Sprite):
                 elif self.blocked_direction in [3,4]:
                     if walking_direction in [1, 2]:
                         return
+                    else:
+                        previouswidth = self.image.get_rect().width
+                        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+                        self.rect = self.image.get_rect()
+                        [self.rect.x, self.rect.y] = [self.x, self.y]
+                        aux_hitted = self.checkwallcollision()+self.checkcharactercollision()
+                        if aux_hitted:
+                            self.x -= self.rect.width - previouswidth
+                            self.rect.x = self.x
             self.cover = False
 
     def updatePosition(self, eventkey):
@@ -143,7 +155,7 @@ class Character(pygame.sprite.Sprite):
                 self.y += self.walksize_y
                 self.rect.y = self.y
                 walking_direction = 4
-            if not self.cover:
+            if not self.cover and not (self.shot and self.wasincover):
                 self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
                 self.rect = self.image.get_rect()
                 [self.rect.x, self.rect.y] = [self.x, self.y]
@@ -210,11 +222,27 @@ class Player(Character):
         bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [self.rect.centerx, self.rect.centery])
 
         bullet.add(friendly_bullet_list, rendergroup)
-        self.lastimage = self.image
-        self.image = self.imagedict[self.currentdirection][5]
-        self.shot = 1
+        if not self.shot:
+            self.lastimage = self.image
+            if self.cover:
+                self.image = self.imagedict[self.coverdirection][5]
+            else:
+                self.image = self.imagedict[self.currentdirection][5]
+            self.rect = self.image.get_rect()
+            [self.rect.x, self.rect.y] = [self.x, self.y]
 
+        if not self.shot:
+            self.wasincover = self.cover
+        self.cover = False
+
+        self.shot = 1
         self.ammo -= 1
+
+    def stopshoot(self):
+        self.shot = 0
+        self.image = self.lastimage
+        if self.wasincover:
+            self.cover = True
 
     def killhim(self):
         self.dead = True

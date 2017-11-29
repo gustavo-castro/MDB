@@ -31,8 +31,11 @@ cd = ss.image_at((90, 184, cellsize*5, cellsize*4))
 cr = ss.image_at((90, 104, cellsize*5, cellsize*5))
 cl = ss.image_at((90, 264, cellsize*5, cellsize*5))
 cu = ss.image_at((91, 22, cellsize*5, cellsize*4))
+auxcd = ss.image_at((210, 184, cellsize*5, cellsize*4))
 
-image = cl
+d = [ss.image_at((8 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]
+
+image = auxcd
 
 while True:
     screen.blit(image,(0,0))

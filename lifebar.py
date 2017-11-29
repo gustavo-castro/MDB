@@ -14,12 +14,13 @@ class Lifebar(pygame.sprite.Sprite):
         pygame.draw.rect(self.image, (0,255,0), (0,0,self.boss.rect.width,7),1)
         self.rect = self.image.get_rect()
         self.oldpercent = 0
+        self.thewidth = self.boss.rect.width
         
     def update(self):
         self.percent = self.boss.hp / self.boss.totalhp
         if self.percent != self.oldpercent:
-            pygame.draw.rect(self.image, Black, (1,1,self.boss.rect.width-2,5)) # fill black
-            pygame.draw.rect(self.image, Green, (1,1,int(self.boss.rect.width * self.percent),5),0) # fill green
+            pygame.draw.rect(self.image, Black, (1,1,self.thewidth-2,5)) # fill black
+            pygame.draw.rect(self.image, Green, (1,1,int(self.thewidth * self.percent),5),0) # fill green
         self.oldpercent = self.percent
         self.rect.centerx = self.boss.rect.centerx
         self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
