@@ -112,6 +112,8 @@ class Character(pygame.sprite.Sprite):
             if self.cover or (self.shot and self.wasincover):
                 if self.blocked_direction in [1,2]:
                     if walking_direction in [3,4]:
+                        self.cover = True
+                        self.moved = False
                         return
                     else:
                         previousheight = self.image.get_rect().height
@@ -124,6 +126,8 @@ class Character(pygame.sprite.Sprite):
                             self.rect.y = self.y
                 elif self.blocked_direction in [3,4]:
                     if walking_direction in [1, 2]:
+                        self.cover = True
+                        self.moved = False
                         return
                     else:
                         previouswidth = self.image.get_rect().width
@@ -159,6 +163,7 @@ class Character(pygame.sprite.Sprite):
                 self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
                 self.rect = self.image.get_rect()
                 [self.rect.x, self.rect.y] = [self.x, self.y]
+            self.moved = True
         else:
             return
         self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), walking_direction)
@@ -224,8 +229,18 @@ class Player(Character):
         bullet.add(friendly_bullet_list, rendergroup)
         if not self.shot:
             self.lastimage = self.image
-            if self.cover:
-                self.image = self.imagedict[self.coverdirection][5]
+            if self.cover:        
+                [x, y] = pygame.mouse.get_pos()
+                distance = [x - self.x, y - self.y]
+                angle = -math.atan2(distance[1], distance[0])
+                shoot_direction = self.findquadrant(angle)
+                if shoot_direction in ["r", "u", "l", "d"]:
+                    self.image = self.imagedict["c"+shoot_direction][5]
+                else:
+                    if self.blocked_direction in ["r", "l"]:
+                        self.image = self.imagedict["c"+shoot_direction][0]
+                    else:
+                        self.image = self.imagedict["c"+shoot_direction][1]
             else:
                 self.image = self.imagedict[self.currentdirection][5]
             self.rect = self.image.get_rect()
@@ -234,15 +249,17 @@ class Player(Character):
         if not self.shot:
             self.wasincover = self.cover
         self.cover = False
+        self.moved = False
 
         self.shot = 1
         self.ammo -= 1
 
     def stopshoot(self):
         self.shot = 0
-        self.image = self.lastimage
-        if self.wasincover:
-            self.cover = True
+        if not self.moved:
+            self.image = self.lastimage
+            if self.wasincover:
+                self.cover = True
 
     def killhim(self):
         self.dead = True
