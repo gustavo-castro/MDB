@@ -367,9 +367,14 @@ class Enemy(Character):
     def __init__(self, imagedict, player_list, screen, rendergroup, walls):
         Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., screen, rendergroup, walls)
         Enemy.count += 1
+        self.ammo = 5.
+        self.totalammo = self.ammo
         self.contbullet = 5
         self.auxbullet = 0
         self.player_list = player_list
+        self.bulletsprite = bulletsprite.BulletSprite(self)
+        rendergroup.add(self.bulletsprite)
+        self.reloadCountdown = 0
 
     def spawn(self):
         new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
@@ -381,6 +386,12 @@ class Enemy(Character):
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
+        if self.ammo == 0:
+            if self.reloadCountdown == 0:
+                self.reload()
+                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            return
+
         dist = float('inf')
         if self.player_list:
             for player in self.player_list.sprites():
@@ -392,8 +403,16 @@ class Enemy(Character):
             bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
             bullet.add(enemy_bullet_list, rendergroup)
 
+        self.image = self.imagedict[self.currentdirection][5]
+
+        self.ammo -= 1
+
     def killhim(self):
         self.kill()
+
+    def reload(self):
+        """sets the clock for reloading"""
+        self.reloadCountdown = 10
 
     def update(self, enemy_bullet_list, rendergroup):
         Character.update(self)
@@ -402,8 +421,16 @@ class Enemy(Character):
             self.auxbullet = 0
         self.auxbullet += 1
 
+        if self.reloadCountdown == 1:
+            self.reloadCountdown = 0
+            self.ammo = 10.
+        elif self.reloadCountdown > 1:
+            self.reloadCountdown -= 1
+        self.bulletsprite.update()
+
     def updatedirection(self, player):
         distance = [player.x - self.x, player.y - self.y]
         angle = -math.atan2(distance[1], distance[0])
         newdirection = self.findquadrant(angle)
+        self.currentdirection = newdirection
         self.image = self.imagedict[newdirection][self.feettonum[self.feetleft]]
