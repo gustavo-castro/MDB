@@ -1,31 +1,53 @@
 import pygame
 
-#             R    G    B
-Black     = (  0,   0,   0)
-Green     = (  0, 255,   0)
+black_color = (0, 0, 0)
+green_color = (0, 255, 0)
 
-class Lifebar(pygame.sprite.Sprite):
-    """shows a bar with the hitpoints the sprite"""
-    def __init__(self, boss):
+class LifeBar(pygame.sprite.Sprite):
+    """
+    This class represents the bar that shows how many bullets the concerned character has loaded
+
+    Parameters
+    ----------
+    owner : Character object (defined in characters.py)
+        Specifies the character that will have this LifeBar
+
+    Atributes
+    ---------
+    sizebar : Int
+        Represents the size of the bar to be shown
+
+    owner : Character object (defined in characters.py)
+        Represents the character that will have this BulletBar
+
+    image : Pygame's Sprite's image
+        Represents the BulletBar's image
+
+    rect : Pygame's Sprite's rect
+        Represents the BulletBar's rectangle
+
+    percent : Float
+        Represents the percentage of bullets that the BulletBar's owner has
+    """
+    def __init__(self, owner):
         pygame.sprite.Sprite.__init__(self)
-        self.boss = boss
-        self.image = pygame.Surface((self.boss.rect.width,7))
-        self.image.set_colorkey(Black) # black transparent
-        pygame.draw.rect(self.image, (0,255,0), (0,0,self.boss.rect.width,7),1)
+        self.owner = owner
+        self.sizebar = self.owner.rect.width
+        self.image = pygame.Surface((self.owner.rect.width,7))
+        self.image.set_colorkey(black_color) # black transparent
+        pygame.draw.rect(self.image, (0,255,0), (0,0,self.owner.rect.width,7),1)
         self.rect = self.image.get_rect()
-        self.oldpercent = 0
-        self.thewidth = self.boss.rect.width
+        self.percent = 0
         
     def update(self):
-        self.percent = self.boss.hp / self.boss.totalhp
-        if self.percent != self.oldpercent:
-            pygame.draw.rect(self.image, Black, (1,1,self.thewidth-2,5)) # fill black
-            pygame.draw.rect(self.image, Green, (1,1,int(self.thewidth * self.percent),5),0) # fill green
-        self.oldpercent = self.percent
-        self.rect.centerx = self.boss.rect.centerx
-        self.rect.centery = self.boss.rect.centery - self.boss.rect.height /2 - 10
-        #kill boss if hp == 0
-        if self.percent <= 0:
+        if self.percent != self.owner.hp/self.owner.totalhp:
+            self.percent = self.owner.hp/self.owner.totalhp
+            pygame.draw.rect(self.image, black_color, (1,1,self.sizebar-2,5))
+            pygame.draw.rect(self.image, green_color, (1,1,int(self.sizebar * self.percent),5),0)
+        self.rect.centerx = self.owner.rect.centerx
+        self.rect.centery = self.owner.rect.centery - self.owner.rect.height/2 - 10
+        
+        if self.percent <= 0: #kill owner if hp == 0
             self.kill()
-            if hasattr(self.boss, 'bulletsprite'): self.boss.bulletsprite.kill()
-            self.boss.killhim()
+            if hasattr(self.owner, 'bulletsprite'): self.owner.bulletsprite.kill()
+            self.owner.killhim()

@@ -11,20 +11,19 @@ class Character(pygame.sprite.Sprite):
 
         self.name = name
         self.feetleft = True
-        self.feettonum = {True : 2, False : 4}
+        self.feettonum = {True : "left", False : "right"}
         self.imagedict = imagedict
         self.currentdirection = 'd'
-        self.image = self.imagedict[self.currentdirection][2]
+        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
         self.shot = 0
         self.rect = self.image.get_rect()
         self.walls = walls
         self.hp = hp
         self.totalhp = hp
-        self.lifebar = lifebar.Lifebar(self)
+        self.lifebar = lifebar.LifeBar(self)
         rendergroup.add(self.lifebar)
         self.cellsize = screen.cellsize
-        self.walksize_x = self.cellsize*4
-        self.walksize_y = self.cellsize*4
+        self.walksize_x, self.walksize_y = self.cellsize*4, self.cellsize*4
         self.screen = screen
         self.spawn()
         self.cover = False
@@ -63,7 +62,7 @@ class Character(pygame.sprite.Sprite):
             if walking_direction == 1:
                 self.x = closest_one
                 self.coverdirection = "cr"
-                self.image = self.imagedict[self.coverdirection][0]
+                self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
                 if self.cover:
                     if self.blocked_direction == 3:
@@ -74,7 +73,7 @@ class Character(pygame.sprite.Sprite):
             elif walking_direction == 2:
                 self.x = closest_one
                 self.coverdirection = "cl"
-                self.image = self.imagedict[self.coverdirection][0]
+                self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
                 self.x -= self.rect.width
                 if self.cover:
@@ -86,7 +85,7 @@ class Character(pygame.sprite.Sprite):
             elif walking_direction == 3:
                 self.y = closest_one
                 self.coverdirection = "cd"
-                self.image = self.imagedict[self.coverdirection][0]
+                self.image = self.imagedict[self.coverdirection]["cover"]
                 if self.cover:
                     if self.blocked_direction == 1:
                         self.x -= self.rect.width - previouswidth
@@ -97,7 +96,7 @@ class Character(pygame.sprite.Sprite):
             elif walking_direction == 4:
                 self.y = closest_one
                 self.coverdirection = "cu"
-                self.image = self.imagedict[self.coverdirection][0]
+                self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
                 self.y -= self.rect.height
                 if self.cover:
@@ -208,7 +207,7 @@ class Player(Character):
         self.dead = False
         self.totalammo = 10.
         self.ammo = 10.        
-        self.bulletsprite = bulletsprite.BulletSprite(self)
+        self.bulletsprite = bulletsprite.BulletBar(self)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
@@ -235,14 +234,14 @@ class Player(Character):
                 angle = -math.atan2(distance[1], distance[0])
                 shoot_direction = self.findquadrant(angle)
                 if shoot_direction in ["r", "u", "l", "d"]:
-                    self.image = self.imagedict["c"+shoot_direction][5]
+                    self.image = self.imagedict["c"+shoot_direction]["shoot"]
                 else:
                     if self.blocked_direction in ["r", "l"]:
-                        self.image = self.imagedict["c"+shoot_direction][0]
+                        self.image = self.imagedict["c"+shoot_direction]["left"]
                     else:
-                        self.image = self.imagedict["c"+shoot_direction][1]
+                        self.image = self.imagedict["c"+shoot_direction]["right"]
             else:
-                self.image = self.imagedict[self.currentdirection][5]
+                self.image = self.imagedict[self.currentdirection]["shoot"]
             self.rect = self.image.get_rect()
             [self.rect.x, self.rect.y] = [self.x, self.y]
 
@@ -284,7 +283,7 @@ class Player2(Character):
         self.dead = False
         self.totalammo = 10.
         self.ammo = 10.        
-        self.bulletsprite = bulletsprite.BulletSprite(self)
+        self.bulletsprite = bulletsprite.BulletBar(self)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
         self.direction = 4
@@ -370,9 +369,9 @@ class Enemy(Character):
         self.ammo = 5.
         self.totalammo = self.ammo
         self.contbullet = 5
-        self.auxbullet = 0
+        self.bullettimer = 0
         self.player_list = player_list
-        self.bulletsprite = bulletsprite.BulletSprite(self)
+        self.bulletsprite = bulletsprite.BulletBar(self)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
@@ -403,7 +402,7 @@ class Enemy(Character):
             bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
             bullet.add(enemy_bullet_list, rendergroup)
 
-        self.image = self.imagedict[self.currentdirection][5]
+        self.image = self.imagedict[self.currentdirection]["shoot"]
 
         self.ammo -= 1
 
@@ -416,10 +415,10 @@ class Enemy(Character):
 
     def update(self, enemy_bullet_list, rendergroup):
         Character.update(self)
-        if self.auxbullet == self.contbullet:
+        if self.bullettimer == self.contbullet:
             self.shoot(enemy_bullet_list, rendergroup)
-            self.auxbullet = 0
-        self.auxbullet += 1
+            self.bullettimer = 0
+        self.bullettimer += 1
 
         if self.reloadCountdown == 1:
             self.reloadCountdown = 0
