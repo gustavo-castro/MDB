@@ -5,31 +5,114 @@ import objects
 import bulletsprite
 import utils
 
+class Movement(object):
+    """
+    This class represents the movement aspects of the concerned character
+
+    Parameters
+    ----------
+    screen : Screen object (as defined in utils.py)
+        Specifies the screen attributes of the game
+    
+    walls : Wall object (as defined in objects.py)
+        Specifies the walls present in the game
+
+    Atributes
+    ---------
+    feetleft : boolean
+        True if the character is walking on his left foot and False otherwise
+
+    currentdirection : string
+        Represents the character's current direction (the one he is looking to)
+
+    screen : Screen object
+        Represents the screen attributes of the game
+
+    walksize_x, walksize_y : Int
+        Represent the size of the character's step in the x and y axis
+
+    walls : Wall object
+        Represents the walls present in the game
+
+    shot : Int
+        Positive if the character has shot recently and 0 otherwise
+
+    cover : boolean
+        True if the character is in cover (against a wall) and False otherwise
+    """
+    def __init__(self, screen, walls):
+        self.feetleft = True
+        self.currentdirection = 'd'
+        self.screen = screen
+        self.walksize_x, self.walksize_y = self.screen.cellsize*4, self.screen.cellsize*4
+        self.walls = walls
+        self.shot = 0
+        self.cover = False
+
+    def whichleg(self):
+        if self.feetleft:
+            return "left"
+        else:
+            return "right"
+
 class Character(pygame.sprite.Sprite):
+    """
+    This class represents the characters of the game
+
+    Parameters
+    ----------
+    name : string
+        Specifies the character's name
+    
+    imagedict : dictionary
+        Represents all the images that will represent the character in the form of a dictionary
+
+    hp : Int
+        Specifies the number of hit points the character will have
+
+    screen : Screen object (as defined in utils.py)
+        Specifies the screen attributes of the game
+
+    rendergroup : Pygame's Sprite's Group
+        Specifies the group that will be rendered to the display of the game
+
+    walls : Wall object (as defined in objects.py)
+        Specifies the walls present in the game
+
+    Atributes
+    ---------
+    name : string
+        Represents the character's name
+
+    movement : Movement object
+        Represents the character's movement characteristics
+
+    imagedict : dictionary
+        Represents all the images that will represent the character in the form of a dictionary
+
+    image : Pygame's Sprite's image
+        Represents the character's image
+
+    rect : Pygame's Sprite's rect
+        Represents the character's rectangle
+
+    walls : Wall object
+        Represents the walls present in the game
+    """
     def __init__(self, name, imagedict, hp, screen, rendergroup, walls):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
-        self.feetleft = True
-        self.feettonum = {True : "left", False : "right"}
+        self.movement = Movement(screen, walls)
         self.imagedict = imagedict
-        self.currentdirection = 'd'
-        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
-        self.shot = 0
+        self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
         self.rect = self.image.get_rect()
-        self.walls = walls
-        self.hp = hp
-        self.totalhp = hp
-        self.lifebar = lifebar.LifeBar(self)
+        self.lifebar = lifebar.LifeBar(self, hp)
         rendergroup.add(self.lifebar)
-        self.cellsize = screen.cellsize
-        self.walksize_x, self.walksize_y = self.cellsize*4, self.cellsize*4
-        self.screen = screen
         self.spawn()
-        self.cover = False
 
     def checkwallcollision(self):
-        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        block_hit_list = pygame.sprite.spritecollide(self, self.movement.walls, False)
         return block_hit_list
 
     def checkcharactercollision(self):
@@ -64,7 +147,7 @@ class Character(pygame.sprite.Sprite):
                 self.coverdirection = "cr"
                 self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
-                if self.cover:
+                if self.movement.cover:
                     if self.blocked_direction == 3:
                         self.y += self.rect.height - previousheight
                     elif self.blocked_direction == 4:
@@ -76,7 +159,7 @@ class Character(pygame.sprite.Sprite):
                 self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
                 self.x -= self.rect.width
-                if self.cover:
+                if self.movement.cover:
                     if self.blocked_direction == 3:
                         self.y += self.rect.height - previousheight
                     elif self.blocked_direction == 4:
@@ -86,7 +169,7 @@ class Character(pygame.sprite.Sprite):
                 self.y = closest_one
                 self.coverdirection = "cd"
                 self.image = self.imagedict[self.coverdirection]["cover"]
-                if self.cover:
+                if self.movement.cover:
                     if self.blocked_direction == 1:
                         self.x -= self.rect.width - previouswidth
                     if self.blocked_direction == 2:
@@ -99,24 +182,24 @@ class Character(pygame.sprite.Sprite):
                 self.image = self.imagedict[self.coverdirection]["cover"]
                 self.rect = self.image.get_rect()
                 self.y -= self.rect.height
-                if self.cover:
+                if self.movement.cover:
                     if self.blocked_direction == 1:
                         self.x -= self.rect.width - previouswidth
                     if self.blocked_direction == 2:
                         self.x += self.rect.width - previouswidth
                 [self.rect.x, self.rect.y] = [self.x, self.y]
-            self.cover = True
+            self.movement.cover = True
             self.blocked_direction = walking_direction
         else:
-            if self.cover or (self.shot and self.wasincover):
+            if self.movement.cover or (self.movement.shot and self.wasincover):
                 if self.blocked_direction in [1,2]:
                     if walking_direction in [3,4]:
-                        self.cover = True
+                        self.movement.cover = True
                         self.moved = False
                         return
                     else:
                         previousheight = self.image.get_rect().height
-                        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+                        self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
                         self.rect = self.image.get_rect()
                         [self.rect.x, self.rect.y] = [self.x, self.y]
                         aux_hitted = self.checkwallcollision()+self.checkcharactercollision()
@@ -125,41 +208,41 @@ class Character(pygame.sprite.Sprite):
                             self.rect.y = self.y
                 elif self.blocked_direction in [3,4]:
                     if walking_direction in [1, 2]:
-                        self.cover = True
+                        self.movement.cover = True
                         self.moved = False
                         return
                     else:
                         previouswidth = self.image.get_rect().width
-                        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+                        self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
                         self.rect = self.image.get_rect()
                         [self.rect.x, self.rect.y] = [self.x, self.y]
                         aux_hitted = self.checkwallcollision()+self.checkcharactercollision()
                         if aux_hitted:
                             self.x -= self.rect.width - previouswidth
                             self.rect.x = self.x
-            self.cover = False
+            self.movement.cover = False
 
     def updatePosition(self, eventkey):
         if eventkey in [K_a, K_d, K_w, K_s]:
-            self.feetleft = not self.feetleft
+            self.movement.feetleft = not self.movement.feetleft
             if eventkey == K_a:
-                self.x -= self.walksize_x
+                self.x -= self.movement.walksize_x
                 self.rect.x = self.x
                 walking_direction = 1
             elif eventkey == K_d:
-                self.x += self.walksize_x
+                self.x += self.movement.walksize_x
                 self.rect.x = self.x
                 walking_direction = 2
             elif eventkey == K_w:
-                self.y -= self.walksize_y
+                self.y -= self.movement.walksize_y
                 self.rect.y = self.y
                 walking_direction = 3
             elif eventkey == K_s:
-                self.y += self.walksize_y
+                self.y += self.movement.walksize_y
                 self.rect.y = self.y
                 walking_direction = 4
-            if not self.cover and not (self.shot and self.wasincover):
-                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+            if not self.movement.cover and not (self.movement.shot and self.wasincover):
+                self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
                 self.rect = self.image.get_rect()
                 [self.rect.x, self.rect.y] = [self.x, self.y]
             self.moved = True
@@ -192,8 +275,8 @@ class Character(pygame.sprite.Sprite):
         distance = [x - self.x, y - self.y]
         angle = -math.atan2(distance[1], distance[0])
         newdirection = self.findquadrant(angle)
-        self.currentdirection = newdirection
-        self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+        self.movement.currentdirection = newdirection
+        self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
 
     def spawn(self):
         raise NotImplementedError
@@ -204,16 +287,14 @@ class Character(pygame.sprite.Sprite):
 class Player(Character):
     def __init__(self, name, imagedict, screen, rendergroup, walls):
         Character.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
-        self.dead = False
-        self.totalammo = 10.
-        self.ammo = 10.        
-        self.bulletsprite = bulletsprite.BulletBar(self)
+        self.dead = False    
+        self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
     def spawn(self):
-        new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
-        random.randrange(self.cellsize, self.screen.height/2, self.walksize_y)]
+        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
+        random.randrange(self.movement.screen.cellsize, self.movement.screen.height/2, self.movement.walksize_y)]
         [self.x, self.y] = new_spawn
         self.rect.x, self.rect.y = self.x, self.y
         while self.checkwallcollision():
@@ -221,14 +302,14 @@ class Player(Character):
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
-        if self.ammo == 0 : return
+        if self.bulletsprite.ammo == 0 : return
 
         bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [self.rect.centerx, self.rect.centery])
 
         bullet.add(friendly_bullet_list, rendergroup)
-        if not self.shot:
+        if not self.movement.shot:
             self.lastimage = self.image
-            if self.cover:        
+            if self.movement.cover:        
                 [x, y] = pygame.mouse.get_pos()
                 distance = [x - self.x, y - self.y]
                 angle = -math.atan2(distance[1], distance[0])
@@ -241,24 +322,24 @@ class Player(Character):
                     else:
                         self.image = self.imagedict["c"+shoot_direction]["right"]
             else:
-                self.image = self.imagedict[self.currentdirection]["shoot"]
+                self.image = self.imagedict[self.movement.currentdirection]["shoot"]
             self.rect = self.image.get_rect()
             [self.rect.x, self.rect.y] = [self.x, self.y]
 
-        if not self.shot:
-            self.wasincover = self.cover
-        self.cover = False
+        if not self.movement.shot:
+            self.wasincover = self.movement.cover
+        self.movement.cover = False
         self.moved = False
 
-        self.shot = 1
-        self.ammo -= 1
+        self.movement.shot = 1
+        self.bulletsprite.ammo -= 1
 
     def stopshoot(self):
-        self.shot = 0
+        self.movement.shot = 0
         if not self.moved:
             self.image = self.lastimage
             if self.wasincover:
-                self.cover = True
+                self.movement.cover = True
 
     def killhim(self):
         self.dead = True
@@ -272,7 +353,7 @@ class Player(Character):
         Character.update(self)
         if self.reloadCountdown == 1:
             self.reloadCountdown = 0
-            self.ammo = 10.
+            self.bulletsprite.ammo = 10.
         elif self.reloadCountdown > 1:
             self.reloadCountdown -= 1
         self.bulletsprite.update()
@@ -280,46 +361,44 @@ class Player(Character):
 class Player2(Character):
     def __init__(self, name, imagedict, screen, rendergroup, walls):
         Character.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
-        self.dead = False
-        self.totalammo = 10.
-        self.ammo = 10.        
-        self.bulletsprite = bulletsprite.BulletBar(self)
+        self.dead = False        
+        self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
         self.direction = 4
 
     def updatePosition(self, eventkey):
         if (eventkey == K_LEFT):
-            self.x -= self.walksize_x
+            self.x -= self.movement.walksize_x
             self.rect.x = self.x
-            self.image = self.imagedict['l'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict['l'][self.movement.whichleg()]
             self.direction = 1
-            self.cover = False
+            self.movement.cover = False
         elif (eventkey == K_RIGHT):
-            self.x += self.walksize_x
+            self.x += self.movement.walksize_x
             self.rect.x = self.x
-            self.image = self.imagedict['r'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict['r'][self.movement.whichleg()]
             self.direction = 2
-            self.cover = False
+            self.movement.cover = False
         elif (eventkey == K_UP):
-            self.y -= self.walksize_y
+            self.y -= self.movement.walksize_y
             self.rect.y = self.y
-            self.image = self.imagedict['u'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict['u'][self.movement.whichleg()]
             self.direction = 3
-            self.cover = False
+            self.movement.cover = False
         elif (eventkey == K_DOWN):
-            self.y += self.walksize_y
+            self.y += self.movement.walksize_y
             self.rect.y = self.y
-            self.image = self.imagedict['d'][self.feettonum[self.feetleft]]
+            self.image = self.imagedict['d'][self.movement.whichleg()]
             self.direction = 4
-            self.cover = False
+            self.movement.cover = False
         else:
             return
         self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), self.direction)
 
     def spawn(self):
-        new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
-        random.randrange(self.cellsize, self.screen.height/2, self.walksize_y)]
+        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
+        random.randrange(self.movement.screen.cellsize, self.movement.screen.height/2, self.movement.walksize_y)]
         [self.x, self.y] = new_spawn
         self.rect.x, self.rect.y = self.x, self.y
         while self.checkwallcollision():
@@ -327,7 +406,7 @@ class Player2(Character):
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet aiming the direction he is looking if there is ammo"""
-        if self.ammo == 0 : return
+        if self.bulletsprite.ammo == 0 : return
 
         if self.direction == 1:
             bullet = objects.FriendlyBullet([self.rect.centerx - 1, self.rect.centery], [self.rect.centerx, self.rect.centery])
@@ -340,7 +419,7 @@ class Player2(Character):
 
         bullet.add(friendly_bullet_list, rendergroup)
 
-        self.ammo -= 1
+        self.bulletsprite.ammo -= 1
 
     def killhim(self):
         self.dead = True
@@ -354,7 +433,7 @@ class Player2(Character):
         Character.update(self)
         if self.reloadCountdown == 1:
             self.reloadCountdown = 0
-            self.ammo = 10.
+            self.bulletsprite.ammo = 10.
         elif self.reloadCountdown > 1:
             self.reloadCountdown -= 1
         self.bulletsprite.update()
@@ -366,18 +445,16 @@ class Enemy(Character):
     def __init__(self, imagedict, player_list, screen, rendergroup, walls):
         Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., screen, rendergroup, walls)
         Enemy.count += 1
-        self.ammo = 5.
-        self.totalammo = self.ammo
         self.contbullet = 5
         self.bullettimer = 0
         self.player_list = player_list
-        self.bulletsprite = bulletsprite.BulletBar(self)
+        self.bulletsprite = bulletsprite.BulletBar(self, 5.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
 
     def spawn(self):
-        new_spawn = [random.randrange(self.cellsize, self.screen.width-self.rect.width-self.cellsize, self.walksize_x),
-        random.randrange(self.screen.height/2, self.screen.height - self.rect.height - self.cellsize, self.walksize_y)]
+        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
+        random.randrange(self.movement.screen.height/2, self.movement.screen.height - self.rect.height - self.movement.screen.cellsize, self.movement.walksize_y)]
         [self.x, self.y] = new_spawn
         self.rect.x, self.rect.y = self.x, self.y
         while self.checkwallcollision():
@@ -385,10 +462,10 @@ class Enemy(Character):
 
     def shoot(self, enemy_bullet_list, rendergroup):
         """shoots a bullet at the player"""
-        if self.ammo == 0:
+        if self.bulletsprite.ammo == 0:
             if self.reloadCountdown == 0:
                 self.reload()
-                self.image = self.imagedict[self.currentdirection][self.feettonum[self.feetleft]]
+                self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
             return
 
         dist = float('inf')
@@ -402,9 +479,9 @@ class Enemy(Character):
             bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
             bullet.add(enemy_bullet_list, rendergroup)
 
-        self.image = self.imagedict[self.currentdirection]["shoot"]
+        self.image = self.imagedict[self.movement.currentdirection]["shoot"]
 
-        self.ammo -= 1
+        self.bulletsprite.ammo -= 1
 
     def killhim(self):
         self.kill()
@@ -422,7 +499,7 @@ class Enemy(Character):
 
         if self.reloadCountdown == 1:
             self.reloadCountdown = 0
-            self.ammo = 10.
+            self.bulletsprite.ammo = 10.
         elif self.reloadCountdown > 1:
             self.reloadCountdown -= 1
         self.bulletsprite.update()
@@ -431,5 +508,5 @@ class Enemy(Character):
         distance = [player.x - self.x, player.y - self.y]
         angle = -math.atan2(distance[1], distance[0])
         newdirection = self.findquadrant(angle)
-        self.currentdirection = newdirection
-        self.image = self.imagedict[newdirection][self.feettonum[self.feetleft]]
+        self.movement.currentdirection = newdirection
+        self.image = self.imagedict[newdirection][self.movement.whichleg()]

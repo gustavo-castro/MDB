@@ -12,6 +12,9 @@ class BulletBar(pygame.sprite.Sprite):
     owner : Character object (defined in characters.py)
         Specifies the character that will have this BulletBar
 
+    ammo : Float
+        Specifies how many bullets the owner can carry
+
     Atributes
     ---------
     sizebar : Int
@@ -28,21 +31,27 @@ class BulletBar(pygame.sprite.Sprite):
 
     percent : Float
         Represents the percentage of bullets that the BulletBar's owner has
+
+    ammo : Float
+        Specifies how many bullets the owner has at the moment
+
+    total_ammo : Float
+        Specifies how many bullets the owner can carry
     """
-    def __init__(self, owner):
+    def __init__(self, owner, ammo):
         pygame.sprite.Sprite.__init__(self)
         self.sizebar = 20
         self.owner = owner
         self.image = pygame.Surface((self.sizebar,7))
-        self.image.set_colorkey(black_color) # black transparent
+        self.image.set_colorkey(black_color)
         pygame.draw.rect(self.image, brown_color, (0, 0, self.sizebar,7), 1)
         self.rect = self.image.get_rect()
-        self.percent = 0.
+        self.ammo = ammo
+        self.total_ammo = ammo
         
     def update(self):
-        if self.percent != self.owner.ammo/self.owner.totalammo:
-            self.percent = self.owner.ammo / self.owner.totalammo
-            pygame.draw.rect(self.image, black_color, (1, 1, self.sizebar-2, 5)) # fill black
-            pygame.draw.rect(self.image, brown_color, (1, 1, int(self.sizebar*self.percent), 5), 0) # fill green
+        bullet_percent = self.ammo/self.total_ammo
+        pygame.draw.rect(self.image, black_color, (1, 1, self.sizebar-2, 5)) # fill black
+        pygame.draw.rect(self.image, brown_color, (1, 1, int(self.sizebar*bullet_percent), 5), 0) # fill green
         self.rect.centerx = self.owner.rect.centerx + self.owner.rect.width/2 + 12
         self.rect.centery = self.owner.rect.centery - self.owner.rect.height/2 - 10

@@ -191,10 +191,10 @@ def runsingleplayer():
     Marcus.other_characters = enemy_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0: # main game loop
-        if Marcus.shot > 4:
+        if Marcus.movement.shot > 4:
             Marcus.stopshoot()
-        elif Marcus.shot > 0:
-            Marcus.shot += 1
+        elif Marcus.movement.shot > 0:
+            Marcus.movement.shot += 1
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
@@ -212,7 +212,7 @@ def runsingleplayer():
             elif event.type == MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        if not Marcus.cover and not Marcus.shot:
+        if not Marcus.movement.cover and not Marcus.movement.shot:
             Marcus.updatedirection()
 
         player_list.update()

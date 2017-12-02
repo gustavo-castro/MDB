@@ -78,9 +78,9 @@ class FriendlyBullet(Bullet):
 
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
         for enemy in enemy_hit_list:
-            if (not self.high) or (not enemy.cover):
+            if (not self.high) or (not enemy.movement.cover):
                 self.kill()
-                enemy.hp -= 1
+                enemy.lifebar.hp -= 1
 
 class EnemyBullet(Bullet):
     def update(self, player_list, wall_list):
@@ -89,9 +89,9 @@ class EnemyBullet(Bullet):
 
         player_hit_list = pygame.sprite.spritecollide(self, player_list, False)
         for player in player_hit_list:
-            if (not self.high) or (not player.cover):
+            if (not self.high) or (not player.movement.cover):
                 self.kill()
-                player.hp -= 1
+                player.lifebar.hp -= 1
 
 class Wall(pygame.sprite.Sprite):
     """
