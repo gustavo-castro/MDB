@@ -9,5 +9,5 @@ before_script:
   - sleep 3
 
 script :
-  - coverage run -m unittest tests.py
+  - python tests.py
   - coveralls
