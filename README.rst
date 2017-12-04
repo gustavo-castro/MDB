@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/gustavo-castro/MDB.svg?branch=master)](https://travis-ci.org/gustavo-castro/MDB)
-
 Mecanismos da Guerra 
 -------------------
+
+|Build Status|
 
 This is a 2d cover-based shooter game being made in Python 2.7 (still in development).
 
@@ -40,3 +40,6 @@ Feedback
 ========
 
 The game is still in development and any feedback regarding the game would be very much useful.
+
+.. |Build Status| image:: https://travis-ci.org/gustavo-castro/MDB.svg?branch=master
+    :target: https://travis-ci.org/gustavo-castro/MDB
