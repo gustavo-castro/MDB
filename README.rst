@@ -1,7 +1,7 @@
 Mecanismos da Guerra 
 -------------------
 
-|Build Status|
+|Build Status| |Code Coverage|
 
 This is a 2d cover-based shooter game being made in Python 2.7 (still in development).
 
