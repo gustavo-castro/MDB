@@ -43,3 +43,6 @@ The game is still in development and any feedback regarding the game would be ve
 
 .. |Build Status| image:: https://travis-ci.org/gustavo-castro/MDB.svg?branch=master
     :target: https://travis-ci.org/gustavo-castro/MDB
+
+.. |Code Coverage| image:: https://coveralls.io/repos/github/gustavo-castro/MDB/badge.svg
+	:target: https://coveralls.io/github/gustavo-castro/MDB
