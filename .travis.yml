@@ -12,4 +12,5 @@ before_script:
   - sleep 3
 
 script :
-  - python tests.py
+  - coverage run -m unittest tests.py
+  - coveralls
