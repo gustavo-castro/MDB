@@ -11,20 +11,8 @@ FPS = 15
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 5
-assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
-assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = WINDOWWIDTH / CELLSIZE
-CELLHEIGHT = WINDOWHEIGHT / CELLSIZE
 
-#             R    G    B
 BACKGROUND= (247, 253, 189)
-WHITE     = (255, 255, 255)
-BLACK     = (  0,   0,   0)
-RED       = (255,   0,   0)
-GREEN     = (  0, 255,   0)
-DARKGREEN = (  0, 155,   0)
-DARKGRAY  = ( 40,  40,  40)
-BGCOLOR = BLACK
 runGame = 0
 
 def main():
