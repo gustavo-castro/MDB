@@ -31,14 +31,15 @@ def createwalls(screen, rendergroup):
     wall.add(wall_list, rendergroup)
 
     """barriers in the middle of the level"""
+    ss = spritesheet.spritesheet('Images/Walls.png')
     barriersize = screen.cellsize*3
-    wall = objects.Wall(40, 60, 50, barriersize)
+    wall = objects.Wall(40, 60, 60, 30, image = ss.image_at((122, 146, 60, 30)))
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(screen.width - 60, screen.height - 60, barriersize/3, 20, tallwall = False)
+    wall = objects.Wall(screen.width - 100, screen.height - 100, 45, 20, image = ss.image_at((121, 65, 15, 60)), tallwall = False)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(50, screen.height - 80, 40, barriersize)
+    wall = objects.Wall(50, screen.height - 80, 45, 30, ss.image_at((122, 146, 45, 30)))
     wall.add(wall_list, rendergroup)
 
     return wall_list

@@ -114,6 +114,9 @@ class Wall(pygame.sprite.Sprite):
     tallwall : boolean
         True if the Wall is tall and False otherwise
 
+    image : Pygame's Sprite's image
+        Specifies the wall's image
+
     Atributes
     ---------
     image : Pygame's Sprite's image
@@ -125,12 +128,15 @@ class Wall(pygame.sprite.Sprite):
     istall : boolean
         True if the Wall is tall and False otherwise
     """
-    def __init__(self, x, y, width, height, tallwall = True):
+    def __init__(self, x, y, width, height, image = None, tallwall = True):
         pygame.sprite.Sprite.__init__(self)
 
         self.istall = tallwall
-        self.image = pygame.Surface([width, height])
-        self.image.fill(black_color) if self.istall else self.image.fill(blue_color)
+        if image:
+            self.image = image
+        else:
+            self.image = pygame.Surface([width, height])
+            self.image.fill(black_color) if self.istall else self.image.fill(blue_color)
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x

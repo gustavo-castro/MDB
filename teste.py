@@ -10,10 +10,14 @@ size=(w,h)
 screen = pygame.display.set_mode(size) 
 c = pygame.time.Clock()
 
-ss = spritesheet.spritesheet('Images/ss-mercenaries.png')
+ss = spritesheet.spritesheet('Images/Walls.png')
+teste = ss.image_at((121, 105, 30, 20))
+#teste = ss.image_at((122, 146, 30, 30))
+
+#ss = spritesheet.spritesheet('Images/ss-mercenaries.png')
 # Sprite is 16x16 pixels at location 0,0 in the file...
 #olhando pra cada direcao
-baixo = ss.image_at((338, 182, 27, 34))
+"""baixo = ss.image_at((338, 182, 27, 34))
 
 dr = ss.image_at((338, 142, 27, 34))
 
@@ -41,8 +45,9 @@ lauxcul = ss.image_at((202, 304, cellsize*5, cellsize*4))
 rauxcul = ss.image_at((202, 304, cellsize*5, cellsize*5))
 
 d = [ss.image_at((8 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]
+"""
 
-image = lauxcul
+image = teste
 
 while True:
     screen.blit(image,(0,0))
