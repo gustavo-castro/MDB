@@ -279,7 +279,19 @@ class Character(pygame.sprite.Sprite):
         self.image = self.imagedict[self.movement.currentdirection][self.movement.whichleg()]
 
     def spawn(self):
-        raise NotImplementedError
+        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
+        random.randrange(self.movement.screen.cellsize, self.movement.screen.height/2, self.movement.walksize_y)]
+        [self.x, self.y] = new_spawn
+        self.rect.x, self.rect.y = self.x, self.y
+        while self.checkwallcollision():
+            self.spawn()
+
+    def reload(self):
+        self.reloadCountdown = 10
+
+    def killhim(self):
+        self.dead = True
+        self.kill()
 
     def update(self):
         self.lifebar.update()
@@ -291,14 +303,6 @@ class Player(Character):
         self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
-
-    def spawn(self):
-        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
-        random.randrange(self.movement.screen.cellsize, self.movement.screen.height/2, self.movement.walksize_y)]
-        [self.x, self.y] = new_spawn
-        self.rect.x, self.rect.y = self.x, self.y
-        while self.checkwallcollision():
-            self.spawn()
 
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet where the mouse is pointed if there is ammo"""
@@ -340,14 +344,6 @@ class Player(Character):
             self.image = self.lastimage
             if self.wasincover:
                 self.movement.cover = True
-
-    def killhim(self):
-        self.dead = True
-        self.kill()
-
-    def reload(self):
-        """sets the clock for reloading"""
-        self.reloadCountdown = 10
 
     def update(self):
         Character.update(self)
@@ -396,14 +392,6 @@ class Player2(Character):
             return
         self.fixPosition(self.checkwallcollision()+self.checkcharactercollision(), self.direction)
 
-    def spawn(self):
-        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width-self.rect.width-self.movement.screen.cellsize, self.movement.walksize_x),
-        random.randrange(self.movement.screen.cellsize, self.movement.screen.height/2, self.movement.walksize_y)]
-        [self.x, self.y] = new_spawn
-        self.rect.x, self.rect.y = self.x, self.y
-        while self.checkwallcollision():
-            self.spawn()
-
     def shoot(self, friendly_bullet_list, rendergroup):
         """shoots a bullet aiming the direction he is looking if there is ammo"""
         if self.bulletsprite.ammo == 0 : return
@@ -420,14 +408,6 @@ class Player2(Character):
         bullet.add(friendly_bullet_list, rendergroup)
 
         self.bulletsprite.ammo -= 1
-
-    def killhim(self):
-        self.dead = True
-        self.kill()
-
-    def reload(self):
-        """sets the clock for reloading"""
-        self.reloadCountdown = 10
 
     def update(self):
         Character.update(self)
@@ -482,13 +462,6 @@ class Enemy(Character):
         self.image = self.imagedict[self.movement.currentdirection]["shoot"]
 
         self.bulletsprite.ammo -= 1
-
-    def killhim(self):
-        self.kill()
-
-    def reload(self):
-        """sets the clock for reloading"""
-        self.reloadCountdown = 10
 
     def update(self, enemy_bullet_list, rendergroup):
         Character.update(self)
