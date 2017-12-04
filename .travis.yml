@@ -7,4 +7,4 @@ install:
   - pip install pygame
 
 script :
-  - coverage run -m unittest tests.py
+  - python tests.py
