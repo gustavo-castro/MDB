@@ -9,9 +9,8 @@ before_script:
   - sleep 3
 
 script :
-  - python tests.py
-  - coveralls
+  - coverage run tests.py
   - flake8
 
 after_script:
-  - coveralls
+  - codecov
