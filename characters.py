@@ -1,6 +1,7 @@
-import random, pygame, math
-from pygame.locals import *
-
+import random
+import pygame
+import pygame.locals
+import math
 
 import lifebar
 import objects
@@ -15,7 +16,7 @@ class Movement(object):
     ----------
     screen : Screen object (as defined in utils.py)
         Specifies the screen attributes of the game
-    
+
     walls : Wall object (as defined in objects.py)
         Specifies the walls present in the game
 
@@ -46,7 +47,8 @@ class Movement(object):
         self.feet_left = True
         self.current_direction = 'd'
         self.screen = screen
-        self.step_size_x, self.step_size_y = self.screen.cellsize * 4, self.screen.cellsize * 4
+        self.step_size_x = self.screen.cellsize*4
+        self.step_size_y = self.screen.cellsize*4
         self.walls = walls
         self.shot = 0
         self.cover = False
@@ -66,9 +68,10 @@ class Character(pygame.sprite.Sprite):
     ----------
     name : string
         Specifies the character's name
-    
+
     imagedict : dictionary
-        Represents all the images that will represent the character in the form of a dictionary
+        Represents all the images that will represent the character in the
+        form of a dictionary
 
     hp : Int
         Specifies the number of hit points the character will have
@@ -91,7 +94,8 @@ class Character(pygame.sprite.Sprite):
         Represents the character's movement characteristics
 
     imagedict : dictionary
-        Represents all the images that will represent the character in the form of a dictionary
+        Represents all the images that will represent the character in the
+        form of a dictionary
 
     image : Pygame's Sprite's image
         Represents the character's image
@@ -108,7 +112,8 @@ class Character(pygame.sprite.Sprite):
         self.name = name
         self.movement = Movement(screen, walls)
         self.imagedict = imagedict
-        self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+        self.image = self.imagedict[self.movement.current_direction][
+            self.movement.which_leg()]
         self.rect = self.image.get_rect()
         self.lifebar = lifebar.LifeBar(self, hp)
         rendergroup.add(self.lifebar)
@@ -117,13 +122,15 @@ class Character(pygame.sprite.Sprite):
         self.dead = False
 
     def check_wall_collision(self):
-        block_hit_list = pygame.sprite.spritecollide(self, self.movement.walls, False)
+        block_hit_list = pygame.sprite.spritecollide(
+            self, self.movement.walls, False)
         return block_hit_list
 
     def check_character_collision(self):
         block_hit_list = []
         if hasattr(self, "other_characters"):
-            block_hit_list = pygame.sprite.spritecollide(self, self.other_characters, False)
+            block_hit_list = pygame.sprite.spritecollide(
+                self, self.other_characters, False)
         return block_hit_list
 
     def fix_position(self, hit_list, walking_direction):
@@ -135,17 +142,19 @@ class Character(pygame.sprite.Sprite):
             elif walking_direction == 3:
                 closest_one = hit_list[0].rect.bottom
             elif walking_direction == 4:
-                closest_one = hit_list[0].rect.top              
+                closest_one = hit_list[0].rect.top
             for hitted in hit_list:
                 if walking_direction == 1 and hitted.rect.right > closest_one:
                     closest_one = hitted.rect.right
                 elif walking_direction == 2 and hitted.rect.left < closest_one:
                     closest_one = hitted.rect.left
-                elif walking_direction == 3 and hitted.rect.bottom > closest_one:
+                elif walking_direction == 3 and hitted.rect.bottom > \
+                        closest_one:
                     closest_one = hitted.rect.bottom
                 elif walking_direction == 4 and hitted.rect.top < closest_one:
                     closest_one = hitted.rect.top
-            previous_width, previous_height = self.image.get_rect().width, self.image.get_rect().height
+            previous_width = self.image.get_rect().width
+            previous_height = self.image.get_rect().height
             if walking_direction == 1:
                 self.x = closest_one
                 self.cover_direction = "cr"
@@ -196,68 +205,79 @@ class Character(pygame.sprite.Sprite):
             self.blocked_direction = walking_direction
         else:
             if self.movement.cover or (self.movement.shot and self.wasincover):
-                if self.blocked_direction in [1,2]:
-                    if walking_direction in [3,4]:
+                if self.blocked_direction in [1, 2]:
+                    if walking_direction in [3, 4]:
                         self.movement.cover = True
                         self.moved = False
                         return
                     else:
                         previous_height = self.image.get_rect().height
-                        self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+                        self.image = self.imagedict[
+                            self.movement.current_direction][
+                                self.movement.which_leg()]
                         self.rect = self.image.get_rect()
                         [self.rect.x, self.rect.y] = [self.x, self.y]
-                        aux_hitted = self.check_wall_collision() + self.check_character_collision()
+                        aux_hitted = self.check_wall_collision() + \
+                            self.check_character_collision()
                         if aux_hitted:
                             self.y -= self.rect.height - previous_height
                             self.rect.y = self.y
-                elif self.blocked_direction in [3,4]:
+                elif self.blocked_direction in [3, 4]:
                     if walking_direction in [1, 2]:
                         self.movement.cover = True
                         self.moved = False
                         return
                     else:
                         previous_width = self.image.get_rect().width
-                        self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+                        self.image = self.imagedict[
+                            self.movement.current_direction][
+                                self.movement.which_leg()]
                         self.rect = self.image.get_rect()
                         [self.rect.x, self.rect.y] = [self.x, self.y]
-                        aux_hitted = self.check_wall_collision() + self.check_character_collision()
+                        aux_hitted = self.check_wall_collision() + \
+                            self.check_character_collision()
                         if aux_hitted:
                             self.x -= self.rect.width - previous_width
                             self.rect.x = self.x
             self.movement.cover = False
 
     def update_position(self, eventkey):
-        if eventkey in [K_a, K_d, K_w, K_s]:
+        if eventkey in [pygame.locals.K_a, pygame.locals.K_d,
+                        pygame.locals.K_w, pygame.locals.K_s]:
             self.movement.feet_left = not self.movement.feet_left
-            if eventkey == K_a:
+            if eventkey == pygame.locals.K_a:
                 self.x -= self.movement.step_size_x
                 self.rect.x = self.x
                 walking_direction = 1
-            elif eventkey == K_d:
+            elif eventkey == pygame.locals.K_d:
                 self.x += self.movement.step_size_x
                 self.rect.x = self.x
                 walking_direction = 2
-            elif eventkey == K_w:
+            elif eventkey == pygame.locals.K_w:
                 self.y -= self.movement.step_size_y
                 self.rect.y = self.y
                 walking_direction = 3
-            elif eventkey == K_s:
+            elif eventkey == pygame.locals.K_s:
                 self.y += self.movement.step_size_y
                 self.rect.y = self.y
                 walking_direction = 4
-            if not self.movement.cover and not (self.movement.shot and self.wasincover):
-                self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+            if not self.movement.cover and not (
+                    self.movement.shot and self.wasincover):
+                self.image = self.imagedict[self.movement.current_direction][
+                    self.movement.which_leg()]
                 self.rect = self.image.get_rect()
                 [self.rect.x, self.rect.y] = [self.x, self.y]
             self.moved = True
         else:
             return
-        self.fix_position(self.check_wall_collision() + self.check_character_collision(), walking_direction)
+        self.fix_position(self.check_wall_collision() +
+                          self.check_character_collision(), walking_direction)
 
     @staticmethod
     def find_quadrant(angle):
         """
-        Finds in which region of the level the character is, rudl are equivalent to right, up, down and left
+        Finds in which region of the level the character is,
+        rudl are equivalent to right, up, down and left
         :param angle: float
         :return: string
         """
@@ -285,18 +305,18 @@ class Character(pygame.sprite.Sprite):
         angle = -math.atan2(distance[1], distance[0])
         newdirection = self.find_quadrant(angle)
         self.movement.current_direction = newdirection
-        self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+        self.image = self.imagedict[
+            self.movement.current_direction][
+                self.movement.which_leg()]
 
     def spawn(self):
-        new_spawn = [
-            random.randrange(
-                self.movement.screen.cellsize,
-                self.movement.screen.width - self.rect.width - self.movement.screen.cellsize,
-                self.movement.step_size_x,
-            ),
-            random.randrange(self.movement.screen.cellsize, self.movement.screen.height / 2, self.movement.step_size_y),
-        ]
-        [self.x, self.y] = new_spawn
+        self.x = random.randrange(self.movement.screen.cellsize,
+                                  self.movement.screen.width - self.rect.width
+                                  - self.movement.screen.cellsize,
+                                  self.movement.step_size_x,)
+        self.y = random.randrange(self.movement.screen.cellsize,
+                                  self.movement.screen.height/2,
+                                  self.movement.step_size_y)
         self.rect.x, self.rect.y = self.x, self.y
         while self.check_wall_collision():
             self.spawn()
@@ -314,8 +334,9 @@ class Character(pygame.sprite.Sprite):
 
 class Player(Character):
     def __init__(self, name, imagedict, screen, rendergroup, walls):
-        Character.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
-        self.dead = False    
+        Character.__init__(
+            self, name, imagedict, 10., screen, rendergroup, walls)
+        self.dead = False
         self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
@@ -325,12 +346,13 @@ class Player(Character):
         if self.bulletsprite.ammo == 0:
             return
 
-        bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [self.rect.centerx, self.rect.centery])
+        bullet = objects.FriendlyBullet(pygame.mouse.get_pos(), [
+            self.rect.centerx, self.rect.centery])
 
         bullet.add(friendly_bullet_list, rendergroup)
         if not self.movement.shot:
             self.lastimage = self.image
-            if self.movement.cover:        
+            if self.movement.cover:
                 [x, y] = pygame.mouse.get_pos()
                 distance = [x - self.x, y - self.y]
                 angle = -math.atan2(distance[1], distance[0])
@@ -339,11 +361,14 @@ class Player(Character):
                     self.image = self.imagedict["c"+shoot_direction]["shoot"]
                 else:
                     if self.blocked_direction in ["r", "l"]:
-                        self.image = self.imagedict["c"+shoot_direction]["left"]
+                        self.image = self.imagedict["c"+shoot_direction][
+                            "left"]
                     else:
-                        self.image = self.imagedict["c"+shoot_direction]["right"]
+                        self.image = self.imagedict["c"+shoot_direction][
+                            "right"]
             else:
-                self.image = self.imagedict[self.movement.current_direction]["shoot"]
+                self.image = self.imagedict[self.movement.current_direction][
+                    "shoot"]
             self.rect = self.image.get_rect()
             [self.rect.x, self.rect.y] = [self.x, self.y]
 
@@ -374,33 +399,34 @@ class Player(Character):
 
 class Player2(Character):
     def __init__(self, name, imagedict, screen, rendergroup, walls):
-        Character.__init__(self, name, imagedict, 10., screen, rendergroup, walls)
-        self.dead = False        
+        Character.__init__(
+            self, name, imagedict, 10., screen, rendergroup, walls)
+        self.dead = False
         self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
         self.direction = 4
 
     def update_position(self, eventkey):
-        if (eventkey == K_LEFT):
+        if (eventkey == pygame.locals.K_LEFT):
             self.x -= self.movement.step_size_x
             self.rect.x = self.x
             self.image = self.imagedict['l'][self.movement.which_leg()]
             self.direction = 1
             self.movement.cover = False
-        elif (eventkey == K_RIGHT):
+        elif (eventkey == pygame.locals.K_RIGHT):
             self.x += self.movement.step_size_x
             self.rect.x = self.x
             self.image = self.imagedict['r'][self.movement.which_leg()]
             self.direction = 2
             self.movement.cover = False
-        elif (eventkey == K_UP):
+        elif (eventkey == pygame.locals.K_UP):
             self.y -= self.movement.step_size_y
             self.rect.y = self.y
             self.image = self.imagedict['u'][self.movement.which_leg()]
             self.direction = 3
             self.movement.cover = False
-        elif (eventkey == K_DOWN):
+        elif (eventkey == pygame.locals.K_DOWN):
             self.y += self.movement.step_size_y
             self.rect.y = self.y
             self.image = self.imagedict['d'][self.movement.which_leg()]
@@ -408,21 +434,32 @@ class Player2(Character):
             self.movement.cover = False
         else:
             return
-        self.fix_position(self.check_wall_collision() + self.check_character_collision(), self.direction)
+        self.fix_position(self.check_wall_collision() +
+                          self.check_character_collision(), self.direction)
 
     def shoot(self, friendly_bullet_list, rendergroup):
-        """shoots a bullet aiming the direction he is looking if there is ammo"""
+        """
+        shoots a bullet aiming the direction he is looking if there is ammo
+        """
         if self.bulletsprite.ammo == 0:
             return
 
         if self.direction == 1:
-            bullet = objects.FriendlyBullet([self.rect.centerx - 1, self.rect.centery], [self.rect.centerx, self.rect.centery])
+            bullet = objects.FriendlyBullet([
+                self.rect.centerx - 1, self.rect.centery], [
+                self.rect.centerx, self.rect.centery])
         elif self.direction == 2:
-            bullet = objects.FriendlyBullet([self.rect.centerx + 1, self.rect.centery], [self.rect.centerx, self.rect.centery])
+            bullet = objects.FriendlyBullet([
+                self.rect.centerx + 1, self.rect.centery], [
+                self.rect.centerx, self.rect.centery])
         elif self.direction == 3:
-            bullet = objects.FriendlyBullet([self.rect.centerx, self.rect.centery - 1], [self.rect.centerx, self.rect.centery])
+            bullet = objects.FriendlyBullet([
+                self.rect.centerx, self.rect.centery - 1], [
+                self.rect.centerx, self.rect.centery])
         elif self.direction == 4:
-            bullet = objects.FriendlyBullet([self.rect.centerx, self.rect.centery + 1], [self.rect.centerx, self.rect.centery])
+            bullet = objects.FriendlyBullet([
+                self.rect.centerx, self.rect.centery + 1], [
+                self.rect.centerx, self.rect.centery])
 
         bullet.add(friendly_bullet_list, rendergroup)
 
@@ -442,7 +479,8 @@ class Enemy(Character):
     count = 0
 
     def __init__(self, imagedict, player_list, screen, rendergroup, walls):
-        Character.__init__(self, "enemy" + str(Enemy.count), imagedict, 5., screen, rendergroup, walls)
+        Character.__init__(self, "enemy" + str(Enemy.count),
+                           imagedict, 5., screen, rendergroup, walls)
         Enemy.count += 1
         self.contbullet = 5
         self.bullettimer = 0
@@ -452,9 +490,15 @@ class Enemy(Character):
         self.reloadCountdown = 0
 
     def spawn(self):
-        new_spawn = [random.randrange(self.movement.screen.cellsize, self.movement.screen.width - self.rect.width - self.movement.screen.cellsize, self.movement.step_size_x),
-                     random.randrange(self.movement.screen.height / 2, self.movement.screen.height - self.rect.height - self.movement.screen.cellsize, self.movement.step_size_y)]
-        [self.x, self.y] = new_spawn
+        self.x = random.randrange(self.movement.screen.cellsize,
+                                  self.movement.screen.width - self.rect.width
+                                  - self.movement.screen.cellsize,
+                                  self.movement.step_size_x)
+        self.y = random.randrange(self.movement.screen.height/2,
+                                  self.movement.screen.height
+                                  - self.rect.height -
+                                  self.movement.screen.cellsize,
+                                  self.movement.step_size_y)
         self.rect.x, self.rect.y = self.x, self.y
         while self.check_wall_collision():
             self.spawn()
@@ -464,18 +508,22 @@ class Enemy(Character):
         if self.bulletsprite.ammo == 0:
             if self.reloadCountdown == 0:
                 self.reload()
-                self.image = self.imagedict[self.movement.current_direction][self.movement.which_leg()]
+                self.image = self.imagedict[self.movement.current_direction][
+                    self.movement.which_leg()]
             return
 
         dist = float('inf')
         if self.player_list:
             for player in self.player_list.sprites():
-                tempdist = (player.rect.centerx - self.rect.centerx)**2 + (player.rect.centery - self.rect.centery)**2
+                tempdist = (player.rect.centerx - self.rect.centerx)**2 + (
+                    player.rect.centery - self.rect.centery)**2
                 if tempdist < dist:
                     dist = tempdist
                     closestplayer = player
             self.update_direction(closestplayer)
-            bullet = objects.EnemyBullet([closestplayer.rect.centerx, closestplayer.rect.centery], [self.rect.centerx, self.rect.centery])
+            bullet = objects.EnemyBullet([
+                closestplayer.rect.centerx, closestplayer.rect.centery], [
+                self.rect.centerx, self.rect.centery])
             bullet.add(enemy_bullet_list, rendergroup)
 
         self.image = self.imagedict[self.movement.current_direction]["shoot"]
@@ -501,4 +549,5 @@ class Enemy(Character):
         angle = -math.atan2(distance[1], distance[0])
         newdirection = self.find_quadrant(angle)
         self.movement.current_direction = newdirection
-        self.image = self.imagedict[newdirection][self.movement.which_leg()]
+        self.image = self.imagedict[newdirection][
+            self.movement.which_leg()]

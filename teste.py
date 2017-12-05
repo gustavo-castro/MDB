@@ -6,15 +6,15 @@ In = 1
 pygame.init()
 w = 640
 h = 480
-size = (w,h)
-screen = pygame.display.set_mode(size) 
+size = (w, h)
+screen = pygame.display.set_mode(size)
 c = pygame.time.Clock()
 
 ss = spritesheet.spritesheet('Images/Walls.png')
 teste = ss.image_at((121, 105, 30, 20))
-#teste = ss.image_at((122, 146, 30, 30))
+# teste = ss.image_at((122, 146, 30, 30))
 
-#ss = spritesheet.spritesheet('Images/ss-mercenaries.png')
+# ss = spritesheet.spritesheet('Images/ss-mercenaries.png')
 # Sprite is 16x16 pixels at location 0,0 in the file...
 """baixo = ss.image_at((338, 182, 27, 34))
 
@@ -49,8 +49,9 @@ d = [ss.image_at((8 + 40*i, 182, cellsize*6, cellsize*7)) for i in range(6)]
 image = teste
 
 while True:
-    screen.blit(image,(0,0))
-    pygame.display.flip() # update the display
-#images = []
+    screen.blit(image, (0, 0))
+    pygame.display.flip()  # update the display
+# images = []
 # Load two images into an array, their transparent bit is (255, 255, 255)
-#images = ss.images_at((0, 0, 16, 16),(17, 0, 16,16), colorkey=(255, 255, 255))
+images = ss.images_at(
+    (0, 0, 16, 16), (17, 0, 16, 16), colorkey=(255, 255, 255))

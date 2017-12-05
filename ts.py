@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import *
 
 import color
 
@@ -17,9 +16,11 @@ class TitleScreen(object):
         self.window_height = screen.height
 
     def drawPressKeyMsg(self):
-        pressKeySurf = self.basicfont.render('Press a key to play.', True, color.DARKGRAY)
+        pressKeySurf = self.basicfont.render(
+            'Press a key to play.', True, color.DARKGRAY)
         pressKeyRect = pressKeySurf.get_rect()
-        pressKeyRect.topleft = (self.window_width - 200, self.window_height - 30)
+        pressKeyRect.topleft = (
+            self.window_width - 200, self.window_height - 30)
         self.display.blit(pressKeySurf, pressKeyRect)
 
     def drawStartScreen(self, which):
@@ -33,13 +34,20 @@ class TitleScreen(object):
         self.drawPressChooseModeScreen(which)
 
     def drawPressChooseModeScreen(self, which):
-        whichstring = {0 : 'Single Player', 1 : 'Battle (two players)', 2 : 'Coop (two players)'}
+        whichstring = {0: 'Single Player', 1: 'Battle (two players)',
+                       2: 'Coop (two players)'}
         aux = whichstring[which]
-        allgamemodes = {'Single Player' : 20, 'Battle (two players)' : 40, 'Coop (two players)' : 60}
+        allgamemodes = {'Single Player': 20, 'Battle (two players)': 40,
+                        'Coop (two players)': 60}
         for gamemode in allgamemodes:
-            pressKeySurf = self.basicfont.render(gamemode, True, color.RED) if aux == gamemode else self.basicfont.render(gamemode, True, color.YELLOW)
+            if aux == gamemode:
+                pressKeySurf = self.basicfont.render(gamemode, True, color.RED)
+            else:
+                pressKeySurf = self.basicfont.render(
+                    gamemode, True, color.YELLOW)
             pressKeyRect = pressKeySurf.get_rect()
-            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            pressKeyRect.center = (self.window_width/2, self.window_height/2 +
+                                   allgamemodes[gamemode])
             self.display.blit(pressKeySurf, pressKeyRect)
 
     def drawGameOverScreen(self):
@@ -83,17 +91,31 @@ class TitleScreen(object):
         aux = whichstring[which]
         allgamemodes = {'Unpause': 20, 'Change Mode': 40, 'Quit': 60}
         for gamemode in allgamemodes:
-            pressKeySurf = self.basicfont.render(gamemode, True, color.BLUE) if aux == gamemode else self.basicfont.render(gamemode, True, color.BLACK)
+            if aux == gamemode:
+                pressKeySurf = self.basicfont.render(
+                    gamemode, True, color.BLUE)
+            else:
+                pressKeySurf = self.basicfont.render(
+                    gamemode, True, color.BLACK)
             pressKeyRect = pressKeySurf.get_rect()
-            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            pressKeyRect.center = (self.window_width/2, self.window_height/2 +
+                                   allgamemodes[gamemode])
             self.display.blit(pressKeySurf, pressKeyRect)
 
     def drawChooseModePause(self, which):
-        whichstring = {0: 'Single Player', 1: 'Battle (two players)', 2: 'Coop (two players)'}
+        whichstring = {0: 'Single Player', 1: 'Battle (two players)',
+                       2: 'Coop (two players)'}
         aux = whichstring[which]
-        allgamemodes = {'Single Player': 20, 'Battle (two players)': 40, 'Coop (two players)': 60}
+        allgamemodes = {'Single Player': 20, 'Battle (two players)': 40,
+                        'Coop (two players)': 60}
         for gamemode in allgamemodes:
-            pressKeySurf = self.basicfont.render(gamemode, True, color.BLUE) if aux == gamemode else self.basicfont.render(gamemode, True, color.BLACK)
+            if aux == gamemode:
+                pressKeySurf = self.basicfont.render(
+                    gamemode, True, color.BLUE)
+            else:
+                pressKeySurf = self.basicfont.render(
+                    gamemode, True, color.BLACK)
             pressKeyRect = pressKeySurf.get_rect()
-            pressKeyRect.center = (self.window_width / 2, self.window_height / 2 + allgamemodes[gamemode])
+            pressKeyRect.center = (self.window_width/2, self.window_height/2 +
+                                   allgamemodes[gamemode])
             self.display.blit(pressKeySurf, pressKeyRect)

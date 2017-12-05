@@ -1,12 +1,11 @@
 import pygame
-
-
 import color
 
 
 class BulletBar(pygame.sprite.Sprite):
     """
-    This class represents the bar that shows how many bullets the concerned character has loaded
+    This class represents the bar that shows how many bullets the
+    concerned character has loaded
 
     Parameters
     ----------
@@ -43,16 +42,19 @@ class BulletBar(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.sizebar = 20
         self.owner = owner
-        self.image = pygame.Surface((self.sizebar,7))
+        self.image = pygame.Surface((self.sizebar, 7))
         self.image.set_colorkey(color.BLACK)
-        pygame.draw.rect(self.image, color.BROWN, (0, 0, self.sizebar,7), 1)
+        pygame.draw.rect(self.image, color.BROWN, (0, 0, self.sizebar, 7), 1)
         self.rect = self.image.get_rect()
         self.ammo = ammo
         self.total_ammo = ammo
-        
+
     def update(self):
         bullet_percent = self.ammo/self.total_ammo
         pygame.draw.rect(self.image, color.BLACK, (1, 1, self.sizebar-2, 5))
-        pygame.draw.rect(self.image, color.BROWN, (1, 1, int(self.sizebar*bullet_percent), 5), 0)
-        self.rect.centerx = self.owner.rect.centerx + self.owner.rect.width/2 + 12
-        self.rect.centery = self.owner.rect.centery - self.owner.rect.height/2 - 10
+        pygame.draw.rect(self.image, color.BROWN, (1, 1, int(
+            self.sizebar*bullet_percent), 5), 0)
+        self.rect.centerx = self.owner.rect.centerx + \
+            self.owner.rect.width/2 + 12
+        self.rect.centery = self.owner.rect.centery - \
+            self.owner.rect.height/2 - 10

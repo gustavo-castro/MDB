@@ -1,5 +1,5 @@
-import math, pygame
-
+import math
+import pygame
 
 import color
 
@@ -13,9 +13,9 @@ class Bullet(pygame.sprite.Sprite):
     target : Int List with length 2
         Specifies a point (x,y) that the Bullet should pass through
 
-    origin : Int List with length 2        
+    origin : Int List with length 2
         Specifies the point (x,y) that the Bullet should start from
-    
+
     Attributes
     ---------
     image : Pygame's Sprite's image
@@ -53,21 +53,25 @@ class Bullet(pygame.sprite.Sprite):
         self.high = False
 
     def find_bullet_vector(self, target):
-        distance = [target[0] - self.rect.centerx , target[1] - self.rect.centery]
+        distance = [target[0] - self.rect.centerx, target[1] -
+                    self.rect.centery]
         norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
         direction = [distance[0]/norm, distance[1]/norm]
         bullet_vector = [direction[0]*self.speed, direction[1] * self.speed]
         return bullet_vector
 
     def update(self, wall_list):
-        """This method moves the bullet in the correct direction and checks for wall collision"""
+        """
+        This method moves the bullet in the correct direction and checks for
+        wall collision
+        """
         self.x += self.bullet_vector[0]
         self.y += self.bullet_vector[1]
         self.rect.center = (int(round(self.x)), int(round(self.y)))
 
         wall_hit_list = pygame.sprite.spritecollide(self, wall_list, False)
         for wall in wall_hit_list:
-            if wall.istall: 
+            if wall.istall:
                 self.kill()
             else:
                 self.high = True
@@ -75,7 +79,10 @@ class Bullet(pygame.sprite.Sprite):
 
 class FriendlyBullet(Bullet):
     def update(self, enemy_list, wall_list):
-        """This method calls the Bullet update method and checks for collision with enemies"""
+        """
+        This method calls the Bullet update method and checks for collision
+        with enemies
+        """
         Bullet.update(self, wall_list)
 
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
@@ -87,7 +94,10 @@ class FriendlyBullet(Bullet):
 
 class EnemyBullet(Bullet):
     def update(self, player_list, wall_list):
-        """This method calls the Bullet update method and checks for collision with players"""
+        """
+        This method calls the Bullet update method and checks for collision
+        with players
+        """
         Bullet.update(self, wall_list)
 
         player_hit_list = pygame.sprite.spritecollide(self, player_list, False)
@@ -132,7 +142,7 @@ class Wall(pygame.sprite.Sprite):
     istall : boolean
         True if the Wall is tall and False otherwise
     """
-    def __init__(self, x, y, width, height, image = None, tallwall = True):
+    def __init__(self, x, y, width, height, image=None, tallwall=True):
         pygame.sprite.Sprite.__init__(self)
 
         self.istall = tallwall
@@ -140,7 +150,8 @@ class Wall(pygame.sprite.Sprite):
             self.image = image
         else:
             self.image = pygame.Surface([width, height])
-            self.image.fill(color.BLACK) if self.istall else self.image.fill(color.BLUE)
+            self.image.fill(color.BLACK) if self.istall else \
+                self.image.fill(color.BLUE)
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
