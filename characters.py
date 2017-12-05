@@ -7,6 +7,9 @@ import lifebar
 import objects
 import bulletsprite
 
+player1_keys = [pygame.locals.K_a, pygame.locals.K_d,
+                pygame.locals.K_w, pygame.locals.K_s]
+
 
 class Movement(object):
     """
@@ -242,8 +245,7 @@ class Character(pygame.sprite.Sprite):
             self.movement.cover = False
 
     def update_position(self, eventkey):
-        if eventkey in [pygame.locals.K_a, pygame.locals.K_d,
-                        pygame.locals.K_w, pygame.locals.K_s]:
+        if eventkey in player1_keys:
             self.movement.feet_left = not self.movement.feet_left
             if eventkey == pygame.locals.K_a:
                 self.x -= self.movement.step_size_x

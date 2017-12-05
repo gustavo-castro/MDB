@@ -7,7 +7,6 @@ import characters
 import ts
 import utils
 
-FPS = 15
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 480
 CELLSIZE = 5
@@ -17,10 +16,10 @@ runGame = 0
 
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, FONT, NAME, SCREEN, ImagesPlayer
-    global ImagesEnemy, newtitlescreen
+    global newtitlescreen
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
+    FPS = 15
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -40,7 +39,8 @@ def main():
     newtitlescreen = ts.TitleScreen(BASICFONT, FPSCLOCK, SCREEN)
     showStartScreen()
     while True:
-        finished = runGame()
+        finished = runGame(
+            SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS)
         if finished < 2:
             if runGame == runmultibattle:
                 showPlayerWonScreen(finished)
@@ -192,7 +192,8 @@ def showPauseScreen():
                     terminate()
 
 
-def runsingleplayer():
+def runsingleplayer(
+        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
     wall_list = utils.createwalls(SCREEN, rendergroup)
@@ -254,7 +255,8 @@ def runsingleplayer():
     return int(Marcus.dead)
 
 
-def runmultibattle():
+def runmultibattle(
+        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
     # 1v1 battle multiplayer mode
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
@@ -307,7 +309,7 @@ def runmultibattle():
             elif event.type == pygame.locals.MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        if not Marcus.cover:
+        if not Marcus.movement.cover:
             Marcus.update_direction()
 
         player_list.update()
@@ -324,7 +326,8 @@ def runmultibattle():
     return int(Marcus.dead)
 
 
-def runcoop():
+def runcoop(
+        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
     wall_list = utils.createwalls(SCREEN, rendergroup)
@@ -379,7 +382,7 @@ def runcoop():
             elif event.type == pygame.locals.MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        if not Marcus.cover:
+        if not Marcus.movement.cover:
             Marcus.update_direction()
 
         player_list.update()

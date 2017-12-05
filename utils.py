@@ -39,11 +39,11 @@ def createwalls(screen, rendergroup):
     wall = objects.Wall(40, 60, 60, 30, image=ss.image_at((122, 146, 60, 30)))
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(screen.width - 100, screen.height - 100, 45, 20,
+    wall = objects.Wall(screen.width - 100, screen.height - 120, 15, 60,
                         image=ss.image_at((121, 65, 15, 60)), tallwall=False)
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(50, screen.height - 80, 45, 30,
+    wall = objects.Wall(70, screen.height - 120, 45, 30,
                         ss.image_at((122, 146, 45, 30)))
     wall.add(wall_list, rendergroup)
 
