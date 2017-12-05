@@ -398,6 +398,14 @@ class Player(Character):
             self.reloadCountdown -= 1
         self.bulletsprite.update()
 
+        if not self.movement.cover and not self.movement.shot:
+            self.update_direction()
+
+        if self.movement.shot > 4:
+            self.stopshoot()
+        elif self.movement.shot > 0:
+            self.movement.shot += 1
+
 
 class Player2(Character):
     def __init__(self, name, imagedict, screen, rendergroup, walls):

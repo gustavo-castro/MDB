@@ -16,7 +16,6 @@ runGame = 0
 
 
 def main():
-    global newtitlescreen
     NAME = 'Mecanismos de Batalha'
     FONT = 'freesansbold.ttf'
     FPS = 15
@@ -36,19 +35,19 @@ def main():
     SCREEN = utils.Screen(WINDOWWIDTH, WINDOWHEIGHT,
                           CELLSIZE, FPS, DISPLAYSURF)
 
-    newtitlescreen = ts.TitleScreen(BASICFONT, FPSCLOCK, SCREEN)
-    showStartScreen()
+    titlescreen = ts.TitleScreen(BASICFONT, FPSCLOCK, SCREEN)
+    showStartScreen(titlescreen)
     while True:
-        finished = runGame(
-            SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS)
+        finished = runGame(SCREEN, ImagesPlayer, ImagesEnemy,
+                           DISPLAYSURF, FPSCLOCK, FPS, titlescreen)
         if finished < 2:
             if runGame == runmultibattle:
-                showPlayerWonScreen(finished)
+                showPlayerWonScreen(finished, titlescreen)
             else:
                 if finished == 1:
-                    showGameOverScreen()
+                    showGameOverScreen(titlescreen)
                 elif finished == 0:
-                    showWinnerScreen()
+                    showWinnerScreen(titlescreen)
 
 
 def terminate():
@@ -56,12 +55,12 @@ def terminate():
     sys.exit()
 
 
-def showStartScreen():
+def showStartScreen(titlescreen):
     which = 0
     directions = {pygame.locals.K_s: 1, pygame.locals.K_DOWN: 1,
                   pygame.locals.K_w: -1, pygame.locals.K_UP: -1}
     whichgamemode = {0: runsingleplayer, 1: runmultibattle, 2: runcoop}
-    newtitlescreen.drawStartScreen(which)
+    titlescreen.drawStartScreen(which)
     pygame.display.update()
     running = True
     while running:  # menu key handler
@@ -73,7 +72,7 @@ def showStartScreen():
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key in directions:
                 which = (which + directions[event.key]) % 3
-                newtitlescreen.drawPressChooseModeScreen(which)
+                titlescreen.drawPressChooseModeScreen(which)
                 pygame.display.update()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_RETURN:
@@ -83,8 +82,8 @@ def showStartScreen():
                 break
 
 
-def showGameOverScreen():
-    newtitlescreen.drawGameOverScreen()
+def showGameOverScreen(titlescreen):
+    titlescreen.drawGameOverScreen()
     pygame.display.update()
     pygame.time.wait(1000)
     pygame.event.get()
@@ -102,8 +101,8 @@ def showGameOverScreen():
                 break
 
 
-def showWinnerScreen():
-    newtitlescreen.drawWinnerScreen()
+def showWinnerScreen(titlescreen):
+    titlescreen.drawWinnerScreen()
     pygame.display.update()
     pygame.time.wait(1000)
     pygame.event.get()
@@ -121,8 +120,8 @@ def showWinnerScreen():
                 break
 
 
-def showPlayerWonScreen(result):
-    newtitlescreen.drawBatlleWinnerScreen(result+1)
+def showPlayerWonScreen(result, titlescreen):
+    titlescreen.drawBatlleWinnerScreen(result+1)
     pygame.display.update()
     pygame.time.wait(1000)
     pygame.event.get()
@@ -140,12 +139,12 @@ def showPlayerWonScreen(result):
                 break
 
 
-def showChangeMode():
+def showChangeMode(titlescreen):
     which = 0
     directions = {pygame.locals.K_s: 1, pygame.locals.K_DOWN: 1,
                   pygame.locals.K_w: -1, pygame.locals.K_UP: -1}
     whichgamemode = {0: runsingleplayer, 1: runmultibattle, 2: runcoop}
-    newtitlescreen.drawStartScreen(which)
+    titlescreen.drawStartScreen(which)
     pygame.display.update()
     while True:  # menu key handler
         for event in pygame.event.get():  # event handling loop
@@ -156,7 +155,7 @@ def showChangeMode():
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key in directions:
                 which = (which+directions[event.key]) % 3
-                newtitlescreen.drawPressChooseModeScreen(which)
+                titlescreen.drawPressChooseModeScreen(which)
                 pygame.display.update()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_RETURN:
@@ -164,11 +163,11 @@ def showChangeMode():
                 return newmode
 
 
-def showPauseScreen():
+def showPauseScreen(titlescreen):
     which = 0
     directions = {pygame.locals.K_s: 1, pygame.locals.K_DOWN: 1,
                   pygame.locals.K_w: -1, pygame.locals.K_UP: -1}
-    newtitlescreen.drawPauseScreen(which)
+    titlescreen.drawPauseScreen(which)
     pygame.display.update()
     running = True
     while running:  # menu key handler
@@ -178,7 +177,7 @@ def showPauseScreen():
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key in directions:
                 which = (which+directions[event.key]) % 3
-                newtitlescreen.drawPauseScreen(which)
+                titlescreen.drawPauseScreen(which)
                 pygame.display.update()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_RETURN:
@@ -186,14 +185,14 @@ def showPauseScreen():
                 if which == 0:
                     return 'no changes'
                 if which == 1:
-                    newmode = showChangeMode()
+                    newmode = showChangeMode(titlescreen)
                     return newmode
                 if which == 2:
                     terminate()
 
 
-def runsingleplayer(
-        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
+def runsingleplayer(SCREEN, ImagesPlayer, ImagesEnemy,
+                    DISPLAYSURF, FPSCLOCK, FPS, titlescreen):
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
     wall_list = utils.createwalls(SCREEN, rendergroup)
@@ -215,17 +214,12 @@ def runsingleplayer(
     Marcus.other_characters = enemy_list
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0:  # main loop
-        if Marcus.movement.shot > 4:
-            Marcus.stopshoot()
-        elif Marcus.movement.shot > 0:
-            Marcus.movement.shot += 1
-
         for event in pygame.event.get():  # event handling loop
             if event.type == pygame.locals.QUIT:
                 terminate()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_ESCAPE:
-                newmode = showPauseScreen()
+                newmode = showPauseScreen(titlescreen)
                 if newmode != 'no changes':
                     global runGame
                     runGame = newmode
@@ -237,9 +231,6 @@ def runsingleplayer(
                 Marcus.update_position(event.key)
             elif event.type == pygame.locals.MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
-
-        if not Marcus.movement.cover and not Marcus.movement.shot:
-            Marcus.update_direction()
 
         player_list.update()
         enemy_list.update(enemy_bullet_list, rendergroup)
@@ -255,8 +246,8 @@ def runsingleplayer(
     return int(Marcus.dead)
 
 
-def runmultibattle(
-        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
+def runmultibattle(SCREEN, ImagesPlayer, ImagesEnemy,
+                   DISPLAYSURF, FPSCLOCK, FPS, titlescreen):
     # 1v1 battle multiplayer mode
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
@@ -289,7 +280,7 @@ def runmultibattle(
                 terminate()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_ESCAPE:
-                newmode = showPauseScreen()
+                newmode = showPauseScreen(titlescreen)
                 if newmode != 'no changes':
                     global runGame
                     runGame = newmode
@@ -309,9 +300,6 @@ def runmultibattle(
             elif event.type == pygame.locals.MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
 
-        if not Marcus.movement.cover:
-            Marcus.update_direction()
-
         player_list.update()
         enemy_list.update()
 
@@ -326,8 +314,8 @@ def runmultibattle(
     return int(Marcus.dead)
 
 
-def runcoop(
-        SCREEN, ImagesPlayer, ImagesEnemy, DISPLAYSURF, FPSCLOCK, FPS):
+def runcoop(SCREEN, ImagesPlayer, ImagesEnemy,
+            DISPLAYSURF, FPSCLOCK, FPS, titlescreen):
     # Group for drawing all sprites
     rendergroup = pygame.sprite.RenderPlain()
     wall_list = utils.createwalls(SCREEN, rendergroup)
@@ -362,7 +350,7 @@ def runcoop(
                 terminate()
             elif event.type == pygame.locals.KEYDOWN and \
                     event.key == pygame.locals.K_ESCAPE:
-                newmode = showPauseScreen()
+                newmode = showPauseScreen(titlescreen)
                 if newmode != 'no changes':
                     global runGame
                     runGame = newmode
@@ -381,9 +369,6 @@ def runcoop(
                 Cole.update_position(event.key)
             elif event.type == pygame.locals.MOUSEBUTTONDOWN:
                 Marcus.shoot(friendly_bullet_list, rendergroup)
-
-        if not Marcus.movement.cover:
-            Marcus.update_direction()
 
         player_list.update()
         enemy_list.update(enemy_bullet_list, rendergroup)
