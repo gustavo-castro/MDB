@@ -1,7 +1,7 @@
 Mecanismos da Guerra 
 -------------------
 
-|Build Status| |Code Coverage|
+|Build Status| |CodeCov|
 
 This is a 2d cover-based shooter game being made in Python 2.7 (still in development).
 
@@ -22,7 +22,7 @@ If you already know how to install python packages, then you can simply do:
 
     $ pip install pygame
 
-If you don't know how to install python packages, please check the 
+If you don't know how to install python packages, please check the following link and install the Python 2.7 pip version.
 `pip quickstart website`__.
 
 __ https://pip.pypa.io/en/stable/quickstart/
@@ -44,5 +44,5 @@ The game is still in development and any feedback regarding the game would be ve
 .. |Build Status| image:: https://travis-ci.org/gustavo-castro/MDB.svg?branch=master
     :target: https://travis-ci.org/gustavo-castro/MDB
 
-.. |Code Coverage| image:: https://coveralls.io/repos/github/gustavo-castro/MDB/badge.svg
-	:target: https://coveralls.io/github/gustavo-castro/MDB
+.. |CodeCov| image:: https://codecov.io/gh/gustavo-castro/MDB/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/gustavo-castro/MDB
