@@ -1,7 +1,8 @@
 import math, pygame
 
-black_color = (0, 0, 0)
-blue_color = (0, 0, 255)
+
+import color
+
 
 class Bullet(pygame.sprite.Sprite):
     """
@@ -15,7 +16,7 @@ class Bullet(pygame.sprite.Sprite):
     origin : Int List with length 2        
         Specifies the point (x,y) that the Bullet should start from
     
-    Atributes
+    Attributes
     ---------
     image : Pygame's Sprite's image
         Represents the Bullet's image
@@ -42,7 +43,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.Surface([2, 2])
-        self.image.fill(black_color)
+        self.image.fill(color.BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = (origin[0], origin[1])
         self.x, self.y = float(self.rect.centerx), float(self.rect.centery)
@@ -71,6 +72,7 @@ class Bullet(pygame.sprite.Sprite):
             else:
                 self.high = True
 
+
 class FriendlyBullet(Bullet):
     def update(self, enemy_list, wall_list):
         """This method calls the Bullet update method and checks for collision with enemies"""
@@ -82,6 +84,7 @@ class FriendlyBullet(Bullet):
                 self.kill()
                 enemy.lifebar.hp -= 1
 
+
 class EnemyBullet(Bullet):
     def update(self, player_list, wall_list):
         """This method calls the Bullet update method and checks for collision with players"""
@@ -92,6 +95,7 @@ class EnemyBullet(Bullet):
             if (not self.high) or (not player.movement.cover):
                 self.kill()
                 player.lifebar.hp -= 1
+
 
 class Wall(pygame.sprite.Sprite):
     """
@@ -136,7 +140,7 @@ class Wall(pygame.sprite.Sprite):
             self.image = image
         else:
             self.image = pygame.Surface([width, height])
-            self.image.fill(black_color) if self.istall else self.image.fill(blue_color)
+            self.image.fill(color.BLACK) if self.istall else self.image.fill(color.BLUE)
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x

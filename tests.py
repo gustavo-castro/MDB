@@ -3,6 +3,7 @@ from pygame.locals import *
 
 MAX_ITER = 100
 
+
 class TestCharacter():
     def __init__(self):
         name = "any_name" 
@@ -14,10 +15,10 @@ class TestCharacter():
         wall_list = utils.createwalls(screen, rendergroup)
         self.character = characters.Character(name, imagedict, hp, screen, rendergroup, wall_list)
 
+
 class TestRules(unittest.TestCase):
     def test_correct_spawn(self):
         for _ in range(MAX_ITER):
-            screen_without_walls = pygame.Rect(5, 5, 630, 470)
             new_character = TestCharacter().character
             self.assertTrue(self.check_inscreen(new_character)) 
             self.assertTrue(self.check_no_collisions(new_character))
@@ -30,16 +31,19 @@ class TestRules(unittest.TestCase):
                 self.assertTrue(self.check_inscreen(new_character)) 
                 self.assertTrue(self.check_no_collisions(new_character))
                 for i in range(10):
-                    new_character.updatePosition(random.choice([K_a, K_w, K_d, K_s]))
+                    new_character.update_position(random.choice([K_a, K_w, K_d, K_s]))
                     self.assertTrue(self.check_inscreen(new_character)) 
                     self.assertTrue(self.check_no_collisions(new_character))
 
-    def check_inscreen(self, character):
+    @staticmethod
+    def check_inscreen(character):
         screen_without_walls = pygame.Rect(5, 5, 630, 470)
         return screen_without_walls.collidepoint(character.x, character.y)
 
-    def check_no_collisions(self, character):
-        return True if not character.checkwallcollision()+character.checkcharactercollision() else False
+    @staticmethod
+    def check_no_collisions(character):
+        return True if not character.check_wall_collision() + character.check_character_collision() else False
+
 
 def main():
     unittest.main()

@@ -3,6 +3,7 @@ import spritesheet
 import objects
 import characters
 
+
 class Screen(object):
     def __init__(self, window_width, window_height, cellsize, fps, display):
         self.width = window_width
@@ -10,6 +11,7 @@ class Screen(object):
         self.cellsize = cellsize
         self.fps = fps
         self.display = display
+
 
 def createwalls(screen, rendergroup):
     """creates walls for the basic level """
@@ -32,11 +34,10 @@ def createwalls(screen, rendergroup):
 
     """barriers in the middle of the level"""
     ss = spritesheet.spritesheet('Images/Walls.png')
-    barriersize = screen.cellsize*3
-    wall = objects.Wall(40, 60, 60, 30, image = ss.image_at((122, 146, 60, 30)))
+    wall = objects.Wall(40, 60, 60, 30, image=ss.image_at((122, 146, 60, 30)))
     wall.add(wall_list, rendergroup)
 
-    wall = objects.Wall(screen.width - 100, screen.height - 100, 45, 20, image = ss.image_at((121, 65, 15, 60)), tallwall = False)
+    wall = objects.Wall(screen.width - 100, screen.height - 100, 45, 20, image=ss.image_at((121, 65, 15, 60)), tallwall=False)
     wall.add(wall_list, rendergroup)
 
     wall = objects.Wall(50, screen.height - 80, 45, 30, ss.image_at((122, 146, 45, 30)))
@@ -52,17 +53,18 @@ def createenemies(N, ImagesDict, player_list, screen, rendergroup, walls):
 
     while enemy_counter < N:
         enemy = characters.Enemy(ImagesDict, player_list, screen, rendergroup, walls)
-
-        if not pygame.sprite.spritecollide(enemy, enemy_list, False): #only add enemies if there's no collision with other enemies
+        # Only add enemies if there's no collision with other enemies
+        if not pygame.sprite.spritecollide(enemy, enemy_list, False):
             enemy.add(enemy_list, rendergroup)
             enemy_counter += 1
     
     return enemy_list
 
+
 def loadingimages(image, who, cellsize):
     ss = spritesheet.spritesheet(image)
     # Sprite is 16x16 pixels at location 0,0 in the file...
-    #olhando pra cada direcao
+    # Looking at every direction
     if who == 'player':
         d = [ss.image_at((8 + 40*i, 182, cellsize*6, cellsize*7)) for i in [2,4,5]]
         d = {image_type:image for (image_type, image) in zip(["left", "right", "shoot"], d)}
@@ -97,8 +99,10 @@ def loadingimages(image, who, cellsize):
         cur = {image_type:image for (image_type, image) in zip(["left", "right"], cur)}
         cul = [ss.image_at((202, 304, cellsize*5, cellsize*5)), ss.image_at((202, 304, cellsize*5, cellsize*4))]
         cul = {image_type:image for (image_type, image) in zip(["left", "right"], cul)}
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'dl' : dl, 'ur' : ur, 'ul' : ul, 'cd' : cd,
-        'cr' : cr, 'cu' : cu, 'cl' : cl, 'cdr' : cdr, 'cdl' : cdl, 'cur' : cur, 'cul' : cul}
+        images_dict = {
+            'd': d, 'u': u, 'r': r, 'l': l, 'dr': dr, 'dl': dl, 'ur': ur, 'ul': ul, 'cd': cd,
+            'cr': cr, 'cu': cu, 'cl': cl, 'cdr': cdr, 'cdl': cdl, 'cur': cur, 'cul': cul
+        }
     elif who == 'enemy':
         d = [ss.image_at((258 + 40*i, 182, cellsize*6, cellsize*7)) for i in [2,4,5]]
         d = {image_type:image for (image_type, image) in zip(["left", "right", "shoot"], d)}
@@ -116,6 +120,6 @@ def loadingimages(image, who, cellsize):
         ur = {image_type:image for (image_type, image) in zip(["left", "right", "shoot"], ur)}
         ul = [ss.image_at((258 + 40*i, 302, cellsize*6, cellsize*7)) for i in [2,4,5]]
         ul = {image_type:image for (image_type, image) in zip(["left", "right", "shoot"], ul)}
-        ImagesDict = {'d' : d, 'u' : u, 'r' : r, 'l' : l, 'dr' : dr, 'dl' : dl, 'ur' : ur, 'ul' : ul}
+        images_dict = {'d': d, 'u': u, 'r': r, 'l': l, 'dr': dr, 'dl': dl, 'ur': ur, 'ul': ul}
 
-    return ImagesDict
+    return images_dict

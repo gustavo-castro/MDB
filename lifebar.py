@@ -1,7 +1,8 @@
 import pygame
 
-black_color = (0, 0, 0)
-green_color = (0, 255, 0)
+
+import color
+
 
 class LifeBar(pygame.sprite.Sprite):
     """
@@ -15,7 +16,7 @@ class LifeBar(pygame.sprite.Sprite):
     hp : Int
         Specifies the number of hitpoints the owner has
 
-    Atributes
+    Attributes
     ---------
     sizebar : Int
         Represents the size of the bar to be shown
@@ -40,16 +41,16 @@ class LifeBar(pygame.sprite.Sprite):
         self.owner = owner
         self.sizebar = self.owner.rect.width
         self.image = pygame.Surface((self.owner.rect.width,7))
-        self.image.set_colorkey(black_color)
-        pygame.draw.rect(self.image, (0,255,0), (0,0,self.owner.rect.width,7),1)
+        self.image.set_colorkey(color.BLACK)
+        pygame.draw.rect(self.image, color.GREEN, (0, 0, self.owner.rect.width, 7), 1)
         self.rect = self.image.get_rect()
         self.hp = hp
         self.total_hp = hp
         
     def update(self):
         hp_percent = self.hp/self.total_hp
-        pygame.draw.rect(self.image, black_color, (1,1,self.sizebar-2,5))
-        pygame.draw.rect(self.image, green_color, (1,1,int(self.sizebar * hp_percent),5),0)
+        pygame.draw.rect(self.image, color.BLACK, (1, 1, self.sizebar-2, 5))
+        pygame.draw.rect(self.image, color.GREEN, (1, 1, int(self.sizebar * hp_percent), 5), 0)
         self.rect.centerx = self.owner.rect.centerx
         self.rect.centery = self.owner.rect.centery - self.owner.rect.height/2 - 10
         
