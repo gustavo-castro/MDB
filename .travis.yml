@@ -12,3 +12,6 @@ script :
   - python tests.py
   - coveralls
   - flake8
+
+after_script:
+  - coveralls
