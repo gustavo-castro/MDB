@@ -20,8 +20,11 @@ class TestCharacter():
         hp = 10
         rendergroup = pygame.sprite.RenderPlain()
         wall_list = utils.createwalls(screen, rendergroup)
+        player_list = pygame.sprite.Group()
+        enemy_list = pygame.sprite.Group()
         self.character = characters.Character(
-            name, imagedict, hp, screen, rendergroup, wall_list)
+            name, imagedict, hp, screen, rendergroup, wall_list,
+            player_list, enemy_list)
 
 
 class TestRules(unittest.TestCase):

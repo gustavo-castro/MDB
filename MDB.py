@@ -198,20 +198,18 @@ def runsingleplayer(SCREEN, ImagesPlayer, ImagesEnemy,
     wall_list = utils.createwalls(SCREEN, rendergroup)
     # Initiate main character
     player_list = pygame.sprite.Group()
+    enemy_list = pygame.sprite.Group()
 
-    Marcus = characters.Player('Marcus', ImagesPlayer,
-                               SCREEN, rendergroup, wall_list)
-    Marcus.add(player_list, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup,
+                               wall_list, player_list, enemy_list)
 
     friendly_bullet_list = pygame.sprite.Group()
     enemy_bullet_list = pygame.sprite.Group()
 
     # Create enemies
     N = 2
-    enemy_list = utils.createenemies(N, ImagesEnemy, player_list,
-                                     SCREEN, rendergroup, wall_list)
-
-    Marcus.other_characters = enemy_list
+    utils.createenemies(N, ImagesEnemy, player_list, SCREEN,
+                        rendergroup, wall_list, enemy_list)
 
     while (not Marcus.dead) and len(enemy_list.sprites()) > 0:  # main loop
         for event in pygame.event.get():  # event handling loop
@@ -254,25 +252,17 @@ def runmultibattle(SCREEN, ImagesPlayer, ImagesEnemy,
     wall_list = utils.createwalls(SCREEN, rendergroup)
     # Initiate player1
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN,
-                               rendergroup, wall_list)
-    Marcus.add(player_list, rendergroup)
+    enemy_list = pygame.sprite.Group()
+
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup,
+                               wall_list, player_list, enemy_list)
 
     # initiating bullet sprite groups
     friendly_bullet_list = pygame.sprite.Group()
     enemy_bullet_list = pygame.sprite.Group()
 
-    # Creating player2
-    enemy_list = pygame.sprite.Group()
-    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN,
-                              rendergroup, wall_list)
-    while pygame.sprite.spritecollide(Cole, [Marcus], False):
-        Cole = characters.Player2('Cole', ImagesPlayer, SCREEN,
-                                  rendergroup, wall_list)
-    Cole.add(enemy_list, rendergroup)
-
-    Marcus.other_characters = enemy_list
-    Cole.other_characters = player_list
+    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup,
+                              wall_list, player_list, enemy_list, True)
 
     while not Marcus.dead and not Cole.dead:  # main game loop
         for event in pygame.event.get():  # event handling loop
@@ -321,27 +311,20 @@ def runcoop(SCREEN, ImagesPlayer, ImagesEnemy,
     wall_list = utils.createwalls(SCREEN, rendergroup)
     # Initiate main character
     player_list = pygame.sprite.Group()
-    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN,
-                               rendergroup, wall_list)
-    Marcus.add(player_list, rendergroup)
+    enemy_list = pygame.sprite.Group()
 
-    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN,
-                              rendergroup, wall_list)
-    while pygame.sprite.spritecollide(Cole, [Marcus], False):
-        Cole = characters.Player2('Cole', ImagesPlayer, SCREEN,
-                                  rendergroup, wall_list)
-    Cole.add(player_list, rendergroup)
+    Marcus = characters.Player('Marcus', ImagesPlayer, SCREEN, rendergroup,
+                               wall_list, player_list, enemy_list)
+    Cole = characters.Player2('Cole', ImagesPlayer, SCREEN, rendergroup,
+                              wall_list, player_list, enemy_list, False)
 
     friendly_bullet_list = pygame.sprite.Group()
     enemy_bullet_list = pygame.sprite.Group()
 
     # Create enemies
     N = 2
-    enemy_list = utils.createenemies(N, ImagesEnemy, player_list, SCREEN,
-                                     rendergroup, wall_list)
-
-    Marcus.other_characters = enemy_list
-    Cole.other_characters = enemy_list
+    utils.createenemies(N, ImagesEnemy, player_list, SCREEN,
+                        rendergroup, wall_list, enemy_list)
 
     # main game loop
     while (not Marcus.dead or not Cole.dead) and len(enemy_list.sprites()) > 0:

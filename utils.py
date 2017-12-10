@@ -50,20 +50,14 @@ def createwalls(screen, rendergroup):
     return wall_list
 
 
-def createenemies(N, ImagesDict, player_list, screen, rendergroup, walls):
+def createenemies(N, ImagesDict, player_list, screen, rendergroup, walls,
+                  enemy_list):
     """spawns N enemies"""
-    enemy_list = pygame.sprite.Group()
-    enemy_counter = 0
+    for i in range(N):
+        characters.Enemy(ImagesDict, player_list, screen,
+                         rendergroup, walls, enemy_list)
 
-    while enemy_counter < N:
-        enemy = characters.Enemy(ImagesDict, player_list, screen,
-                                 rendergroup, walls)
-        # Only add enemies if there's no collision with other enemies
-        if not pygame.sprite.spritecollide(enemy, enemy_list, False):
-            enemy.add(enemy_list, rendergroup)
-            enemy_counter += 1
-
-    return enemy_list
+    return
 
 
 def loadingimages(image, who, cellsize):

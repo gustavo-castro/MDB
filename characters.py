@@ -109,9 +109,12 @@ class Character(pygame.sprite.Sprite):
     walls : Wall object
         Represents the walls present in the game
     """
-    def __init__(self, name, imagedict, hp, screen, rendergroup, walls):
+    def __init__(self, name, imagedict, hp, screen, rendergroup, walls,
+                 player_list, enemy_list):
         pygame.sprite.Sprite.__init__(self)
 
+        self.player_list = player_list
+        self.enemy_list = enemy_list
         self.name = name
         self.movement = Movement(screen, walls)
         self.imagedict = imagedict
@@ -119,7 +122,7 @@ class Character(pygame.sprite.Sprite):
             self.movement.which_leg()]
         self.rect = self.image.get_rect()
         self.lifebar = lifebar.LifeBar(self, hp)
-        rendergroup.add(self.lifebar)
+        rendergroup.add(self, self.lifebar)
         self.spawn()
         self.moved = False
         self.dead = False
@@ -130,11 +133,10 @@ class Character(pygame.sprite.Sprite):
         return block_hit_list
 
     def check_character_collision(self):
-        block_hit_list = []
-        if hasattr(self, "other_characters"):
-            block_hit_list = pygame.sprite.spritecollide(
-                self, self.other_characters, False)
-        return block_hit_list
+        aux = self.enemy_list.copy()
+        aux.add(self.player_list)
+        aux.remove(self)
+        return pygame.sprite.spritecollide(self, aux, False)
 
     def fix_position(self, hit_list, walking_direction):
         if hit_list:
@@ -320,7 +322,7 @@ class Character(pygame.sprite.Sprite):
                                   self.movement.screen.height/2,
                                   self.movement.step_size_y)
         self.rect.x, self.rect.y = self.x, self.y
-        while self.check_wall_collision():
+        while self.check_wall_collision()+self.check_character_collision():
             self.spawn()
 
     def reload(self):
@@ -335,9 +337,11 @@ class Character(pygame.sprite.Sprite):
 
 
 class Player(Character):
-    def __init__(self, name, imagedict, screen, rendergroup, walls):
-        Character.__init__(
-            self, name, imagedict, 10., screen, rendergroup, walls)
+    def __init__(self, name, imagedict, screen, rendergroup, walls,
+                 player_list, enemy_list):
+        Character.__init__(self, name, imagedict, 10., screen,
+                           rendergroup, walls, player_list, enemy_list)
+        player_list.add(self)
         self.dead = False
         self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
@@ -408,9 +412,14 @@ class Player(Character):
 
 
 class Player2(Character):
-    def __init__(self, name, imagedict, screen, rendergroup, walls):
-        Character.__init__(
-            self, name, imagedict, 10., screen, rendergroup, walls)
+    def __init__(self, name, imagedict, screen, rendergroup, walls,
+                 player_list, enemy_list, is_multi_mode):
+        Character.__init__(self, name, imagedict, 10., screen,
+                           rendergroup, walls, player_list, enemy_list)
+        if is_multi_mode:
+            enemy_list.add(self)
+        else:
+            player_list.add(self)
         self.dead = False
         self.bulletsprite = bulletsprite.BulletBar(self, 10.)
         rendergroup.add(self.bulletsprite)
@@ -488,9 +497,11 @@ class Player2(Character):
 class Enemy(Character):
     count = 0
 
-    def __init__(self, imagedict, player_list, screen, rendergroup, walls):
+    def __init__(self, imagedict, player_list, screen, rendergroup, walls,
+                 enemy_list):
         Character.__init__(self, "enemy" + str(Enemy.count),
-                           imagedict, 5., screen, rendergroup, walls)
+                           imagedict, 5., screen, rendergroup, walls,
+                           player_list, enemy_list)
         Enemy.count += 1
         self.contbullet = 5
         self.bullettimer = 0
@@ -498,6 +509,7 @@ class Enemy(Character):
         self.bulletsprite = bulletsprite.BulletBar(self, 5.)
         rendergroup.add(self.bulletsprite)
         self.reloadCountdown = 0
+        enemy_list.add(self)
 
     def spawn(self):
         self.x = random.randrange(self.movement.screen.cellsize,
@@ -510,7 +522,7 @@ class Enemy(Character):
                                   self.movement.screen.cellsize,
                                   self.movement.step_size_y)
         self.rect.x, self.rect.y = self.x, self.y
-        while self.check_wall_collision():
+        while self.check_wall_collision()+self.check_character_collision():
             self.spawn()
 
     def shoot(self, enemy_bullet_list, rendergroup):
